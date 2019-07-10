@@ -11,6 +11,12 @@ import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.structs.IntToStrings;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
+/**
+ * Wrapper around a {@link Preferences} for the {@link IPrefs} interface.
+ * 
+ * @author Charles Bentley
+ * @see IPrefs
+ */
 public class SwingPrefs implements IPrefs {
 
    private Preferences prefs;
@@ -49,8 +55,8 @@ public class SwingPrefs implements IPrefs {
       return prefs.getBoolean(key, def);
    }
 
-   public double getDouble(String key, double d) {
-      return prefs.getDouble(key, d);
+   public double getDouble(String key, double def) {
+      return prefs.getDouble(key, def);
    }
 
    public int getInt(String key, int def) {
@@ -67,12 +73,15 @@ public class SwingPrefs implements IPrefs {
       return null;
    }
 
+   /**
+    * 
+    */
    public String[] getStrings(String key, char separator) {
       String root1 = prefs.get(key, "");
       if (root1.equals("")) {
          return new String[0];
       } else {
-         String[] data = root1.split(";");
+         String[] data = root1.split(String.valueOf(separator));
          return data;
       }
    }
