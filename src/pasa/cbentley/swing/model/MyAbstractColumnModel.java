@@ -44,7 +44,10 @@ public class MyAbstractColumnModel implements IStringable {
       classes[colIndex] = String.class;
       colKey[colIndex] = key;
    }
-
+   public void setLong(int colIndex, String key) {
+      classes[colIndex] = Long.class;
+      colKey[colIndex] = key;
+   }
    public void sanityCheck() {
       for (int i = 0; i < classes.length; i++) {
          if (classes[i] == null) {

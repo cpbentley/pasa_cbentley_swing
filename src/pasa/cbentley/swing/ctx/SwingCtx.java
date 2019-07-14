@@ -67,7 +67,6 @@ import pasa.cbentley.swing.imytab.ITabMenuBarFactory;
 import pasa.cbentley.swing.imytab.TabIconSettings;
 import pasa.cbentley.swing.imytab.TabbedBentleyPanel;
 import pasa.cbentley.swing.interfaces.ICallBackSwing;
-import pasa.cbentley.swing.logging.SwingDLogger;
 import pasa.cbentley.swing.logging.SwingDebug;
 import pasa.cbentley.swing.table.TableUtils;
 import pasa.cbentley.swing.utils.BufferedImageUtils;
@@ -88,6 +87,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
    private IBackForwardable         backforwardable;
 
    private ExecutorService          backgroundExec;
+
+   private BufferedImageUtils       bufferedImageUtils;
 
    private List<String>             bundleNames;
 
@@ -129,6 +130,9 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
     */
    private CombinedResourceBundle   resBund;
 
+   //#debug
+   private IStringable root;
+
    private SwingDebug               sd;
 
    private SwingCmds                swingCmds;
@@ -144,8 +148,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
    private UIData                   uiData;
 
    private SwingUtilsBentley        utils;
-
-   private BufferedImageUtils       bufferedImageUtils;
 
    /**
     * Cannot create GUI elements. 
@@ -177,6 +179,10 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       }
    }
 
+   public void addI18NKey(ArrayList<String> list) {
+      list.add("i18nSwing");
+   }
+
    /**
     * Adds a mouse liste
     * @param c
@@ -192,13 +198,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
             ToolTipManager.sharedInstance().setDismissDelay(defaultDismissTimeout);
          }
       });
-   }
-
-   public BufferedImageUtils getBufImgUtils() {
-      if (bufferedImageUtils == null) {
-         bufferedImageUtils = new BufferedImageUtils(this);
-      }
-      return bufferedImageUtils;
    }
 
    public void callBackInMainThread(final ICallBackSwing callBack, final Object o) {
@@ -313,6 +312,13 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       return backforwardable;
    }
 
+   public BufferedImageUtils getBufImgUtils() {
+      if (bufferedImageUtils == null) {
+         bufferedImageUtils = new BufferedImageUtils(this);
+      }
+      return bufferedImageUtils;
+   }
+
    public C5Ctx getC5() {
       return c5;
    }
@@ -410,6 +416,15 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       }
    }
 
+   public JFrame getFrameFocused() {
+      for (CBentleyFrame frame : allFrames) {
+         if (frame.isActive()) {
+            return frame;
+         }
+      }
+      return allFrames.get(0);
+   }
+
    public int getIconSize(int iconSizeFrame) {
       if (iconSizeFrame == IconFamily.ICON_SIZE_FRAME) {
          return IconFamily.ICON_SIZE_0_SMALLEST;
@@ -442,6 +457,9 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
 
    /**
     * Ask Factories to create a MenuBar for this tab
+    * 
+    * Set it with {@link SwingCtx#setTabMenuBarFactory(ITabMenuBarFactory)}
+    * 
     * @param tab
     * @return
     */
@@ -788,6 +806,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       }
    }
 
+   //#enddebug
+
    /**
     * Sets the list of bundles.
     * @param bundleNames
@@ -811,8 +831,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       }
       getPrefs().put("folder_" + key, f.getAbsolutePath());
    }
-
-   //#enddebug
 
    public void setIBackForwardable(IBackForwardable backforwardable) {
       this.backforwardable = backforwardable;
@@ -924,6 +942,10 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       return f;
    }
 
+   public IDLog toDLog() {
+      return uc.toDLog();
+   }
+
    public SwingDebug toSD() {
       return sd;
    }
@@ -934,10 +956,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       toStringPrivate(dc);
       toStringGuiUpdate(dc.nLevel());
       super.toString(dc.sup());
-   }
-
-   public IDLog toDLog() {
-      return uc.toDLog();
    }
 
    public boolean toString(Dctx dc, Object o) {
@@ -994,19 +1012,41 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
    }
    //#enddebug
 
+   public String toStringRunnerAll() {
+      if (root == null) {
+         return "Root is null";
+      }
+      return root.toString();
+   }
+
+   public void toStringSetRoot(IStringable root) {
+      this.root = root;
+   }
+
    public void updateAllVisibleTabs() {
       //#debug
       toDLog().pFlow("", null, SwingCtx.class, "updateAllVisibleTabs", ITechLvl.LVL_04_FINER, true);
 
    }
 
-   public JFrame getFrameFocused() {
-      for (CBentleyFrame frame : allFrames) {
-         if (frame.isActive()) {
-            return frame;
-         }
+   /**
+    * 
+    * @param lang
+    * @param country
+    * @return
+    */
+   public boolean updateLocale(String lang, String country) {
+      Locale newLocale = new Locale(lang, country);
+      try {
+         //locale preference is SwingCtx related
+         setLocale(newLocale);
+         this.guiUpdate();
+         this.getLog().consoleLog("Language set to " + lang + " " + country);
+         return true;
+      } catch (MissingResourceException e) {
+         getLog().consoleLogError("Resource Bundle for " + lang + " and " + country + " not found.");
+         return false;
       }
-      return allFrames.get(0);
    }
 
 }

@@ -57,7 +57,11 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui {
    }
 
    /**
-    * Registers the frame in the SwingCtx
+    * Registers the frame in the {@link SwingCtx}.
+    * The frameID is used for 
+    * <li> key for the title 
+    * <li> save frame position and size in preferences
+    * 
     * @param sc
     * @param frameID
     */

@@ -5,7 +5,7 @@ import javax.swing.JPopupMenu;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.swing.ctx.SwingCtx;
-import pasa.cbentley.swing.menu.NavigateMenu;
+import pasa.cbentley.swing.menu.MenuNavigate;
 
 /**
  * Provides default actions for moving the tab.
@@ -17,11 +17,11 @@ public class TabPopupMenu extends JPopupMenu implements IMyGui {
 
    private IMyTab tab;
    private SwingCtx sc;
-   private NavigateMenu navigateMenu;
+   private MenuNavigate navigateMenu;
 
    public TabPopupMenu(SwingCtx sc) {
       this.sc = sc;
-      navigateMenu = new NavigateMenu(sc);
+      navigateMenu = new MenuNavigate(sc);
       this.add(navigateMenu);
    }
 

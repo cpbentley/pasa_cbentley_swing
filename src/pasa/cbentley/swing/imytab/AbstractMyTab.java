@@ -8,6 +8,7 @@ import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.ITechLvl;
 import pasa.cbentley.swing.ctx.SwingCtx;
+import pasa.cbentley.swing.interfaces.IStringPrefIDable;
 
 /**
  * A IMyTab can be in several mode:
@@ -17,7 +18,7 @@ import pasa.cbentley.swing.ctx.SwingCtx;
  * @author Charles Bentley
  *
  */
-public abstract class AbstractMyTab extends JPanel implements IMyTab, IMyGui {
+public abstract class AbstractMyTab extends JPanel implements IMyTab, IMyGui, IStringPrefIDable {
    /**
     * 
     */
@@ -51,6 +52,10 @@ public abstract class AbstractMyTab extends JPanel implements IMyTab, IMyGui {
 
    public SwingCtx getSwingCtx() {
       return sc;
+   }
+   
+   public String getSelectorKeyPrefID() {
+      return interID;
    }
 
    public AbstractMyTab(SwingCtx sc, String internalID) {

@@ -24,7 +24,10 @@ public class TableUtils {
    public void sortTableDescending(JTable table, int column) {
       sortTable(table, column, SortOrder.DESCENDING);
    }
-
+   public void sortTableAscending(JTable table, int column) {
+      sortTable(table, column, SortOrder.ASCENDING);
+   }
+   
    public void sortTable(JTable table, int column, SortOrder sortOrder) {
       DefaultRowSorter<?, ?> sorter = ((DefaultRowSorter) table.getRowSorter());
       ArrayList<RowSorter.SortKey> list = new ArrayList<RowSorter.SortKey>();

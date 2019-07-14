@@ -26,7 +26,7 @@ public class DocRefresher implements DocumentListener {
          public void run() {
             sc.execute(new Runnable() {
                public void run() {
-                  refresh.cmdRefresh();
+                  refresh.cmdRefresh(DocRefresher.this);
                }
             });
          }
