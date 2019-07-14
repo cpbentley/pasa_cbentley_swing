@@ -19,14 +19,12 @@ public class ForwardAction extends BAbstractAction {
    public ForwardAction(SwingCtx sc, IBackForwardable r) {
       super(sc);
       this.r = r;
-      guiUpdate();
    }
 
    public ForwardAction(SwingCtx sc, IBackForwardable r, Integer mnemonic) {
       super(sc);
       this.r = r;
       putValue(MNEMONIC_KEY, mnemonic);
-      guiUpdate();
    }
 
    public void actionPerformed(ActionEvent e) {
