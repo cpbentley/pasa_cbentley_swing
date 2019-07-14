@@ -19,7 +19,7 @@ import pasa.cbentley.swing.window.Screen;
  * @author Charles Bentley
  *
  */
-public class WindowMenu extends BMenu implements MenuListener, ActionListener {
+public class MenuWindow extends BMenu implements MenuListener, ActionListener {
 
    /**
     * 
@@ -38,7 +38,7 @@ public class WindowMenu extends BMenu implements MenuListener, ActionListener {
 
    private BMenu           menuFullscreenTo;
 
-   public WindowMenu(SwingCtx sc) {
+   public MenuWindow(SwingCtx sc) {
       super(sc, "menu.window");
 
       this.addMenuListener(this);
@@ -95,17 +95,17 @@ public class WindowMenu extends BMenu implements MenuListener, ActionListener {
          if (frame != null) {
             Screen screen = sc.getUtils().getScreen(screenID);
             if (screen != null) {
-               if (type == WindowMenu.TYPE_0_FS) {
+               if (type == MenuWindow.TYPE_0_FS) {
                   if (frame instanceof CBentleyFrame) {
                      CBentleyFrame cf = (CBentleyFrame) frame;
                      cf.setFullScreenTrue(screenID);
                   }
-               } else if (type == WindowMenu.TYPE_1_MAX) {
+               } else if (type == MenuWindow.TYPE_1_MAX) {
                   frame.setSize(screen.getWidth(), screen.getHeight());
                   frame.setLocation(screen.getX(), screen.getY());
 
                   sc.getLog().consoleLog("Frame " + frame.getTitle() + " maximized to " + screen.getName());
-               } else if (type == WindowMenu.TYPE_2_MIN) {
+               } else if (type == MenuWindow.TYPE_2_MIN) {
                   int nw = screen.getWidth() * 3 / 4;
                   int nh = screen.getHeight() * 3 / 4;
                   int nx = screen.getX() + (screen.getWidth() - nw) / 2;

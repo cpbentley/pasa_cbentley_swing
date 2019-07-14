@@ -7,14 +7,16 @@ import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.imytab.IMyGui;
+import pasa.cbentley.swing.menu.ITechMenu;
 
-public class BMenu extends JMenu implements IMyGui {
+public class BMenu extends JMenu implements IMyGui,ITechMenu {
 
    private String           key;
 
    private MenuListener     lis;
 
    protected final SwingCtx sc;
+
 
    public BMenu(SwingCtx sc, MenuListener lis, String key) {
       this.sc = sc;
@@ -36,6 +38,7 @@ public class BMenu extends JMenu implements IMyGui {
       //since we are a container.. we must update below us
       sc.guiUpdateOnChildrenMenu(this);
    }
+   
 
    //#mdebug
    public String toString() {

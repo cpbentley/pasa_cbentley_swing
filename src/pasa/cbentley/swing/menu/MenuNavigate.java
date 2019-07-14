@@ -20,21 +20,19 @@ import pasa.cbentley.swing.widgets.b.BMenuItem;
  * When a {@link TabbedBentleyPanel} is active, it registers possible tabs in the Navigation Menu
  * of its owner Frame.
  * <br>
- * {@link NavigateMenu} has a reference to current {@link TabPage}. This gives the tree context.
+ * {@link MenuNavigate} has a reference to current {@link TabPage}. This gives the tree context.
  * <br>
  * owner->MenuBar->NavigationMenu
  * @author Charles Bentley
  *
  */
-public class NavigateMenu extends BMenu implements ActionListener {
+public class MenuNavigate extends BMenu implements ActionListener {
 
    private SwingCtx       sc;
 
    private BMenuItem      jmiTabToFrame;
 
    private JMenu          menuTabGoTo;
-
-   private JMenu          menuTabbedFrames;
 
    private BMenuItem      jmiTabToTop;
 
@@ -54,7 +52,7 @@ public class NavigateMenu extends BMenu implements ActionListener {
 
    private BMenuItem      duplicateTabToFrame;
 
-   public NavigateMenu(SwingCtx sc) {
+   public MenuNavigate(SwingCtx sc) {
       super(sc, "menu.navigation");
       this.sc = sc;
 
@@ -96,8 +94,6 @@ public class NavigateMenu extends BMenu implements ActionListener {
       menuTabGoTo.addSeparator();
       menuTabGoTo.add(jmiTabToBackHistory);
       
-      //list all tab frame
-      menuTabbedFrames = new JMenu("Close a Frame");
 
       enableDefaultActioners();
 

@@ -17,7 +17,7 @@ import pasa.cbentley.swing.imytab.TabbedBentleyPanel;
  * When a {@link TabbedBentleyPanel} is active, it registers possible tabs in the Navigation Menu
  * of its owner Frame.
  * <br>
- * {@link NavigateMenuCtx} has a reference to current {@link TabPage}. This gives the tree context.
+ * {@link MenuNavigateCtx} has a reference to current {@link TabPage}. This gives the tree context.
  * <br>
  * owner->MenuBar->NavigationMenu
  * 
@@ -27,7 +27,7 @@ import pasa.cbentley.swing.imytab.TabbedBentleyPanel;
  * @author Charles Bentley
  *
  */
-public class NavigateMenuCtx extends JMenu implements ActionListener {
+public class MenuNavigateCtx extends JMenu implements ActionListener {
 
    private SwingCtx  sc;
 
@@ -37,7 +37,7 @@ public class NavigateMenuCtx extends JMenu implements ActionListener {
 
    private JMenu menuTabbedFrames;
 
-   public NavigateMenuCtx(SwingCtx sc) {
+   public MenuNavigateCtx(SwingCtx sc) {
       this.sc = sc;
       //
       jmiTabToFrame = new JMenuItem("Tab to Frame");
