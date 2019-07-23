@@ -19,7 +19,7 @@ import pasa.cbentley.swing.ctx.SwingCtx;
  *
  * @param <T>
  */
-public abstract class MyAbstractModel<T> extends BentleyAbstractModel<T> implements IStringable {
+public abstract class ModelTableBAbstractArray<T> extends ModelTableBAbstract<T> implements IStringable {
 
    protected Class[]             classes;
 
@@ -27,13 +27,13 @@ public abstract class MyAbstractModel<T> extends BentleyAbstractModel<T> impleme
 
    protected String[]            colToolTips;
 
-   private MyAbstractColumnModel columnModel;
+   private ModelColumnBAbstract columnModel;
 
-   public MyAbstractModel(SwingCtx sc) {
+   public ModelTableBAbstractArray(SwingCtx sc) {
       super(sc);
    }
 
-   public MyAbstractColumnModel getColumnModel() {
+   public ModelColumnBAbstract getColumnModel() {
       return columnModel;
    }
 

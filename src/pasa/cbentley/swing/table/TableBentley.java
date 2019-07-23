@@ -11,12 +11,12 @@ import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.imytab.IMyGui;
-import pasa.cbentley.swing.model.BentleyAbstractModel;
+import pasa.cbentley.swing.model.ModelTableBAbstract;
 import pasa.cbentley.swing.widgets.b.BPopupMenu;
 
 public class TableBentley<T> implements IStringable, IMyGui {
 
-   private BentleyAbstractModel<T>  model;
+   private ModelTableBAbstract<T>  model;
 
    private SwingCtx                 sc;
 
@@ -30,7 +30,7 @@ public class TableBentley<T> implements IStringable, IMyGui {
 
    private RowNumberTable           rowTable;
 
-   public TableBentley(SwingCtx sc, BentleyAbstractModel<T> model) {
+   public TableBentley(SwingCtx sc, ModelTableBAbstract<T> model) {
       this.sc = sc;
       table = new JTable(model);
       this.model = model;
@@ -77,7 +77,7 @@ public class TableBentley<T> implements IStringable, IMyGui {
       model.clear();
    }
 
-   public BentleyAbstractModel<T> getModel() {
+   public ModelTableBAbstract<T> getModel() {
       return model;
    }
 
@@ -120,7 +120,7 @@ public class TableBentley<T> implements IStringable, IMyGui {
 
    }
 
-   public void setModel(BentleyAbstractModel model) {
+   public void setModel(ModelTableBAbstract model) {
       this.table.setModel(model);
    }
 

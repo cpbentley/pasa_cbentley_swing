@@ -19,19 +19,19 @@ import pasa.cbentley.swing.imytab.IMyGui;
  * 
  * No assumption on the column model.
  * 
- * {@link BentleyAbstractModel#computeStats(Object, int)}
+ * {@link ModelTableBAbstract#computeStats(Object, int)}
  * 
  * @author Charles Bentley
  *
  * @param <T>
  */
-public abstract class BentleyAbstractModel<T> extends AbstractTableModel implements IStringable {
+public abstract class ModelTableBAbstract<T> extends AbstractTableModel implements IStringable {
 
    private ArrayList<T> data = new ArrayList<T>();
 
    protected SwingCtx   sc;
 
-   public BentleyAbstractModel(SwingCtx sc) {
+   public ModelTableBAbstract(SwingCtx sc) {
       this.sc = sc;
    }
 

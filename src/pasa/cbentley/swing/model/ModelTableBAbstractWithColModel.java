@@ -19,17 +19,17 @@ import pasa.cbentley.swing.ctx.SwingCtx;
  *
  * @param <T>
  */
-public abstract class BentleyAbstractModelWithColModel<T> extends BentleyAbstractModel<T> implements IStringable {
+public abstract class ModelTableBAbstractWithColModel<T> extends ModelTableBAbstract<T> implements IStringable {
 
-   private MyAbstractColumnModel columnModel;
+   private ModelColumnBAbstract columnModel;
    
-   public BentleyAbstractModelWithColModel(SwingCtx sc, int numColumns) {
+   public ModelTableBAbstractWithColModel(SwingCtx sc, int numColumns) {
       super(sc);
-      columnModel = new MyAbstractColumnModel(sc);
+      columnModel = new ModelColumnBAbstract(sc);
       columnModel.initFor(numColumns);
    }
    
-   public MyAbstractColumnModel getColumnModel() {
+   public ModelColumnBAbstract getColumnModel() {
       return columnModel;
    }
 

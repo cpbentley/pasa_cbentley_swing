@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 
-public class SortedComboBoxModel<E> extends DefaultComboBoxModel<E> {
+public class ModelComboSorted<E> extends DefaultComboBoxModel<E> {
    /**
     * 
     */
@@ -16,14 +16,14 @@ public class SortedComboBoxModel<E> extends DefaultComboBoxModel<E> {
    /**
     *  Create an empty model that will use the natural sort order of the item
     */
-   public SortedComboBoxModel() {
+   public ModelComboSorted() {
       super();
    }
 
    /**
     *  Create an empty model that will use the specified Comparator
     */
-   public SortedComboBoxModel(Comparator comparator) {
+   public ModelComboSorted(Comparator comparator) {
       super();
       this.comparator = comparator;
    }
@@ -31,14 +31,14 @@ public class SortedComboBoxModel<E> extends DefaultComboBoxModel<E> {
    /**
     *	Create a model with data and use the nature sort order of the items
     */
-   public SortedComboBoxModel(E items[]) {
+   public ModelComboSorted(E items[]) {
       this(items, null);
    }
 
    /**
     *  Create a model with data and use the specified Comparator
     */
-   public SortedComboBoxModel(E items[], Comparator comparator) {
+   public ModelComboSorted(E items[], Comparator comparator) {
       this.comparator = comparator;
 
       for (E item : items) {
@@ -49,14 +49,14 @@ public class SortedComboBoxModel<E> extends DefaultComboBoxModel<E> {
    /**
     *	Create a model with data and use the nature sort order of the items
     */
-   public SortedComboBoxModel(Vector<E> items) {
+   public ModelComboSorted(Vector<E> items) {
       this(items, null);
    }
 
    /**
     *  Create a model with data and use the specified Comparator
     */
-   public SortedComboBoxModel(Vector<E> items, Comparator comparator) {
+   public ModelComboSorted(Vector<E> items, Comparator comparator) {
       this.comparator = comparator;
       for (E item : items) {
          addElement(item);

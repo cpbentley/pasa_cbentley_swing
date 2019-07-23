@@ -15,7 +15,7 @@ import pasa.cbentley.swing.ctx.SwingCtx;
  * @author Charles Bentley
  *
  */
-public class MyAbstractColumnModel implements IStringable {
+public class ModelColumnBAbstract implements IStringable {
 
    protected Class[]  classes;
 
@@ -27,7 +27,7 @@ public class MyAbstractColumnModel implements IStringable {
 
    private String     keyPrefixTip  = "";
 
-   public MyAbstractColumnModel(SwingCtx sc) {
+   public ModelColumnBAbstract(SwingCtx sc) {
       this.sc = sc;
 
    }

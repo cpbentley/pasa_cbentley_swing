@@ -13,8 +13,8 @@ import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.swing.ctx.SwingCtx;
-import pasa.cbentley.swing.model.BentleyAbstractModel;
-import pasa.cbentley.swing.model.MyAbstractModel;
+import pasa.cbentley.swing.model.ModelTableBAbstract;
+import pasa.cbentley.swing.model.ModelTableBAbstractArray;
 
 /**
  * Used on the header of {@link TableBentley}.
@@ -27,7 +27,7 @@ public class MouseEventsModelListener implements IStringable, MouseListener, Mou
 
    private JTable          table;
 
-   private BentleyAbstractModel model;
+   private ModelTableBAbstract model;
 
    private int             currentCol = -1;
 
@@ -35,7 +35,7 @@ public class MouseEventsModelListener implements IStringable, MouseListener, Mou
 
    private String          tipGlobal  = "";
 
-   public MouseEventsModelListener(SwingCtx sc, JTable table, BentleyAbstractModel model) {
+   public MouseEventsModelListener(SwingCtx sc, JTable table, ModelTableBAbstract model) {
       this.sc = sc;
       this.table = table;
       this.model = model;

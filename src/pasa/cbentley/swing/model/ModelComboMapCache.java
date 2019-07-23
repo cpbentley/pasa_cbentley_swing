@@ -1,7 +1,6 @@
 package pasa.cbentley.swing.model;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,9 +11,17 @@ import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src5.interfaces.INameable;
+import pasa.cbentley.core.src5.utils.HashMapCache;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
-public abstract class ComboBoxModelSortedHashMapAbstract<E extends INameable<V>, V> extends DefaultComboBoxModel<String> implements IStringable {
+/**
+ * 
+ * @author Charles Bentley
+ *
+ * @param <E>
+ * @param <V>
+ */
+public abstract class ModelComboMapCache<E extends INameable<V>, V extends IStringable> extends DefaultComboBoxModel<String> implements IStringable {
    /**
     * 
     */
@@ -22,7 +29,7 @@ public abstract class ComboBoxModelSortedHashMapAbstract<E extends INameable<V>,
 
    protected Comparator<E>        comparator;
 
-   protected HashMap<String, E>   pks;
+   protected HashMapCache<E, V>   hashMapCache;
 
    protected final SwingCtx       sc;
 
@@ -34,25 +41,36 @@ public abstract class ComboBoxModelSortedHashMapAbstract<E extends INameable<V>,
     */
    protected boolean              isDataLoaded     = false;
 
-   protected IModelLoadedListener listener;
-
    public boolean isUpdating() {
       return isUpdating;
    }
 
+    
+   /**
+    * Removes existing elements and sets the whole data for the model 
+    * @param map
+    */
+   public void setMap(HashMapCache<E, V> map) {
+      this.removeAllElements();
+      this.hashMapCache = map;
+      for (String name : map.getKeySet()) {
+         addElement(name);
+      }
+   }
+   
    /**
     *  Create an empty model that will use the natural sort order of the item
     */
-   public ComboBoxModelSortedHashMapAbstract(SwingCtx sc) {
+   public ModelComboMapCache(SwingCtx sc) {
       super();
       this.sc = sc;
-      pks = new HashMap<String, E>();
+      hashMapCache = new HashMapCache<E, V>(sc.getC5());
    }
 
    /**
     *  Create an empty model that will use the specified Comparator
     */
-   public ComboBoxModelSortedHashMapAbstract(SwingCtx sc, Comparator<E> comparator) {
+   public ModelComboMapCache(SwingCtx sc, Comparator<E> comparator) {
       super();
       this.sc = sc;
       this.comparator = comparator;
@@ -65,7 +83,7 @@ public abstract class ComboBoxModelSortedHashMapAbstract<E extends INameable<V>,
 
    public void addNamer(E pk) {
       String name = pk.getNameableString();
-      pks.put(name, pk);
+      hashMapCache.put(name, pk);
       addElement(name);
    }
 
@@ -81,38 +99,28 @@ public abstract class ComboBoxModelSortedHashMapAbstract<E extends INameable<V>,
       }
    }
 
-   public void setListenerModelLoader(IModelLoadedListener listener) {
-      this.listener = listener;
-   }
-
-   public void notifyFinishLoading() {
-      if (listener != null) {
-         listener.modelDidFinishLoading(this);
-      }
-   }
-
    /**
     * Clone model keeping data reference
     * @return
     */
-   public ComboBoxModelSortedHashMapAbstract<E, V> cloneUpperModel() {
-      ComboBoxModelSortedHashMapAbstract<E, V> newModel = createNewInstance();
-      newModel.pks = this.pks;
+   public ModelComboMapCache<E, V> cloneUpperModel() {
+      ModelComboMapCache<E, V> newModel = createNewInstance();
+      newModel.hashMapCache = this.hashMapCache;
       newModel.comparator = this.comparator;
-      for (String name : pks.keySet()) {
+      for (String name : hashMapCache.getKeySet()) {
          newModel.addElement(name);
       }
       return newModel;
    }
 
-   protected abstract ComboBoxModelSortedHashMapAbstract<E, V> createNewInstance();
+   protected abstract ModelComboMapCache<E, V> createNewInstance();
 
-   public void cloneReplaceData(ComboBoxModelSortedHashMapAbstract<E, V> rootModel) {
+   public void cloneReplaceData(ModelComboMapCache<E, V> rootModel) {
       isUpdating = true;
       //remove all elements because we will add again all the elements from rootModel
       this.removeAllElements();
-      this.pks = rootModel.pks;
-      for (String name : pks.keySet()) {
+      this.hashMapCache = rootModel.hashMapCache;
+      for (String name : hashMapCache.getKeySet()) {
          this.addElement(name);
       }
       isUpdating = false;
@@ -133,19 +141,19 @@ public abstract class ComboBoxModelSortedHashMapAbstract<E extends INameable<V>,
     */
    public E getSelectedObject() {
       String keyString = (String) getSelectedItem();
-      return pks.get(keyString);
+      return hashMapCache.getValue(keyString);
    }
 
    @Override
    public void insertElementAt(String element, int index) {
       isUpdating = true;
       int size = getSize();
-      E baseE = pks.get(element);
+      E baseE = hashMapCache.getValue(element);
       //  Determine where to insert element to keep model in sorted order
       for (index = 0; index < size; index++) {
          if (comparator != null) {
             String strAtIndex = getElementAt(index);
-            E eAtIndex = pks.get(strAtIndex);
+            E eAtIndex = hashMapCache.getValue(strAtIndex);
             if (comparator.compare(eAtIndex, baseE) > 0) {
                break;
             }
@@ -176,10 +184,12 @@ public abstract class ComboBoxModelSortedHashMapAbstract<E extends INameable<V>,
    }
 
    public void toString(Dctx dc) {
-      dc.root(this, "ComboBoxModelSortedHashMapAbstract");
+      dc.root(this, "ComboModelMapCache");
       toStringPrivate(dc);
+      dc.nl();
+      sc.toSD().d((DefaultComboBoxModel)this,dc);
       dc.nlLvlO(comparator, "comparator");
-      sc.getC5().toStringHashMap1Line(dc, pks, "HashMap<String,INameble>");
+      dc.nlLvl(hashMapCache, "HashMapCache<E,V>");
    }
 
    public String toString1Line() {
@@ -191,7 +201,7 @@ public abstract class ComboBoxModelSortedHashMapAbstract<E extends INameable<V>,
    }
 
    public void toString1Line(Dctx dc) {
-      dc.root1Line(this, "ComboBoxModelSortedHashMapAbstract");
+      dc.root1Line(this, "ComboModelMapCache");
       toStringPrivate(dc);
    }
 

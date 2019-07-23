@@ -8,7 +8,7 @@ import javax.swing.ListSelectionModel;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.imytab.AbstractMyTab;
-import pasa.cbentley.swing.model.BentleyAbstractModel;
+import pasa.cbentley.swing.model.ModelTableBAbstract;
 import pasa.cbentley.swing.threads.IWorkerPanel;
 import pasa.cbentley.swing.threads.PanelSwingWorker;
 import pasa.cbentley.swing.widgets.b.BPopupMenu;
@@ -41,7 +41,7 @@ public abstract class AbstractTabTable<T> extends AbstractMyTab implements IWork
       table.cmdToggleRowHeader();
    }
 
-   protected abstract BentleyAbstractModel<T> createTableModel();
+   protected abstract ModelTableBAbstract<T> createTableModel();
 
    public void disposeTab() {
    }
