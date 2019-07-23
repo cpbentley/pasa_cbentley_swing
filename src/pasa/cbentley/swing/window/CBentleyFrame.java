@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
@@ -13,24 +14,16 @@ import javax.swing.JMenuBar;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.interfaces.IPrefs;
 import pasa.cbentley.core.src4.logging.Dctx;
+import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.swing.actions.IExitable;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.imytab.IMyGui;
 
-public class CBentleyFrame extends JFrame implements IStringable, IMyGui {
-   /**
-    * 
-    */
-   private static final long  serialVersionUID     = -5719466067073255318L;
-
-   public static final int    PRODUCER_ID_2        = 2;
-
+public class CBentleyFrame extends JFrame implements IStringable, IMyGui, WindowListener, WindowFocusListener {
    public static final int    EVENT_ID_0_ANY       = 0;
 
    public static final int    EVENT_ID_1_CLOSE     = 1;
-
-   public static final String PREF_PREFIX          = "frame";
 
    public static final String PREF_MAIN_FULLSCREEN = "fullscreen";
 
@@ -44,6 +37,15 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui {
 
    public static final String PREF_MAIN_Y          = "y";
 
+   public static final String PREF_PREFIX          = "frame";
+
+   public static final int    PRODUCER_ID_2        = 2;
+
+   /**
+    * 
+    */
+   private static final long  serialVersionUID     = -5719466067073255318L;
+
    private String             pid                  = "";
 
    private SwingCtx           sc;
@@ -54,6 +56,8 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui {
       this.sc = sc;
       screenManager = new FrameScreenManager(this);
       sc.addAllFrames(this);
+      this.addWindowFocusListener(this);
+      this.addWindowListener(this);
    }
 
    /**
@@ -70,6 +74,8 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui {
       pid = frameID;
       screenManager = new FrameScreenManager(this);
       sc.addAllFrames(this);
+      this.addWindowFocusListener(this);
+      this.addWindowListener(this);
    }
 
    private void cmdToggleFullScreen(JButton butTogFullScreen) {
@@ -81,27 +87,44 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui {
       }
    }
 
-   /**
-    * When no special task required. Equivalent to {@link JFrame#EXIT_ON_CLOSE}
-    */
-   public void setDefExitProcedure() {
-      this.addWindowListener(new WindowAdapter() {
-         public void windowClosing(WindowEvent e) {
-            System.exit(0);
-         }
-      });
+   private String getKeyFullscreen() {
+      return PREF_PREFIX + pid + PREF_MAIN_FULLSCREEN;
    }
-   
-   public void setExitable(final IExitable ex) {
-      this.addWindowListener(new WindowAdapter() {
-         public void windowClosing(WindowEvent e) {
-            ex.cmdExit();
-         }
-      });
+
+   private String getKeyMainH() {
+      return PREF_PREFIX + pid + PREF_MAIN_H;
+   }
+
+   private String getKeyMainW() {
+      return PREF_PREFIX + pid + PREF_MAIN_W;
+   }
+
+   private String getKeyMainX() {
+      return PREF_PREFIX + pid + PREF_MAIN_X;
+   }
+
+   private String getKeyMainY() {
+      return PREF_PREFIX + pid + PREF_MAIN_Y;
+   }
+
+   private String getKeyScreenID() {
+      return PREF_PREFIX + pid + PREF_MAIN_SCREENID;
    }
 
    public SwingCtx getSc() {
       return sc;
+   }
+
+   public void guiUpdate() {
+      //if title was set using key
+      String title = sc.getResString(pid + ".title");
+      this.setTitle(title);
+      JMenuBar jm = this.getJMenuBar();
+      if (jm instanceof IMyGui) {
+         IMyGui gui = ((IMyGui) jm);
+         gui.guiUpdate();
+      }
+      sc.guiUpdateOnChildren(this.getContentPane());
    }
 
    public boolean isFullScreen() {
@@ -148,24 +171,7 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui {
       this.setVisible(true);
 
    }
-   private String getKeyFullscreen() {
-      return PREF_PREFIX + pid + PREF_MAIN_FULLSCREEN;
-   }
-   private String getKeyScreenID() {
-      return PREF_PREFIX + pid + PREF_MAIN_SCREENID;
-   }
-   private String getKeyMainX() {
-      return PREF_PREFIX + pid + PREF_MAIN_X;
-   }
-   private String getKeyMainY() {
-      return PREF_PREFIX + pid + PREF_MAIN_Y;
-   }
-   private String getKeyMainW() {
-      return PREF_PREFIX + pid + PREF_MAIN_W;
-   }
-   private String getKeyMainH() {
-      return PREF_PREFIX + pid + PREF_MAIN_H;
-   }
+
    /**
     * Saves frame position, size and other user properties to the {@link IPrefs}.
     * <br>
@@ -184,16 +190,23 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui {
       }
    }
 
-   public void guiUpdate() {
-      //if title was set using key
-      String title = sc.getResString(pid + ".title");
-      this.setTitle(title);
-      JMenuBar jm = this.getJMenuBar();
-      if (jm instanceof IMyGui) {
-         IMyGui gui = ((IMyGui) jm);
-         gui.guiUpdate();
-      }
-      sc.guiUpdateOnChildren(this.getContentPane());
+   /**
+    * When no special task required. Equivalent to {@link JFrame#EXIT_ON_CLOSE}
+    */
+   public void setDefExitProcedure() {
+      this.addWindowListener(new WindowAdapter() {
+         public void windowClosing(WindowEvent e) {
+            System.exit(0);
+         }
+      });
+   }
+
+   public void setExitable(final IExitable ex) {
+      this.addWindowListener(new WindowAdapter() {
+         public void windowClosing(WindowEvent e) {
+            ex.cmdExit();
+         }
+      });
    }
 
    public void setFullScreenTrue() {
@@ -217,6 +230,10 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui {
    }
 
    //#mdebug
+   public IDLog toDLog() {
+      return sc.toDLog();
+   }
+
    public String toString() {
       return Dctx.toString(this);
    }
@@ -240,7 +257,42 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui {
    public UCtx toStringGetUCtx() {
       return sc.getUCtx();
    }
-
    //#enddebug
+
+   public void windowActivated(WindowEvent e) {
+
+   }
+
+   public void windowClosed(WindowEvent e) {
+
+   }
+
+   public void windowClosing(WindowEvent e) {
+
+   }
+
+   public void windowDeactivated(WindowEvent e) {
+
+   }
+
+   public void windowDeiconified(WindowEvent e) {
+
+   }
+
+   public void windowIconified(WindowEvent e) {
+
+   }
+
+   public void windowOpened(WindowEvent e) {
+
+   }
+
+   public void windowGainedFocus(WindowEvent e) {
+      
+   }
+
+   public void windowLostFocus(WindowEvent e) {
+      
+   }
 
 }
