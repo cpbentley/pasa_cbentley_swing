@@ -12,8 +12,6 @@ import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
-import pasa.cbentley.core.src4.logging.ITechConfig;
-import pasa.cbentley.core.src4.logging.ITechLvl;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
 /**
@@ -30,46 +28,22 @@ import pasa.cbentley.swing.ctx.SwingCtx;
  */
 public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implements IStringable, PropertyChangeListener {
 
+   private volatile boolean   isPaused;
+
+   private SwingCtx           sc;
+
    /**
     * Not null
     */
    protected final WorkerStat workerStat;
 
-   private volatile boolean   isPaused;
-
    protected IWorkerPanel     wp;
-
-   private SwingCtx           sc;
-
-   public PanelSwingWorker(SwingCtx sc, IWorkerPanel wp, WorkerStat ws) {
-      this.sc = sc;
-      this.wp = wp;
-      if (ws == null) {
-         ws = new WorkerStat(sc);
-      }
-      workerStat = ws;
-   }
-
-   public WorkerStat getWorkerStat() {
-      return workerStat;
-   }
 
    public PanelSwingWorker(SwingCtx sc, IWorkerPanel wp) {
       this.sc = sc;
       this.wp = wp;
       workerStat = new WorkerStat(sc);
-
       this.addPropertyChangeListener(this);
-   }
-
-   public void propertyChange(PropertyChangeEvent e) {
-      //this log shows, this method is called ins the AWT thread
-      //#debug
-      //toDLog().pFlow(sc.toSD().d1(e), this, PanelSwingWorker.class, "propertyChange", LVL_04_FINER, DEV_0_1LINE_THREAD);
-
-      if (e.getNewValue() == StateValue.STARTED) {
-         wp.panelSwingWorkerStarted(this);
-      }
    }
 
    /**
@@ -99,8 +73,8 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
       }
    }
 
-   protected void processResult(K k) {
-
+   public WorkerStat getWorkerStat() {
+      return workerStat;
    }
 
    public final boolean isPaused() {
@@ -117,11 +91,29 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
       }
    }
 
+   protected void processResult(K k) {
+
+   }
+
+   public void propertyChange(PropertyChangeEvent e) {
+      //this log shows, this method is called ins the AWT thread
+      //#debug
+      //toDLog().pFlow(sc.toSD().d1(e), this, PanelSwingWorker.class, "propertyChange", LVL_04_FINER, DEV_0_1LINE_THREAD);
+
+      if (e.getNewValue() == StateValue.STARTED) {
+         wp.panelSwingWorkerStarted(this);
+      }
+   }
+
    public final void resume() {
       if (isPaused() && !isDone()) {
          isPaused = false;
          firePropertyChange("paused", true, false);
       }
+   }
+
+   public IDLog toDLog() {
+      return sc.toDLog();
    }
 
    //#mdebug
@@ -136,14 +128,6 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
       dc.nlLvl(wp, "IWorkerPanel");
    }
 
-   public IDLog toDLog() {
-      return sc.toDLog();
-   }
-
-   public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
-   }
-
    public String toString1Line() {
       return Dctx.toString1Line(this);
    }
@@ -152,5 +136,9 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
       dc.root1Line(this, "PanelSwingWorker");
    }
    //#enddebug
+
+   public UCtx toStringGetUCtx() {
+      return sc.getUCtx();
+   }
 
 }

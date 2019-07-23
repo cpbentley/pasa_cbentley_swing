@@ -1,9 +1,5 @@
 package pasa.cbentley.swing.threads;
 
-import java.util.List;
-
-import javax.swing.SwingWorker;
-
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IStringable;
@@ -22,27 +18,34 @@ import pasa.cbentley.swing.ctx.SwingCtx;
  */
 public class WorkerStat implements IStringable {
 
+   protected volatile int entriesDone;
+
+   protected volatile int entriesTotal;
+
    private SwingCtx sc;
 
    public WorkerStat(SwingCtx sc) {
       this.sc = sc;
    }
 
-   protected volatile int entriesDone;
-
-   protected volatile int entriesTotal;
+   public int getEntriesDone() {
+      return entriesDone;
+   }
 
    /**
-    * Access in the GUI thread of {@link SwingWorker#process}
+    * -1 if unknown
+    * @return
     */
-   protected int          entryCount;
+   public int getEntriesTotal() {
+      return entriesTotal;
+   }
 
-   public void entryCount(List chunks, int notifies, IWorkerPanel wp, PanelSwingWorker worker) {
-      entryCount += chunks.size();
-      if (entryCount > notifies) {
-         wp.panelSwingWorkerProcessed(worker, entryCount);
-         entryCount = 0;
-      }
+   public void setEntriesCount(int count) {
+      this.entriesDone = count;
+   }
+
+   public void setEntriesTotal(int total) {
+      this.entriesTotal = total;
    }
 
    //#mdebug
@@ -54,7 +57,6 @@ public class WorkerStat implements IStringable {
       dc.root(this, "WorkerStat");
       dc.appendVarWithSpace("entriesDone", entriesDone);
       dc.appendVarWithSpace("entriesTotal", entriesTotal);
-      dc.appendVarWithSpace("entryCount", entryCount);
    }
 
    public String toString1Line() {
