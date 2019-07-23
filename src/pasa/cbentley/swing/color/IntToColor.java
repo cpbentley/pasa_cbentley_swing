@@ -1,8 +1,10 @@
 package pasa.cbentley.swing.color;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import pasa.cbentley.core.src4.logging.ITechLvl;
+import pasa.cbentley.core.src4.structs.IntBuffer;
 import pasa.cbentley.core.src4.utils.CharUtils;
 import pasa.cbentley.core.src4.utils.ColorUtils;
 import pasa.cbentley.core.src4.utils.StringUtils;
@@ -114,6 +116,66 @@ public class IntToColor {
       return new Color(red, green, blue);
    }
 
+   public Color getColorLightBgNameMiner(String str) {
+      char c0 = str.charAt(0);
+      int redBias = 0;
+      int greenBias = 0;
+      int blueBias = 0;
+      if(c0 == 'N') {
+         redBias = 30;
+         greenBias = 30;
+      } else if(c0 == 'F') {
+         redBias = 30;
+         blueBias = 30;
+      } else if(c0 == 'O') {
+         greenBias = 30;
+         blueBias = 30;
+      }
+      int red = 255 - redBias;
+      int green = 255 - greenBias;
+      int blue = 255 - blueBias;
+
+      str = str.toLowerCase();
+      if (str.length() < 3) {
+         str = str + "aaaa";
+      }
+      CharUtils cu = sc.getUCtx().getCU();
+      int unit = str.length() / 3;
+      int countC = 0;
+      int v = 0;
+      for (int j = 0; j < unit; j++) {
+         char c = str.charAt(countC);
+         v += cu.mapZero(c);
+         countC++;
+      }
+      v = v / unit;
+      red -= v;
+      v = 0;
+      for (int j = 0; j < unit; j++) {
+         char c = str.charAt(countC);
+         v += cu.mapZero(c);
+         countC++;
+      }
+      v = v / unit;
+      green -= v;
+      v = 0;
+      int cc = 0;
+      for (int j = countC; j < str.length(); j++) {
+         char c = str.charAt(countC);
+         v += cu.mapZero(c);
+         countC++;
+         cc++;
+      }
+      v = v / cc;
+      blue -= v;
+      //aaa aaa
+      //zzz zzz zzz is gray
+
+      //split word in 3.. take average
+
+      return new Color(red, green, blue);
+   }
+   
    /**
     * 
     * @param v0 0 to 9 modifies the blue factor 
@@ -200,6 +262,46 @@ public class IntToColor {
       return ColorUtils.getRGBInt(red, green, blue);
    }
 
+   
+   private ArrayList<Color> colorsCarouselLight;
+   
+   
+   public ArrayList<Color> getColorsCarouselLight() {
+      if(colorsCarouselLight == null) {
+         colorsCarouselLight = new ArrayList<Color>();
+         colorsCarouselLight.add(new Color(ColorUtils.FR_VIOLET_Orchidee_moyen));
+         colorsCarouselLight.add(new Color(ColorUtils.FR_VERT_Jaune));
+         colorsCarouselLight.add(new Color(ColorUtils.FR_ROUGE_Corail_clair));
+         colorsCarouselLight.add(new Color(ColorUtils.FR_BLEU_Azur));
+         colorsCarouselLight.add(new Color(ColorUtils.FR_JAUNE_Or));
+         colorsCarouselLight.add(new Color(ColorUtils.FR_ROSE_Clair));
+         colorsCarouselLight.add(new Color(ColorUtils.FR_VERT_Ocean_moyen));
+         colorsCarouselLight.add(new Color(ColorUtils.FR_BRUN_Sable));
+         colorsCarouselLight.add(new Color(ColorUtils.FR_BLEU_Acier));
+      }
+      
+      return colorsCarouselLight;
+   }
+   
+   private int colorsCarouselLightIndex = 0;
+   public void resetLighBgCarrouselIndex() {
+      colorsCarouselLightIndex = 0;
+   }
+   public void incrementLighBgCarrouselIndex() {
+      ArrayList<Color> colors =  getColorsCarouselLight();
+      colorsCarouselLightIndex = (colorsCarouselLightIndex + 1) % colors.size();
+   }
+      
+   /**
+    * 
+    * @param account
+    * @return
+    */
+   public Color getColorLightBgCarrousel(int account) {
+      ArrayList<Color> colors =  getColorsCarouselLight();
+      return colors.get(colorsCarouselLightIndex);
+   }
+   
    public Color getColorLightBgAccount(int account) {
       return new Color(0xFFFFFF - account);
    }
