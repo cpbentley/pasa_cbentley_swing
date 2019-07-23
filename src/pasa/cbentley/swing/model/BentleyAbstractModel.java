@@ -19,6 +19,8 @@ import pasa.cbentley.swing.imytab.IMyGui;
  * 
  * No assumption on the column model.
  * 
+ * {@link BentleyAbstractModel#computeStats(Object, int)}
+ * 
  * @author Charles Bentley
  *
  * @param <T>
@@ -36,24 +38,23 @@ public abstract class BentleyAbstractModel<T> extends AbstractTableModel impleme
    public void addRow(T value) {
       int rowCount = getRowCount();
       data.add(value);
+      computeStats(value, rowCount);
       fireTableRowsInserted(rowCount, rowCount);
-      computeStats(value);
    }
 
    public void addRows(List<T> rows) {
       int rowCount = getRowCount();
       data.addAll(rows);
-      fireTableRowsInserted(rowCount, getRowCount() - 1);
       for (int i = 0; i < rows.size(); i++) {
-         computeStats(rows.get(i));
+         computeStats(rows.get(i), rowCount + i);
       }
+      fireTableRowsInserted(rowCount, getRowCount() - 1);
    }
 
    public void addRows(T... value) {
       addRows(Arrays.asList(value));
    }
 
-   
    public void clear() {
       int rowCount = getRowCount();
       if (rowCount != 0) {
@@ -66,8 +67,9 @@ public abstract class BentleyAbstractModel<T> extends AbstractTableModel impleme
    /**
     * Possibility to compute values from added elements.
     * @param a
+    * @param row TODO
     */
-   protected abstract void computeStats(T a);
+   protected abstract void computeStats(T a, int row);
 
    public List<T> getAllDataCopy() {
       return Collections.unmodifiableList(data);
@@ -87,6 +89,9 @@ public abstract class BentleyAbstractModel<T> extends AbstractTableModel impleme
       return data.get(index);
    }
 
+   /**
+    * Equivalent of getSize()
+    */
    public int getRowCount() {
       return data.size();
    }
@@ -150,7 +155,6 @@ public abstract class BentleyAbstractModel<T> extends AbstractTableModel impleme
    public UCtx toStringGetUCtx() {
       return sc.getUCtx();
    }
-
 
    //#enddebug
 
