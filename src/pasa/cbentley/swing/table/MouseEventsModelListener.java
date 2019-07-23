@@ -14,7 +14,6 @@ import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.model.ModelTableBAbstract;
-import pasa.cbentley.swing.model.ModelTableBAbstractArray;
 
 /**
  * Used on the header of {@link TableBentley}.
@@ -25,15 +24,15 @@ import pasa.cbentley.swing.model.ModelTableBAbstractArray;
  */
 public class MouseEventsModelListener implements IStringable, MouseListener, MouseMotionListener, MouseWheelListener {
 
-   private JTable          table;
+   private int                 currentCol = -1;
 
    private ModelTableBAbstract model;
 
-   private int             currentCol = -1;
+   private SwingCtx            sc;
 
-   private SwingCtx        sc;
+   private JTable              table;
 
-   private String          tipGlobal  = "";
+   private String              tipGlobal  = "";
 
    public MouseEventsModelListener(SwingCtx sc, JTable table, ModelTableBAbstract model) {
       this.sc = sc;
@@ -42,36 +41,9 @@ public class MouseEventsModelListener implements IStringable, MouseListener, Mou
 
    }
 
-   public void mouseWheelMoved(MouseWheelEvent e) {
-      int col = table.columnAtPoint(e.getPoint());
-      //#debug
-      //toDLog().pEvent(col + " column", null, MouseEventsModelListener.class, "mouseWheelMoved", IDLog.LVL_04_FINER, true);
-
-   }
-
    protected String buildToolTip(String input) {
       String toolTip = "<html><p width=\"500\">" + input + "<br>" + tipGlobal + "</p></html>";
       return toolTip;
-   }
-
-   public void mouseDragged(MouseEvent e) {
-      int col = table.columnAtPoint(e.getPoint());
-      //#debug
-      //toDLog().pEvent(col + " column", null, MouseEventsModelListener.class, "mouseDragged", IDLog.LVL_04_FINER, true);
-
-   }
-
-   public void mouseMoved(MouseEvent e) {
-      int col = table.columnAtPoint(e.getPoint()); //could be -1 if result is not in range
-      //#debug
-      //toDLog().pEvent(col + " column", null, MouseEventsModelListener.class, "mouseMoved", IDLog.LVL_04_FINER, true);
-
-      if (currentCol != col && col >= 0) {
-         currentCol = col;
-         String tip = model.getToolTips(col);
-         String finalTip = buildToolTip(tip);
-         table.getTableHeader().setToolTipText(finalTip);
-      }
    }
 
    public void mouseClicked(MouseEvent e) {
@@ -87,16 +59,51 @@ public class MouseEventsModelListener implements IStringable, MouseListener, Mou
       }
    }
 
-   public void mousePressed(MouseEvent e) {
-   }
+   public void mouseDragged(MouseEvent e) {
+      int col = table.columnAtPoint(e.getPoint());
+      //#debug
+      //toDLog().pEvent(col + " column", null, MouseEventsModelListener.class, "mouseDragged", IDLog.LVL_04_FINER, true);
 
-   public void mouseReleased(MouseEvent e) {
    }
 
    public void mouseEntered(MouseEvent e) {
    }
 
    public void mouseExited(MouseEvent e) {
+   }
+
+   public void mouseMoved(MouseEvent e) {
+      int col = table.columnAtPoint(e.getPoint()); //could be -1 if result is not in range
+      //#debug
+      //toDLog().pEvent(col + " column", null, MouseEventsModelListener.class, "mouseMoved", IDLog.LVL_04_FINER, true);
+
+      if (currentCol != col && col >= 0) {
+         currentCol = col;
+         String tip = model.getToolTips(col);
+         String finalTip = buildToolTip(tip);
+         table.getTableHeader().setToolTipText(finalTip);
+      }
+   }
+
+   public void mousePressed(MouseEvent e) {
+   }
+
+   public void mouseReleased(MouseEvent e) {
+   }
+
+   public void mouseWheelMoved(MouseWheelEvent e) {
+      int col = table.columnAtPoint(e.getPoint());
+      //#debug
+      //toDLog().pEvent(col + " column", null, MouseEventsModelListener.class, "mouseWheelMoved", IDLog.LVL_04_FINER, true);
+
+   }
+
+   public void setGlobalTip(String tipGlobal) {
+      this.tipGlobal = tipGlobal;
+   }
+
+   public IDLog toDLog() {
+      return sc.toDLog();
    }
 
    //#mdebug
@@ -112,22 +119,14 @@ public class MouseEventsModelListener implements IStringable, MouseListener, Mou
       return Dctx.toString1Line(this);
    }
 
-   public IDLog toDLog() {
-      return sc.toDLog();
-   }
-
    public void toString1Line(Dctx dc) {
       dc.root1Line(this, "MouseEventsModelListener");
    }
 
-   public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
-   }
-
    //#enddebug
 
-   public void setGlobalTip(String tipGlobal) {
-      this.tipGlobal = tipGlobal;
+   public UCtx toStringGetUCtx() {
+      return sc.getUCtx();
    }
 
 }

@@ -1,21 +1,32 @@
 package pasa.cbentley.swing.table;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
+import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-/*
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JViewport;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableColumn;
+
+/**
  *	Use a JTable as a renderer for row numbers of a given main table.
  *  This table must be added to the row header of the scrollpane that
  *  contains the main table.
  */
-public class RowNumberTable extends JTable implements ChangeListener, PropertyChangeListener, TableModelListener {
-   private JTable main;
+public class TableRowNumber extends JTable implements ChangeListener, PropertyChangeListener, TableModelListener {
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 9112973383448504330L;
 
-   public RowNumberTable(JTable table) {
+   private JTable            main;
+
+   public TableRowNumber(JTable table) {
       main = table;
       main.addPropertyChangeListener(this);
       main.getModel().addTableModelListener(this);
@@ -27,35 +38,29 @@ public class RowNumberTable extends JTable implements ChangeListener, PropertyCh
       TableColumn column = new TableColumn();
       column.setHeaderValue(" ");
       addColumn(column);
-      column.setCellRenderer(new RowNumberRenderer());
+      column.setCellRenderer(new CellRendererRowNumber());
 
       getColumnModel().getColumn(0).setPreferredWidth(50);
       setPreferredScrollableViewportSize(getPreferredSize());
    }
 
-   @Override
+   /**
+    * 
+    */
    public void addNotify() {
       super.addNotify();
-
       Component c = getParent();
-
       //  Keep scrolling of the row table in sync with the main table.
-
       if (c instanceof JViewport) {
          JViewport viewport = (JViewport) c;
          viewport.addChangeListener(this);
       }
    }
 
-   /*
-    *  Delegate method to main table
-    */
-   @Override
    public int getRowCount() {
       return main.getRowCount();
    }
 
-   @Override
    public int getRowHeight(int row) {
       int rowHeight = main.getRowHeight(row);
 
@@ -66,33 +71,30 @@ public class RowNumberTable extends JTable implements ChangeListener, PropertyCh
       return rowHeight;
    }
 
-   /*
+   /**
     *  No model is being used for this table so just use the row number
     *  as the value of the cell.
     */
-   @Override
    public Object getValueAt(int row, int column) {
       return Integer.toString(row + 1);
    }
 
-   /*
+   /**
     *  Don't edit data in the main TableModel by mistake
     */
-   @Override
    public boolean isCellEditable(int row, int column) {
       return false;
    }
 
-   /*
+   /**
     *  Do nothing since the table ignores the model
     */
-   @Override
    public void setValueAt(Object value, int row, int column) {
    }
 
-   //
-   //  Implement the ChangeListener
-   //
+   /**
+    * Implement the {@link ChangeListener#stateChanged(ChangeEvent)}
+    */
    public void stateChanged(ChangeEvent e) {
       //  Keep the scrolling of the row table in sync with main table
 
@@ -101,9 +103,9 @@ public class RowNumberTable extends JTable implements ChangeListener, PropertyCh
       scrollPane.getVerticalScrollBar().setValue(viewport.getViewPosition().y);
    }
 
-   //
-   //  Implement the PropertyChangeListener
-   //
+   /**
+    * Implement the {@link PropertyChangeListener#propertyChange(PropertyChangeEvent)}
+    */
    public void propertyChange(PropertyChangeEvent e) {
       //  Keep the row table in sync with the main table
 
@@ -121,41 +123,11 @@ public class RowNumberTable extends JTable implements ChangeListener, PropertyCh
       }
    }
 
-   //
-   //  Implement the TableModelListener
-   //
-   @Override
+   /**
+    * Implement the {@link TableModelListener#tableChanged(TableModelEvent)}
+    */
    public void tableChanged(TableModelEvent e) {
       revalidate();
    }
 
-   /*
-    *  Attempt to mimic the table header renderer
-    */
-   private static class RowNumberRenderer extends DefaultTableCellRenderer {
-      public RowNumberRenderer() {
-         setHorizontalAlignment(JLabel.CENTER);
-      }
-
-      public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-         if (table != null) {
-            JTableHeader header = table.getTableHeader();
-
-            if (header != null) {
-               setForeground(header.getForeground());
-               setBackground(header.getBackground());
-               setFont(header.getFont());
-            }
-         }
-
-         if (isSelected) {
-            setFont(getFont().deriveFont(Font.BOLD));
-         }
-
-         setText((value == null) ? "" : value.toString());
-         setBorder(UIManager.getBorder("TableHeader.cellBorder"));
-
-         return this;
-      }
-   }
 }

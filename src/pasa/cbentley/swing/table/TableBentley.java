@@ -28,7 +28,7 @@ public class TableBentley<T> implements IStringable, IMyGui {
 
    private BPopupMenu               popupMenu;
 
-   private RowNumberTable           rowTable;
+   private TableRowNumber           rowTable;
 
    public TableBentley(SwingCtx sc, ModelTableBAbstract<T> model) {
       this.sc = sc;
@@ -48,7 +48,7 @@ public class TableBentley<T> implements IStringable, IMyGui {
     */
    public void cmdToggleRowHeader() {
       if (rowTable == null) {
-         rowTable = new RowNumberTable(table);
+         rowTable = new TableRowNumber(table);
          scrollPane.setRowHeaderView(rowTable);
          scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, rowTable.getTableHeader());
       } else {
