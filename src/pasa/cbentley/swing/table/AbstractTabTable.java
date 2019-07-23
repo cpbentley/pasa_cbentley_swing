@@ -13,6 +13,12 @@ import pasa.cbentley.swing.threads.IWorkerPanel;
 import pasa.cbentley.swing.threads.PanelSwingWorker;
 import pasa.cbentley.swing.widgets.b.BPopupMenu;
 
+/**
+ * Base class for hosting a {@link TableBentley} in a {@link AbstractMyTab}
+ * @author Charles Bentley
+ *
+ * @param <T>
+ */
 public abstract class AbstractTabTable<T> extends AbstractMyTab implements IWorkerPanel {
 
    /**
@@ -32,17 +38,32 @@ public abstract class AbstractTabTable<T> extends AbstractMyTab implements IWork
     */
    protected PanelSwingWorker workerTable;
 
+   /**
+    * 
+    * @param sc
+    * @param internalID
+    */
    public AbstractTabTable(SwingCtx sc, String internalID) {
       super(sc, internalID);
       this.setLayout(new BorderLayout());
    }
 
+   /**
+    * 
+    */
    public void cmdToggleRowHeader() {
       table.cmdToggleRowHeader();
    }
 
+   /**
+    * 
+    * @return
+    */
    protected abstract ModelTableBAbstract<T> createTableModel();
 
+   /**
+    * 
+    */
    public void disposeTab() {
    }
 
@@ -69,6 +90,9 @@ public abstract class AbstractTabTable<T> extends AbstractMyTab implements IWork
       return getBenTable().getTable();
    }
 
+   /**
+    * 
+    */
    public void guiUpdate() {
       super.guiUpdate();
       if (table != null) {
@@ -100,9 +124,9 @@ public abstract class AbstractTabTable<T> extends AbstractMyTab implements IWork
    }
 
    /**
-    * <li>ListSelectionModel.SINGLE_SELECTION
-    * <li>SINGLE_INTERVAL_SELECTION   ListSelectionModel.SINGLE_INTERVAL_SELECTION
-    * <li> MULTIPLE_INTERVAL_SELECTION ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
+    * <li> {@link ListSelectionModel#SINGLE_SELECTION}
+    * <li> {@link ListSelectionModel#SINGLE_INTERVAL_SELECTION}
+    * <li> {@link ListSelectionModel#MULTIPLE_INTERVAL_SELECTION}
     * @param i
     */
    public void setSelectionMode(int i) {
@@ -120,8 +144,6 @@ public abstract class AbstractTabTable<T> extends AbstractMyTab implements IWork
    public void sortTableColAscending(int col) {
       getSwingCtx().getTU().sortTableDescending(getBenTable().getTable(), col);
    }
-
-   //#enddebug
 
    public void sortTableColDescending(int col) {
       getSwingCtx().getTU().sortTableDescending(getBenTable().getTable(), col);
@@ -141,5 +163,5 @@ public abstract class AbstractTabTable<T> extends AbstractMyTab implements IWork
       dc.root1Line(this, "AbstractTabTable");
       super.toString1Line(dc.sup1Line());
    }
-
+   //#enddebug
 }

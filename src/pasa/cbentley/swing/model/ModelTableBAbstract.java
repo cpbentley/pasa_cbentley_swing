@@ -12,7 +12,6 @@ import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.swing.ctx.SwingCtx;
-import pasa.cbentley.swing.imytab.IMyGui;
 
 /**
  * Custom Swing {@link AbstractTableModel}.
@@ -27,14 +26,28 @@ import pasa.cbentley.swing.imytab.IMyGui;
  */
 public abstract class ModelTableBAbstract<T> extends AbstractTableModel implements IStringable {
 
-   private ArrayList<T> data = new ArrayList<T>();
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 5289855560272199017L;
 
-   protected SwingCtx   sc;
+   private ArrayList<T>      data             = new ArrayList<T>();
 
+   protected SwingCtx        sc;
+
+   /**
+    * Simple constructor. Assign the context.
+    * @param sc
+    */
    public ModelTableBAbstract(SwingCtx sc) {
       this.sc = sc;
    }
 
+   /**
+    * Add the value as a row data structure, compute stat and call 
+    * {@link AbstractTableModel#fireTableRowsInserted(int, int)}
+    * @param value
+    */
    public void addRow(T value) {
       int rowCount = getRowCount();
       data.add(value);
@@ -42,6 +55,12 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
       fireTableRowsInserted(rowCount, rowCount);
    }
 
+   /**
+    * for each of the values add a row data structure and compute stat.
+    * 
+    *  Then call {@link AbstractTableModel#fireTableRowsInserted(int, int)} for those rows.
+    * @param rows
+    */
    public void addRows(List<T> rows) {
       int rowCount = getRowCount();
       data.addAll(rows);
@@ -51,10 +70,19 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
       fireTableRowsInserted(rowCount, getRowCount() - 1);
    }
 
+   /**
+    * Convenience method.
+    * @param value
+    */
    public void addRows(T... value) {
       addRows(Arrays.asList(value));
    }
 
+   /**
+    * Clear all the rows.
+    * 
+    * {@link AbstractTableModel#fireTableRowsDeleted(int, int)}
+    */
    public void clear() {
       int rowCount = getRowCount();
       if (rowCount != 0) {
@@ -67,10 +95,14 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
    /**
     * Possibility to compute values from added elements.
     * @param a
-    * @param row TODO
+    * @param row the row of the object being inserted.
     */
    protected abstract void computeStats(T a, int row);
 
+   /**
+    * Returns a read only copy of the model data.
+    * @return
+    */
    public List<T> getAllDataCopy() {
       return Collections.unmodifiableList(data);
    }
@@ -85,6 +117,11 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
       return data;
    }
 
+   /**
+    * 
+    * @param index
+    * @return
+    */
    public T getRow(int index) {
       return data.get(index);
    }
@@ -96,6 +133,11 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
       return data.size();
    }
 
+   public abstract String getToolTips(int col);
+
+   /**
+    * 
+    */
    public boolean isCellEditable(int row, int col) {
       return false;
    }
@@ -110,22 +152,23 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
       return false;
    }
 
+   /**
+    * Does nothing. not editable
+    */
    public void setValueAt(Object value, int row, int col) {
    }
 
+   //#mdebug
    public IDLog toDLog() {
       return sc.toDLog();
    }
 
-   public abstract String getToolTips(int col);
-
-   //#mdebug
    public String toString() {
       return Dctx.toString(this);
    }
 
    public void toString(Dctx dc) {
-      dc.root(this, "BentleyAbstractModel");
+      dc.root(this, "ModelTableBAbstract");
 
       //displaying all the data should be optional.. in case of huge data set, it
       //is not desirable to see everything
@@ -149,7 +192,7 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
    }
 
    public void toString1Line(Dctx dc) {
-      dc.root1Line(this, "BentleyAbstractModel");
+      dc.root1Line(this, "ModelTableBAbstract");
    }
 
    public UCtx toStringGetUCtx() {
