@@ -25,11 +25,19 @@ public abstract class MenuBarSwingAbstract extends JMenuBar implements IMyGui, I
 
    protected final SwingCtx  sc;
 
+   /**
+    * 
+    * @param psc
+    * @param owner
+    */
    public MenuBarSwingAbstract(SwingCtx psc, CBentleyFrame owner) {
       this.sc = psc;
       this.owner = owner;
    }
 
+   /**
+    * 
+    */
    public void guiUpdate() {
       sc.guiUpdateOnChildren(this);
    }
