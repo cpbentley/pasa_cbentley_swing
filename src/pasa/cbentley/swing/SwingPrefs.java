@@ -28,6 +28,10 @@ public class SwingPrefs implements IPrefs {
       this.sc = sc;
    }
 
+   public Preferences getPreferences() {
+      return prefs;
+   }
+   
    public void clear() {
       try {
          prefs.clear();
