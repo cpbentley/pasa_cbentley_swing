@@ -20,7 +20,6 @@ import pasa.cbentley.swing.actions.IExitable;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.window.CBentleyFrame;
 
-
 /**
  * Preferences will be based on this implementation's class name
  * 
@@ -29,14 +28,13 @@ import pasa.cbentley.swing.window.CBentleyFrame;
  */
 public abstract class RunSwingAbstract implements IExitable, IStringable {
 
-   protected final C5Ctx          c5;
+   protected final C5Ctx    c5;
 
-   protected CBentleyFrame        frame;
+   protected CBentleyFrame  frame;
 
-   protected final SwingCtx       sc;
+   protected final SwingCtx sc;
 
-   protected final UCtx           uc;
-
+   protected final UCtx     uc;
 
    public RunSwingAbstract() {
       this.uc = new UCtx();
@@ -47,16 +45,42 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
       this.sc.toStringSetRoot(this);
    }
 
+   /**
+    * Subclass add its i18n filename to the list.
+    * @param list
+    */
    protected abstract void addI18n(List<String> list);
 
-
+   /**
+    * Called by?
+    */
    protected void initSkinner() {
       //load the look and feel before any Swing component
    }
 
-   protected abstract void initUIThreadInside();
+   /**
+    * Template Stuff specific to Swing
+    */
+   protected final void initUIThreadInside() {
+      initSkinner();
 
-   public void initUIThreadOutside() {
+      initUIThreadInsideSwing();
+   }
+
+   /**
+    * 
+    */
+   protected abstract void initUIThreadInsideSwing();
+
+   /**
+    * Initialize preferences for contexts below.
+    * 
+    * Do NOT deal with UI related preferences.
+    * @param prefs
+    */
+   protected abstract void initOutsideUIForPrefs(IPrefs prefs);
+
+   public final void initUIThreadOutside() {
       toStringSetupLogger(uc);
 
       //setup preferences
@@ -65,13 +89,15 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
       //WARNING: Could not open/create prefs root node Software\JavaSoft\Prefs at root 0x80000002. Windows RegCreateKeyEx(...) 
       // Solution Create new key HKEY_LOCAL_MACHINE\Software\JavaSoft\Prefs
 
-      IPrefs iprefs = new SwingPrefs(sc, preferences);
-      sc.setPrefs(iprefs);
+      IPrefs prefs = new SwingPrefs(sc, preferences);
+      sc.setPrefs(prefs);
+      initOutsideUIForPrefs(prefs);
 
       System.out.println("Preferences at Start for class " + this.getClass().getName());
-      System.out.println(iprefs);
+      System.out.println(prefs);
 
       ArrayList<String> list = new ArrayList<String>();
+      sc.addI18NKey(list);
       addI18n(list);
       sc.setBundleList(list);
 
@@ -85,7 +111,6 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
 
    }
 
-   
    //#mdebug
    public IDLog toDLog() {
       return toStringGetUCtx().toDLog();
