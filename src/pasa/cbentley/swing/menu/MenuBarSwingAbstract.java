@@ -1,7 +1,5 @@
 package pasa.cbentley.swing.menu;
 
-import java.awt.event.InputEvent;
-
 import javax.swing.JMenuBar;
 
 import pasa.cbentley.core.src4.ctx.UCtx;
@@ -11,13 +9,17 @@ import pasa.cbentley.swing.imytab.IMyGui;
 import pasa.cbentley.swing.menu.ITechMenu;
 import pasa.cbentley.swing.window.CBentleyFrame;
 
+/**
+ * 
+ * @author Charles Bentley
+ *
+ */
 public abstract class MenuBarSwingAbstract extends JMenuBar implements IMyGui, ITechMenu {
 
    /**
     * 
     */
    private static final long serialVersionUID = 1774778387836051346L;
-
 
    protected CBentleyFrame   owner;
 
