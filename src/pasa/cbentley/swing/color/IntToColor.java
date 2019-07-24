@@ -2,6 +2,7 @@ package pasa.cbentley.swing.color;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import pasa.cbentley.core.src4.logging.ITechLvl;
 import pasa.cbentley.core.src4.structs.IntBuffer;
@@ -116,7 +117,21 @@ public class IntToColor {
       return new Color(red, green, blue);
    }
 
+   private HashMap<String,Color> colorsMiners;
+   
+   public HashMap<String,Color> getColorsMiners() {
+      if(colorsMiners == null) {
+         colorsMiners = new HashMap<String, Color>();
+      }
+      return colorsMiners;
+   }
+   
    public Color getColorLightBgNameMiner(String str) {
+      HashMap<String,Color> colors = getColorsMiners();
+      Color colorMiner = colors.get(str);
+      if(colorMiner != null) {
+         return colorMiner;
+      }
       char c0 = str.charAt(0);
       int redBias = 0;
       int greenBias = 0;
@@ -173,7 +188,9 @@ public class IntToColor {
 
       //split word in 3.. take average
 
-      return new Color(red, green, blue);
+      colorMiner = new Color(red, green, blue);
+      colorsMiners.put(str, colorMiner);
+      return colorMiner;
    }
    
    /**
