@@ -173,8 +173,17 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    }
 
    /**
+    * Save frame preferences using {@link SwingCtx#getPrefs()}
+    *
+    */
+   public void savePrefs() {
+      savePrefs(sc.getPrefs());
+   }
+
+   /**
     * Saves frame position, size and other user properties to the {@link IPrefs}.
     * <br>
+    * TODO how to make it easy and automatic
     * @param prefs
     */
    public void savePrefs(IPrefs prefs) {
@@ -288,11 +297,11 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    }
 
    public void windowGainedFocus(WindowEvent e) {
-      
+
    }
 
    public void windowLostFocus(WindowEvent e) {
-      
+
    }
 
 }
