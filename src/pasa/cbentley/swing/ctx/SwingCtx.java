@@ -69,6 +69,7 @@ import pasa.cbentley.swing.imytab.TabbedBentleyPanel;
 import pasa.cbentley.swing.interfaces.ICallBackSwing;
 import pasa.cbentley.swing.logging.SwingDebug;
 import pasa.cbentley.swing.table.TableUtils;
+import pasa.cbentley.swing.threads.PanelSwingWorker;
 import pasa.cbentley.swing.utils.BufferedImageUtils;
 import pasa.cbentley.swing.window.CBentleyFrame;
 
@@ -131,7 +132,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
    private CombinedResourceBundle   resBund;
 
    //#debug
-   private IStringable root;
+   private IStringable              root;
 
    private SwingDebug               sd;
 
@@ -534,11 +535,15 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
     * @return
     */
    public Icon getResIcon(String id, String category, int size, int mode) {
+      //TODO find a way to disable logging when icons are not supposed to exist
       //#debug
-      //toDLog().pUI("id=" + id + " category=" + category + " size=" + size + " mode=" + mode, null, SwingCtx.class, "getResIcon", IDLog.LVL_04_FINER, true);
+      //toDLog().pUI("id=" + id + " category=" + category + " size=" + size + " mode=" + mode, null, SwingCtx.class, "getResIcon", LVL_04_FINER, true);
 
       //selector on the category.. then if null
       if (tabIcons == null) {
+         //TODO what if this is intentional? We don't want logging
+         //#debug
+         //toDLog().pUI("TabIconSettings is null. Cannot fetch icons", this, SwingCtx.class, "getResIcon", LVL_09_WARNING, true);
          return null;
       } else {
          //first check if ID has a res for icon
@@ -686,14 +691,24 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
     * Refreshes the state
     */
    public void guiUpdate() {
+      //we log the whole pattern conditionally in its own buffer. collapsed into 1 line
+      //
       //#debug
-      toDLog().pFlow("Master GUI Update " + toStringGuiUpdate(), null, SwingCtx.class, "guiUpdate", ITechLvl.LVL_05_FINE, true);
+      toDLog().methodStart(SwingCtx.class, "guiUpdate", ITechLvl.LVL_05_FINE);
+      
+      //#debug
+      toDLog().pFlow(toStringGuiUpdate(), null, SwingCtx.class, "guiUpdate", ITechLvl.LVL_05_FINE, true);
+      
       for (IMyGui gui : listGuis) {
          gui.guiUpdate();
       }
       for (CBentleyFrame frame : allFrames) {
          frame.guiUpdate();
       }
+      
+      //#debug
+      toDLog().methodEnd(SwingCtx.class, "guiUpdate", ITechLvl.LVL_05_FINE);
+      //end of log
    }
 
    public void guiUpdateOnChildren(Container panel) {
@@ -861,6 +876,10 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       this.tabIcons = tabIcons;
    }
 
+   /**
+    * TODO change set into Add
+    * @param tabMenuBarFactory
+    */
    public void setTabMenuBarFactory(ITabMenuBarFactory tabMenuBarFactory) {
       this.tabMenuBarFactory = tabMenuBarFactory;
    }
@@ -1049,4 +1068,16 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       }
    }
 
+   public void swingWorkerExecute(PanelSwingWorker worker) {
+      //#debug
+      toDLog().pWork("", worker, SwingCtx.class, "swingWorkerExecute", LVL_05_FINE, true);
+      worker.execute();
+   }
+
+   public void swingWorkerCancel(PanelSwingWorker worker) {
+      boolean wasCanceled = worker.cancel(true);
+      //#debug
+      toDLog().pWork("Worker was canceled="+wasCanceled, worker, SwingCtx.class, "swingWorkerCancel", LVL_05_FINE, true);
+   }
+   
 }
