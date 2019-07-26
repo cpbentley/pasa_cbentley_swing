@@ -49,7 +49,9 @@ public abstract class AbstractTabTable<T> extends AbstractMyTab implements IWork
    }
 
    /**
+    * Caller must be aware that this method might be slow and will run in the GUI thread.
     * 
+    * Caller should display a message before calling this and hiding it once done.
     */
    public void cmdToggleRowHeader() {
       table.cmdToggleRowHeader();
