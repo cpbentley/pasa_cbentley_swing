@@ -1,6 +1,13 @@
 package pasa.cbentley.swing.ctx;
 
-public interface IEventsSwing {
+import pasa.cbentley.core.src4.ctx.IEventsCore;
+
+/**
+ * 
+ * @author Charles Bentley
+ *
+ */
+public interface IEventsSwing extends IEventsCore {
 
    public static int       PID_02_UI           = 2;
 
