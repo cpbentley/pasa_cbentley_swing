@@ -26,7 +26,7 @@ import pasa.cbentley.swing.window.CBentleyFrame;
  * @author Charles Bentley
  *
  */
-public class FrameIMyTab extends CBentleyFrame implements FocusListener {
+public class FrameIMyTab extends CBentleyFrame {
 
    /**
     * 
@@ -50,13 +50,9 @@ public class FrameIMyTab extends CBentleyFrame implements FocusListener {
    public FrameIMyTab(final IMyTab tab) {
       super(tab.getSwingCtx());
       this.tab = tab;
-      
       sc = tab.getSwingCtx();
       sc.guiRegister(this);
-      
       init(tab);
-      this.addFocusListener(this);
-      
       //make sure the frame has its GUI up to date
       this.guiUpdate();
    }
@@ -82,11 +78,15 @@ public class FrameIMyTab extends CBentleyFrame implements FocusListener {
       }
    }
 
-   public void focusGained(FocusEvent e) {
+   public void windowGainedFocus(WindowEvent e) {
+      //#debug
+      toDLog().pFlow("", this, FrameIMyTab.class, "windowGainedFocus", LVL_04_FINER, true);
       tab.tabGainFocus();
    }
 
-   public void focusLost(FocusEvent e) {
+   public void windowLostFocus(WindowEvent e) {
+      //#debug
+      toDLog().pFlow("", this, FrameIMyTab.class, "windowLostFocus", LVL_04_FINER, true);
       tab.tabLostFocus();
    }
 
@@ -113,8 +113,7 @@ public class FrameIMyTab extends CBentleyFrame implements FocusListener {
       this.getContentPane().add((Component) tab);
 
       tab.getTabPosition().setFrame(this);
-      
-      
+
       //make sure the tab is initialized
       tab.initCheck();
       this.addWindowListener(new WindowAdapter() {

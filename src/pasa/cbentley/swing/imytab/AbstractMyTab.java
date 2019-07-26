@@ -194,6 +194,7 @@ public abstract class AbstractMyTab extends JPanel implements IMyTab, IMyGui, IS
       dc.appendVarWithSpace("isInit", isInit);
       dc.appendVarWithSpace("mode", mode);
       dc.nlLvlTitleIfNull(position, "TabPosition");
+      dc.nlLvlTitleIfNull(tapPage, "TapPage");
       sc.toSD().d(this, dc.nLevel());
    }
 

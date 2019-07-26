@@ -909,9 +909,14 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
       }
    }
 
+   /**
+    * Select the Tab with the given ID and initCheck it
+    * @param id
+    */
    private void selectTabChildByID(String id) {
       for (IMyTab tab : managedPanels) {
          if (id.equals(tab.getTabInternalID())) {
+            tab.initCheck();
             selectTab(tab);
             break;
          }
