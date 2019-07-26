@@ -94,10 +94,31 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
 
    /**
     * Possibility to compute values from added elements.
+    * 
+    * This method is called for newly added elements. So only statistics about
+    * itself or past added elements can be computed.
+    * 
+    * For computing stats knowing all elements have been added
+    * 
     * @param a
     * @param row the row of the object being inserted.
     */
    protected abstract void computeStats(T a, int row);
+
+   /**
+    * Called once data feeder knows all the elements have been added to the model.
+    * 
+    * The default implementation does nothing.
+    * 
+    * A subclass has to override and implement it.
+    * 
+    * @param a
+    * @param row
+    */
+   public void computeStatsGlobal() {
+      
+   }
+
 
    /**
     * Returns a read only copy of the model data.
