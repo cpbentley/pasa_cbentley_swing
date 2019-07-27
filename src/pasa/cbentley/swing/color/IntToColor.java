@@ -117,32 +117,38 @@ public class IntToColor {
       return new Color(red, green, blue);
    }
 
-   private HashMap<String,Color> colorsMiners;
-   
-   public HashMap<String,Color> getColorsMiners() {
-      if(colorsMiners == null) {
+   private HashMap<String, Color> colorsMiners;
+
+   public HashMap<String, Color> getColorsMiners() {
+      if (colorsMiners == null) {
          colorsMiners = new HashMap<String, Color>();
       }
       return colorsMiners;
    }
-   
+
+   /**
+    * Get the color for the miner key
+    * @param str
+    * @return
+    */
    public Color getColorLightBgNameMiner(String str) {
-      HashMap<String,Color> colors = getColorsMiners();
+      //first look in the cache
+      HashMap<String, Color> colors = getColorsMiners();
       Color colorMiner = colors.get(str);
-      if(colorMiner != null) {
+      if (colorMiner != null) {
          return colorMiner;
       }
       char c0 = str.charAt(0);
       int redBias = 0;
       int greenBias = 0;
       int blueBias = 0;
-      if(c0 == 'N') {
+      if (c0 == 'N') {
          redBias = 30;
          greenBias = 30;
-      } else if(c0 == 'F') {
+      } else if (c0 == 'F') {
          redBias = 30;
          blueBias = 30;
-      } else if(c0 == 'O') {
+      } else if (c0 == 'O') {
          greenBias = 30;
          blueBias = 30;
       }
@@ -192,7 +198,7 @@ public class IntToColor {
       colorsMiners.put(str, colorMiner);
       return colorMiner;
    }
-   
+
    /**
     * 
     * @param v0 0 to 9 modifies the blue factor 
@@ -279,12 +285,10 @@ public class IntToColor {
       return ColorUtils.getRGBInt(red, green, blue);
    }
 
-   
    private ArrayList<Color> colorsCarouselLight;
-   
-   
+
    public ArrayList<Color> getColorsCarouselLight() {
-      if(colorsCarouselLight == null) {
+      if (colorsCarouselLight == null) {
          colorsCarouselLight = new ArrayList<Color>();
          colorsCarouselLight.add(new Color(ColorUtils.FR_VIOLET_Orchidee_moyen));
          colorsCarouselLight.add(new Color(ColorUtils.FR_VERT_Jaune));
@@ -296,29 +300,31 @@ public class IntToColor {
          colorsCarouselLight.add(new Color(ColorUtils.FR_BRUN_Sable));
          colorsCarouselLight.add(new Color(ColorUtils.FR_BLEU_Acier));
       }
-      
+
       return colorsCarouselLight;
    }
-   
+
    private int colorsCarouselLightIndex = 0;
+
    public void resetLighBgCarrouselIndex() {
       colorsCarouselLightIndex = 0;
    }
+
    public void incrementLighBgCarrouselIndex() {
-      ArrayList<Color> colors =  getColorsCarouselLight();
+      ArrayList<Color> colors = getColorsCarouselLight();
       colorsCarouselLightIndex = (colorsCarouselLightIndex + 1) % colors.size();
    }
-      
+
    /**
     * 
     * @param account
     * @return
     */
    public Color getColorLightBgCarrousel(int account) {
-      ArrayList<Color> colors =  getColorsCarouselLight();
+      ArrayList<Color> colors = getColorsCarouselLight();
       return colors.get(colorsCarouselLightIndex);
    }
-   
+
    public Color getColorLightBgAccount(int account) {
       return new Color(0xFFFFFF - account);
    }
@@ -461,5 +467,44 @@ public class IntToColor {
       //#debug
       //toDLog().pTest("", null, PascalSwingCtx.class, "getAccountColorLight", IDLog.LVL_05_FINE, true);
       return new Color(red, green, bleu);
+   }
+
+   public Color getColorLightBlockTimeAbove(int diff) {
+      //best case
+      Color color = Color.WHITE;
+      if (diff < 10) {
+      } else if (diff < 30) {
+         return new Color(ColorUtils.FR_ROSE_Brumeux);
+      } else if (diff < 60) {
+         return new Color(ColorUtils.FR_ROSE_Clair);
+      } else if (diff < 120) {
+         return new Color(ColorUtils.FR_ROSE_Fuchsia);
+      } else if (diff < 180) {
+         return new Color(ColorUtils.FR_ROSE_Profond);
+      } else if (diff < 240) {
+         return new Color(ColorUtils.FR_ROSE_Rubis);
+      } else {
+         return new Color(ColorUtils.FR_ROUGE_Bordeaux);
+      }
+      return color;
+   }
+
+   public Color getColorLightBlockTimeBelow(int diff) {
+      Color color = Color.WHITE;
+      if (diff < 10) {
+      } else if (diff < 30) {
+         return new Color(ColorUtils.FR_BLEU_Bleuet);
+      } else if (diff < 60) {
+         return new Color(ColorUtils.FR_BLEU_Ciel);
+      } else if (diff < 120) {
+         return new Color(ColorUtils.FR_CYAN_Bleu_canard);
+      } else if (diff < 180) {
+         return new Color(ColorUtils.FR_CYAN_Turquoise_fonce);
+      } else if (diff < 240) {
+         return new Color(ColorUtils.FR_BLEU_Bleuet);
+      } else {
+         return new Color(ColorUtils.FR_VIOLET_Byzantin);
+      }
+      return color;
    }
 }
