@@ -469,41 +469,80 @@ public class IntToColor {
       return new Color(red, green, bleu);
    }
 
+   
+   private ArrayList<Color> colorsBlockTimeAbove;
+   
+   public ArrayList<Color> getColorsBlockTimeAbove(){
+      if(colorsBlockTimeAbove == null) {
+         colorsBlockTimeAbove = new ArrayList<Color>(8);
+         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Miellat));
+         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Deau));
+         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Anis));
+         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Absinthe));
+         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Amande));
+         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Ocean));
+         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Citron_vert));
+         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_JAUNE_Bouton_dor));
+      }
+      return colorsBlockTimeAbove;
+   }
+
+
+
    public Color getColorLightBlockTimeAbove(int diff) {
       //best case
       Color color = Color.WHITE;
       if (diff < 10) {
       } else if (diff < 30) {
-         return new Color(ColorUtils.FR_ROSE_Brumeux);
+         return getColorsBlockTimeAbove().get(0);
       } else if (diff < 60) {
-         return new Color(ColorUtils.FR_ROSE_Clair);
+         return getColorsBlockTimeAbove().get(1);
       } else if (diff < 120) {
-         return new Color(ColorUtils.FR_ROSE_Fuchsia);
+         return getColorsBlockTimeAbove().get(2);
       } else if (diff < 180) {
-         return new Color(ColorUtils.FR_ROSE_Profond);
+         return getColorsBlockTimeAbove().get(3);
       } else if (diff < 240) {
-         return new Color(ColorUtils.FR_ROSE_Rubis);
+         return getColorsBlockTimeAbove().get(4);
+      } else if (diff < 600) {
+         return getColorsBlockTimeAbove().get(5);
+      } else if (diff < 1200){
+         return getColorsBlockTimeAbove().get(6);
       } else {
-         return new Color(ColorUtils.FR_ROUGE_Bordeaux);
+         return getColorsBlockTimeAbove().get(7);
       }
       return color;
    }
 
+   private ArrayList<Color> colorsBlockTimeBelow;
+   
+   public ArrayList<Color> getColorsBlockTimeBelow(){
+      if(colorsBlockTimeBelow == null) {
+         colorsBlockTimeBelow = new ArrayList<Color>(6);
+         colorsBlockTimeBelow.add(new Color(ColorUtils.FR_BLEU_Dragee));
+         colorsBlockTimeBelow.add(new Color(ColorUtils.FR_BLEU_Fumee));
+         colorsBlockTimeBelow.add(new Color(ColorUtils.FR_BLEU_Acier_clair));
+         colorsBlockTimeBelow.add(new Color(ColorUtils.FR_BLEU_Ciel));
+         colorsBlockTimeBelow.add(new Color(ColorUtils.FR_BLEU_Acier));
+         colorsBlockTimeBelow.add(new Color(ColorUtils.FR_BLEU_Bleuet_fonce));
+      }
+      return colorsBlockTimeBelow;
+   }
+   
    public Color getColorLightBlockTimeBelow(int diff) {
       Color color = Color.WHITE;
       if (diff < 10) {
       } else if (diff < 30) {
-         return new Color(ColorUtils.FR_BLEU_Bleuet);
+         return getColorsBlockTimeBelow().get(0);
       } else if (diff < 60) {
-         return new Color(ColorUtils.FR_BLEU_Ciel);
+         return getColorsBlockTimeBelow().get(1);
       } else if (diff < 120) {
-         return new Color(ColorUtils.FR_CYAN_Bleu_canard);
+         return getColorsBlockTimeBelow().get(2);
       } else if (diff < 180) {
-         return new Color(ColorUtils.FR_CYAN_Turquoise_fonce);
+         return getColorsBlockTimeBelow().get(3);
       } else if (diff < 240) {
-         return new Color(ColorUtils.FR_BLEU_Bleuet);
+         return getColorsBlockTimeBelow().get(4);
       } else {
-         return new Color(ColorUtils.FR_VIOLET_Byzantin);
+         return getColorsBlockTimeBelow().get(5);
       }
       return color;
    }
