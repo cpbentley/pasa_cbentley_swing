@@ -21,69 +21,15 @@ public class ModelColumnBAbstract implements IStringable {
 
    protected String[] colKey;
 
-   private SwingCtx   sc;
-
    private String     keyPrefixName = "";
 
    private String     keyPrefixTip  = "";
 
+   private SwingCtx   sc;
+
    public ModelColumnBAbstract(SwingCtx sc) {
       this.sc = sc;
 
-   }
-
-   public void initFor(int numColumns) {
-      this.classes = new Class[numColumns];
-      this.colKey = new String[numColumns];
-   }
-   public void setDate(int colIndex, String key) {
-      classes[colIndex] = Date.class;
-      colKey[colIndex] = key;
-   }
-   public void setString(int colIndex, String key) {
-      classes[colIndex] = String.class;
-      colKey[colIndex] = key;
-   }
-   public void setLong(int colIndex, String key) {
-      classes[colIndex] = Long.class;
-      colKey[colIndex] = key;
-   }
-   public void sanityCheck() {
-      for (int i = 0; i < classes.length; i++) {
-         if (classes[i] == null) {
-            throw new NullPointerException("Column Index " + i + " not initialized with a class");
-         }
-         if (colKey[i] == null) {
-            throw new NullPointerException("Column Index " + i + " not initialized with a key");
-         }
-      }
-   }
-
-   public void setInteger(int colIndex, String key) {
-      classes[colIndex] = Integer.class;
-      colKey[colIndex] = key;
-   }
-
-   public void setBoolean(int colIndex, String key) {
-      classes[colIndex] = Boolean.class;
-      colKey[colIndex] = key;
-   }
-   public void setClass(int colIndex, String key, Class c) {
-      classes[colIndex] = c;
-      colKey[colIndex] = key;
-   }
-   public void setDouble(int colIndex, String key) {
-      classes[colIndex] = Double.class;
-      colKey[colIndex] = key;
-   }
-
-   /**
-    * Returns the tooltip text for the column.
-    * @param col
-    * @return
-    */
-   public String getColumnToolTip(int col) {
-      return sc.getResString(keyPrefixTip + colKey[col]);
    }
 
    public Class getColumnClass(int col) {
@@ -96,6 +42,82 @@ public class ModelColumnBAbstract implements IStringable {
 
    public String getColumnName(int col) {
       return sc.getResString(keyPrefixName + colKey[col]);
+   }
+
+   /**
+    * Returns the tooltip text for the column.
+    * @param col
+    * @return
+    */
+   public String getColumnToolTip(int col) {
+      return sc.getResString(keyPrefixTip + colKey[col]);
+   }
+
+   public String getKeyPrefixName() {
+      return keyPrefixName;
+   }
+
+   public String getKeyPrefixTip() {
+      return keyPrefixTip;
+   }
+
+   public void initFor(int numColumns) {
+      this.classes = new Class[numColumns];
+      this.colKey = new String[numColumns];
+   }
+
+   public void sanityCheck() {
+      for (int i = 0; i < classes.length; i++) {
+         if (classes[i] == null) {
+            throw new NullPointerException("Column Index " + i + " not initialized with a class");
+         }
+         if (colKey[i] == null) {
+            throw new NullPointerException("Column Index " + i + " not initialized with a key");
+         }
+      }
+   }
+
+   public void setBoolean(int colIndex, String key) {
+      classes[colIndex] = Boolean.class;
+      colKey[colIndex] = key;
+   }
+
+   public void setClass(int colIndex, String key, Class c) {
+      classes[colIndex] = c;
+      colKey[colIndex] = key;
+   }
+
+   public void setDate(int colIndex, String key) {
+      classes[colIndex] = Date.class;
+      colKey[colIndex] = key;
+   }
+
+   public void setDouble(int colIndex, String key) {
+      classes[colIndex] = Double.class;
+      colKey[colIndex] = key;
+   }
+
+   public void setInteger(int colIndex, String key) {
+      classes[colIndex] = Integer.class;
+      colKey[colIndex] = key;
+   }
+
+   public void setKeyPrefixName(String keyPrefixName) {
+      this.keyPrefixName = keyPrefixName;
+   }
+
+   public void setKeyPrefixTip(String keyPrefixTip) {
+      this.keyPrefixTip = keyPrefixTip;
+   }
+
+   public void setLong(int colIndex, String key) {
+      classes[colIndex] = Long.class;
+      colKey[colIndex] = key;
+   }
+
+   public void setString(int colIndex, String key) {
+      classes[colIndex] = String.class;
+      colKey[colIndex] = key;
    }
 
    //#mdebug
@@ -112,10 +134,6 @@ public class ModelColumnBAbstract implements IStringable {
       return Dctx.toString1Line(this);
    }
 
-   private void toStringPrivate(Dctx dc) {
-
-   }
-
    public void toString1Line(Dctx dc) {
       dc.root1Line(this, "MyAbstractColumnModel");
       toStringPrivate(dc);
@@ -125,22 +143,8 @@ public class ModelColumnBAbstract implements IStringable {
       return sc.getUCtx();
    }
 
-   public String getKeyPrefixName() {
-      return keyPrefixName;
-   }
+   private void toStringPrivate(Dctx dc) {
 
-   public void setKeyPrefixName(String keyPrefixName) {
-      this.keyPrefixName = keyPrefixName;
    }
-
-   public String getKeyPrefixTip() {
-      return keyPrefixTip;
-   }
-
-   public void setKeyPrefixTip(String keyPrefixTip) {
-      this.keyPrefixTip = keyPrefixTip;
-   }
-
    //#enddebug
-
 }

@@ -961,6 +961,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       return f;
    }
 
+   //#mdebug
    public IDLog toDLog() {
       return uc.toDLog();
    }
@@ -969,7 +970,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       return sd;
    }
 
-   //#mdebug
+
    public void toString(Dctx dc) {
       dc.root(this, "SwingCtx");
       toStringPrivate(dc);
@@ -1029,7 +1030,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
    private void toStringPrivate(Dctx dc) {
 
    }
-   //#enddebug
+ 
 
    public String toStringRunnerAll() {
       if (root == null) {
@@ -1041,6 +1042,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
    public void toStringSetRoot(IStringable root) {
       this.root = root;
    }
+   //#enddebug
 
    public void updateAllVisibleTabs() {
       //#debug

@@ -112,11 +112,11 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
       }
    }
 
+   //#mdebug
    public IDLog toDLog() {
       return sc.toDLog();
    }
 
-   //#mdebug
    public String toString() {
       return Dctx.toString(this);
    }
@@ -135,10 +135,10 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
    public void toString1Line(Dctx dc) {
       dc.root1Line(this, "PanelSwingWorker");
    }
-   //#enddebug
 
    public UCtx toStringGetUCtx() {
       return sc.getUCtx();
    }
+   //#enddebug
 
 }

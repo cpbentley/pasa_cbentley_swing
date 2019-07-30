@@ -421,7 +421,7 @@ public class SwingDebug {
       d1(e, dc);
       return dc.toString();
    }
-   //#enddebug
+
 
    public void d(DefaultComboBoxModel model, Dctx dc) {
       dc.root(model, "DefaultComboBoxModel");
@@ -432,4 +432,6 @@ public class SwingDebug {
          dc.appendVar(i + "", model.getElementAt(i));
       }
    }
+   
+   //#enddebug
 }

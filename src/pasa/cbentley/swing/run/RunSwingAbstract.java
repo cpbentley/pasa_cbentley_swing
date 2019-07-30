@@ -52,6 +52,14 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
    protected abstract void addI18n(List<String> list);
 
    /**
+    * Initialize preferences for contexts below.
+    * 
+    * Do NOT deal with UI related preferences.
+    * @param prefs
+    */
+   protected abstract void initOutsideUIForPrefs(IPrefs prefs);
+
+   /**
     * Called by?
     */
    protected void initSkinner() {
@@ -72,15 +80,8 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
     */
    protected abstract void initUIThreadInsideSwing();
 
-   /**
-    * Initialize preferences for contexts below.
-    * 
-    * Do NOT deal with UI related preferences.
-    * @param prefs
-    */
-   protected abstract void initOutsideUIForPrefs(IPrefs prefs);
-
    public final void initUIThreadOutside() {
+      //#debug
       toStringSetupLogger(uc);
 
       //setup preferences

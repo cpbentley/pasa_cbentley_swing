@@ -137,7 +137,6 @@ public class TableBentley<T> implements IStringable, IMyGui {
       dc.root(this, "TableBentley");
    }
 
-   //#enddebug
 
    public String toString1Line() {
       return Dctx.toString1Line(this);
@@ -150,5 +149,6 @@ public class TableBentley<T> implements IStringable, IMyGui {
    public UCtx toStringGetUCtx() {
       return sc.getUCtx();
    }
+   //#enddebug
 
 }

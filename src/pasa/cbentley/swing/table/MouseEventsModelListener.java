@@ -102,11 +102,11 @@ public class MouseEventsModelListener implements IStringable, MouseListener, Mou
       this.tipGlobal = tipGlobal;
    }
 
+   //#mdebug
    public IDLog toDLog() {
       return sc.toDLog();
    }
 
-   //#mdebug
    public String toString() {
       return Dctx.toString(this);
    }
@@ -123,10 +123,9 @@ public class MouseEventsModelListener implements IStringable, MouseListener, Mou
       dc.root1Line(this, "MouseEventsModelListener");
    }
 
-   //#enddebug
-
    public UCtx toStringGetUCtx() {
       return sc.getUCtx();
    }
+   //#enddebug
 
 }
