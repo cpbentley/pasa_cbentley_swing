@@ -223,9 +223,11 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
       IMyTab newTab = this.createNewInstance(focusedTab.getTabInternalID(), focusedTab);
       if (newTab != null) {
          FrameIMyTab frame = sc.showInNewFrame(newTab, false);
+         // register GUI since its not hosted by TabbedPanel
          //sc.addAllFrames(frame); //already added by CBentleyFrame
-         //
-         sc.guiRegister(frame);//register GUI since its not hosted by TabbedPanel
+         //sc.guiRegister(frame); //already added by CBentleyFrame
+         //#debug
+         toDLog().pFlow("", frame, TabbedBentleyPanel.class, "cmdDuplicateTabToFrame", LVL_05_FINE, false);
       }
       sc.getLog().consoleLog("New tab" + focusedTab.getTabTitle() + " was duplicated");
    }

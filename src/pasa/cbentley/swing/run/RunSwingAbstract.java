@@ -72,13 +72,18 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
    protected final void initUIThreadInside() {
       initSkinner();
 
-      initUIThreadInsideSwing();
+      frame = initUIThreadInsideSwing();
+      
+      frame.setExitable(this);
+      sc.guiUpdate();
+      frame.positionFrame();
    }
 
    /**
-    * 
+    * Implementation must create a {@link CBentleyFrame}
+    * @return CBentleyFrame main frame that will be displayed
     */
-   protected abstract void initUIThreadInsideSwing();
+   protected abstract CBentleyFrame initUIThreadInsideSwing();
 
    public final void initUIThreadOutside() {
       //#debug

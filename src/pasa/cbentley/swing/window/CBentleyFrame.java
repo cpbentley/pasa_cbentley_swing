@@ -56,6 +56,7 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
       this.sc = sc;
       screenManager = new FrameScreenManager(this);
       sc.addAllFrames(this);
+      sc.guiRegister(this);
       this.addWindowFocusListener(this);
       this.addWindowListener(this);
    }

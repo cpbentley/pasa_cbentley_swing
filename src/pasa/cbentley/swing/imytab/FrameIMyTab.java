@@ -44,6 +44,9 @@ public class FrameIMyTab extends CBentleyFrame {
     * <li>Custom close listener. Uses the 
     * <li>Close event is hard wired to the {@link TabbedBentleyPanel}.
     * We want a specific event for the underlying tab
+    * 
+    * Frame is registered to {@link SwingCtx#guiRegister(IMyGui)}
+    * 
     * @param tabbedpane
     * @param tab
     */
@@ -51,7 +54,6 @@ public class FrameIMyTab extends CBentleyFrame {
       super(tab.getSwingCtx());
       this.tab = tab;
       sc = tab.getSwingCtx();
-      sc.guiRegister(this);
       init(tab);
       //make sure the frame has its GUI up to date
       this.guiUpdate();
@@ -81,6 +83,8 @@ public class FrameIMyTab extends CBentleyFrame {
    public void windowGainedFocus(WindowEvent e) {
       //#debug
       toDLog().pFlow("", this, FrameIMyTab.class, "windowGainedFocus", LVL_04_FINER, true);
+      //we act as the owner so we have the responsability to initCheck
+      tab.initCheck();
       tab.tabGainFocus();
    }
 

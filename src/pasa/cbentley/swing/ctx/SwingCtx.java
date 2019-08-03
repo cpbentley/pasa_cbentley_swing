@@ -933,8 +933,14 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
    }
 
    /**
-    * Tags owner.
     * 
+    * Shows the {@link IMyTab} in a new {@link FrameIMyTab}.
+    * 
+    * Position is relative to {@link CBentleyFrame} if not null.
+    * 
+    * If null, defaul method {@link SwingCtx#showInNewFrame(IMyTab)} is called instead.
+    * 
+    * TODO create a depedency with owner.
     * This means if owner is closed, child frames are closed as well.
     * <br>
     * @param tab
@@ -942,6 +948,12 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
     * @return
     */
    public FrameIMyTab showInNewFrame(IMyTab tab, CBentleyFrame owner) {
+      if(owner == null) {
+         //#debug
+         toDLog().pNull("CBentleyFrame owner is null", tab, SwingCtx.class, "showInNewFrame", LVL_09_WARNING, true);
+         
+         return showInNewFrame(tab);
+      }
       FrameIMyTab f = new FrameIMyTab(tab);
       f.pack();
       //default dimension? decided based on several parameters based on hints
