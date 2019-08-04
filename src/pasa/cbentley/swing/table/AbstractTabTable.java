@@ -144,7 +144,7 @@ public abstract class AbstractTabTable<T> extends AbstractMyTab implements IWork
    }
 
    public void sortTableColAscending(int col) {
-      getSwingCtx().getTU().sortTableDescending(getBenTable().getTable(), col);
+      getSwingCtx().getTU().sortTableAscending(getBenTable().getTable(), col);
    }
 
    public void sortTableColDescending(int col) {

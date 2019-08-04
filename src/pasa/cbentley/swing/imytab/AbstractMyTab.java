@@ -166,6 +166,10 @@ public abstract class AbstractMyTab extends JPanel implements IMyTab, IMyGui, IS
    public boolean isInitialized() {
       return isInit;
    }
+   
+   public boolean tabWillBeHiddenByAnotherTab(IMyTab newSelectedTab) {
+      return true;
+   }
 
    public void setDisposed() {
       this.isInit = false;

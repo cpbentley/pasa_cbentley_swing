@@ -565,6 +565,16 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
       return sc.getPrefs().getInt(getTabInternalID() + "_tabplace", TABS_TOP);
    }
 
+   /**
+    * {@link IMyTab} is a {@link IMyGui}
+    * This method {@link IMyGui#guiUpdate()} is called recursively on the component tree by
+    * {@link SwingCtx#guiUpdate()}
+    * 
+    * This method must be called when a new tab is created.
+    * 
+    * 
+    * 
+    */
    public void guiUpdate() {
       // update tab placement etc get saved tab policy for this
       int tabPolicy = getTabPlacePref();
@@ -981,6 +991,10 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
       }
    }
 
+   private IMyTab newSelectedTabInWaiting;
+
+   private IMyTab oldSelectedTabInWaiting;
+
    /**
     * This method is used when tab is selected by a user action or by a set
     * 
@@ -1000,16 +1014,39 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
       //#debug
       toDLog().pFlow("" + sc.toSD().d1(e), this, TabbedBentleyPanel.class, "stateChanged", ITechLvl.LVL_05_FINE, true);
 
-      Component newSelectedTab = jtabbePane.getSelectedComponent();
+      Component newSelectedTab1 = jtabbePane.getSelectedComponent();
+      IMyTab newSelectedTab = null;
+      if (newSelectedTab1 instanceof IMyTab) {
+         newSelectedTab = (IMyTab)newSelectedTab1;
+      } else {
+         throw new IllegalArgumentException("Only IMyTabs");
+      }
 
       //update current tab data with sss if not done already
       if (myCurrentTab != null) {
+         if(myCurrentTab == oldSelectedTabInWaiting) {
+            //case of tab requests user action before being hidden by another
+            return;
+         }
+         
          //when tab is selected and sent to a frame. we come here
          //when tab is moving to another TBLR position as well
          if (myCurrentTab.getTabPosition().isFramed()) {
             //#debug
             toDLog().pEvent("Previous tab is frame TODO", myCurrentTab, TabbedBentleyPanel.class, "stateChanged", ITechLvl.LVL_04_FINER, true);
          } else {
+
+            //TODO we want to give the current tab a last chance to interact with the user
+            //in case something important must be dealt with (saving file or stopping on going task)
+            //unfortunately JTabbedPane does not send an event before the fact
+            //hack by selecting currentTab and keep new 
+            boolean isAccepted = myCurrentTab.tabWillBeHiddenByAnotherTab(newSelectedTab);
+            if (!isAccepted) {
+               newSelectedTabInWaiting = newSelectedTab;
+               oldSelectedTabInWaiting = myCurrentTab;
+               //disable events otherwise it will loop
+               setSelected(myCurrentTab);
+            }
             myCurrentTab.tabLostFocus();
             //index is still valid? NO. if 
             int index = myCurrentTab.getTabPosition().getIndex();
@@ -1022,12 +1059,25 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
          //order.. exit sounds are played. deepest tab first.. highest tap last
          // entry sounds are queued after exit, highest first. deepest last
       }
-      if (newSelectedTab instanceof IMyTab) {
-         boolean isNew = stateChangeITab(newSelectedTab);
-         newTabLayoutValidations(isNew, (IMyTab) newSelectedTab);
+      boolean isNew = stateChangeITab(newSelectedTab);
+      newTabLayoutValidations(isNew, (IMyTab) newSelectedTab);
+   }
+
+   /**
+    * Called after {@link IMyTab#tabWillBeHiddenByAnotherTab(IMyTab)}
+    * @param tab
+    */
+   public void tabAcceptBeingHidden(IMyTab tab) {
+      if (newSelectedTabInWaiting != null) {
+         setSelected(newSelectedTabInWaiting);
       }
    }
 
+   /**
+    * Revalidates and update if new tab
+    * @param isNew
+    * @param newSelectedTab
+    */
    private void newTabLayoutValidations(boolean isNew, IMyTab newSelectedTab) {
       if (isNew) {
          //#debug
@@ -1042,8 +1092,7 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
       return "ui.selectedtab." + this.getTabInternalID();
    }
 
-   private boolean stateChangeITab(Component newSelectedTab) {
-      IMyTab selectedTab = (IMyTab) newSelectedTab;
+   private boolean stateChangeITab(IMyTab selectedTab) {
       //make sure the tab has been initialized
       boolean isNew = initCheckTabBeforeFocus(selectedTab);
       //notify tab that user focus is now active on it
@@ -1058,7 +1107,7 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
       } else {
          //save
          BackForwardTabPage backForward = sc.getBackForward();
-         if(backForward != null) {
+         if (backForward != null) {
             backForward.addTabPage(selectedTab.getTabPage());
          }
          //set the deepest focused tab

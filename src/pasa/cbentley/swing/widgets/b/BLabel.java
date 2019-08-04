@@ -94,7 +94,13 @@ public class BLabel extends JLabel implements IMyGui, MouseListener, MouseWheelL
          }
       } else if (key != null) {
          setText(getKeyedText());
-         //setToolTipText(sc.getResString(key+".tip"));
+         if (keyTip != null) {
+            setToolTipText(sc.getResString(keyTip));
+         } else {
+            if (sc.isGlobalLabelTip()) {
+               setToolTipText(sc.getResString(key + ".tip"));
+            }
+         }
       }
       if (style != null) {
          Font fontLabel = sc.getUIData().getFontLabel();
@@ -177,6 +183,10 @@ public class BLabel extends JLabel implements IMyGui, MouseListener, MouseWheelL
       setText(getKeyedText());
    }
 
+   /**
+    * Overrides the default tipping
+    * @param keyTip
+    */
    public void setKeyTip(String keyTip) {
       this.keyTip = keyTip;
    }

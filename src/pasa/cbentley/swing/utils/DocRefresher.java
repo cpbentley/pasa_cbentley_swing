@@ -11,9 +11,13 @@ import pasa.cbentley.swing.ctx.SwingCtx;
 
 public class DocRefresher implements DocumentListener {
 
-   protected final SwingCtx sc;
-   private Timer timer;
+   protected final SwingCtx    sc;
+
+   private Timer               timer;
+
    private ICommandableRefresh refresh;
+
+   private boolean             isEnabled = true;
 
    public DocRefresher(SwingCtx sc, ICommandableRefresh refresh) {
       this.sc = sc;
@@ -22,6 +26,9 @@ public class DocRefresher implements DocumentListener {
    }
 
    public void refresher() {
+      if(!isEnabled()) {
+         return;
+      }
       TimerTask timerTask = new TimerTask() {
          public void run() {
             sc.execute(new Runnable() {
@@ -49,6 +56,14 @@ public class DocRefresher implements DocumentListener {
 
    public void changedUpdate(DocumentEvent e) {
       refresher();
+   }
+
+   public boolean isEnabled() {
+      return isEnabled;
+   }
+
+   public void setEnabled(boolean isEnabled) {
+      this.isEnabled = isEnabled;
    }
 
 }

@@ -695,17 +695,17 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       //
       //#debug
       toDLog().methodStart(SwingCtx.class, "guiUpdate", ITechLvl.LVL_05_FINE);
-      
+
       //#debug
-      toDLog().pFlow(toStringGuiUpdate(), null, SwingCtx.class, "guiUpdate", ITechLvl.LVL_05_FINE, true);
-      
+      //toDLog().pFlow(toStringGuiUpdate(), null, SwingCtx.class, "guiUpdate", ITechLvl.LVL_05_FINE, true);
+
       for (IMyGui gui : listGuis) {
          gui.guiUpdate();
       }
       for (CBentleyFrame frame : allFrames) {
          frame.guiUpdate();
       }
-      
+
       //#debug
       toDLog().methodEnd(SwingCtx.class, "guiUpdate", ITechLvl.LVL_05_FINE);
       //end of log
@@ -713,6 +713,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
 
    public void guiUpdateOnChildren(Container panel) {
       Component[] components = panel.getComponents();
+      //#debug
+      toDLog().pFlow(components.length + "\t children for container " + panel.getClass().getSimpleName(), null, SwingCtx.class, "guiUpdateOnChildren", LVL_05_FINE, true);
       for (int i = 0; i < components.length; i++) {
          if (components[i] instanceof IMyGui) {
             ((IMyGui) (components[i])).guiUpdate();
@@ -731,6 +733,20 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
             guiUpdateOnChildren((Container) components[i]);
          }
       }
+   }
+
+   private boolean isGlobalLabelTip = true;
+
+   public void setGlobalLabelTip(boolean isGlobalLabelTip) {
+      this.isGlobalLabelTip = isGlobalLabelTip;
+   }
+
+   /**
+    * True by default.
+    * @return
+    */
+   public boolean isGlobalLabelTip() {
+      return isGlobalLabelTip;
    }
 
    public void publishUIEvent(final BusEvent be, final IEventBus bus) {
@@ -814,14 +830,14 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       }
    }
 
+   //#enddebug
+
    public void revalidateSwingTree() {
       for (CBentleyFrame frame : allFrames) {
          frame.invalidate();
          frame.repaint();
       }
    }
-
-   //#enddebug
 
    /**
     * Sets the list of bundles.
@@ -948,10 +964,10 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
     * @return
     */
    public FrameIMyTab showInNewFrame(IMyTab tab, CBentleyFrame owner) {
-      if(owner == null) {
+      if (owner == null) {
          //#debug
          toDLog().pNull("CBentleyFrame owner is null", tab, SwingCtx.class, "showInNewFrame", LVL_09_WARNING, true);
-         
+
          return showInNewFrame(tab);
       }
       FrameIMyTab f = new FrameIMyTab(tab);
@@ -973,6 +989,18 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       return f;
    }
 
+   public void swingWorkerCancel(PanelSwingWorker worker) {
+      boolean wasCanceled = worker.cancel(true);
+      //#debug
+      toDLog().pWork("Worker was canceled=" + wasCanceled, worker, SwingCtx.class, "swingWorkerCancel", LVL_05_FINE, true);
+   }
+
+   public void swingWorkerExecute(PanelSwingWorker worker) {
+      //#debug
+      toDLog().pWork("", worker, SwingCtx.class, "swingWorkerExecute", LVL_05_FINE, true);
+      worker.execute();
+   }
+
    //#mdebug
    public IDLog toDLog() {
       return uc.toDLog();
@@ -981,7 +1009,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
    public SwingDebug toSD() {
       return sd;
    }
-
 
    public void toString(Dctx dc) {
       dc.root(this, "SwingCtx");
@@ -1042,7 +1069,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
    private void toStringPrivate(Dctx dc) {
 
    }
- 
 
    public String toStringRunnerAll() {
       if (root == null) {
@@ -1082,16 +1108,4 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       }
    }
 
-   public void swingWorkerExecute(PanelSwingWorker worker) {
-      //#debug
-      toDLog().pWork("", worker, SwingCtx.class, "swingWorkerExecute", LVL_05_FINE, true);
-      worker.execute();
-   }
-
-   public void swingWorkerCancel(PanelSwingWorker worker) {
-      boolean wasCanceled = worker.cancel(true);
-      //#debug
-      toDLog().pWork("Worker was canceled="+wasCanceled, worker, SwingCtx.class, "swingWorkerCancel", LVL_05_FINE, true);
-   }
-   
 }
