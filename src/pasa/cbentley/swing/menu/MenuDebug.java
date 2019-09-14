@@ -1,10 +1,6 @@
 package pasa.cbentley.swing.menu;
 
-import static java.awt.event.KeyEvent.VK_A;
-import static java.awt.event.KeyEvent.VK_G;
-import static java.awt.event.KeyEvent.VK_R;
-import static java.awt.event.KeyEvent.VK_S;
-import static java.awt.event.KeyEvent.VK_T;
+import static java.awt.event.KeyEvent.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
