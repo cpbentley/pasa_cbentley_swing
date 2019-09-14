@@ -42,6 +42,7 @@ import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.event.BusEvent;
 import pasa.cbentley.core.src4.event.EventBusArray;
 import pasa.cbentley.core.src4.event.IEventBus;
+import pasa.cbentley.core.src4.event.IEventConsumer;
 import pasa.cbentley.core.src4.interfaces.IPrefs;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
@@ -71,6 +72,7 @@ import pasa.cbentley.swing.logging.SwingDebug;
 import pasa.cbentley.swing.table.TableUtils;
 import pasa.cbentley.swing.threads.PanelSwingWorker;
 import pasa.cbentley.swing.utils.BufferedImageUtils;
+import pasa.cbentley.swing.utils.SwingColorStore;
 import pasa.cbentley.swing.window.CBentleyFrame;
 
 /**
@@ -78,7 +80,7 @@ import pasa.cbentley.swing.window.CBentleyFrame;
  * @author Charles Bentley
  *
  */
-public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
+public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, IEventConsumer {
    public static final String       PREF_LOCALE_COUNTRY   = "localecountry";
 
    public static final String       PREF_LOCALE_LANG      = "localelang";
@@ -150,6 +152,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
 
    private SwingUtilsBentley        utils;
 
+   private SwingColorStore swingColorStore;
+
    /**
     * Cannot create GUI elements. 
     * @param uc
@@ -166,6 +170,11 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       events[PID_02_UI] = EID_02_UI_ZZ_NUM;
       eventBusSwing = new EventBusArray(uc, this, events);
 
+      swingColorStore = new SwingColorStore(this);
+      
+      //we want memory events
+      uc.getEventBusRoot().addConsumer(this, PID_3_MEMORY, EID_MEMORY_0_ANY);
+      
       //#debug
       sd = new SwingDebug(this);
    }
@@ -723,6 +732,10 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
          }
       }
    }
+   
+   public SwingColorStore getSwingColorStore() {
+      return swingColorStore;
+   }
 
    public void guiUpdateOnChildrenMenu(JMenu menu) {
       Component[] components = menu.getMenuComponents();
@@ -1105,6 +1118,16 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing {
       } catch (MissingResourceException e) {
          getLog().consoleLogError("Resource Bundle for " + lang + " and " + country + " not found.");
          return false;
+      }
+   }
+
+   public void consumeEvent(BusEvent e) {
+      if(e.getProducerID() == PID_3_MEMORY) {
+         //#debug
+         toDLog().pMemory("Memory Event", e, SwingCtx.class, "consumeEvent", LVL_05_FINE, true);
+         if(e.getEventID() == EID_MEMORY_2_USER_REQUESTED_GC) {
+            swingColorStore.clear();
+         }
       }
    }
 
