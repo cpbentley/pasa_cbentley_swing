@@ -325,10 +325,26 @@ public class IntToColor {
       return colors.get(colorsCarouselLightIndex);
    }
 
-   public Color getColorLightBgAccount(int account) {
-      return new Color(0xFFFFFF - account);
-   }
+//   public Color getColorLightBgAccount(int account) {
+//      int rest = account;
+//      return new Color(0xFFFFFF - rest);
+//   }
 
+   public Color getColorLightBgAccount(int account) {
+      int r = 255;
+      int b = 255;
+      int g = 255;
+      float ratio = account / 1000000;
+      float ratioInverse = 1 - ratio;
+      float saturation =  ratioInverse;
+      float brightness = ratioInverse;
+      float accountF = ((float)account / 1670000f) * 360f;
+      
+      return Color.getHSBColor(accountF, saturation, brightness);
+      //int rest = account >> 2;
+      //return new Color(0xFFFFFF - account);
+   }
+   
    public Color getColorLightBgAccount2(int account) {
 
       //pad with zeros for at least 6 chars
