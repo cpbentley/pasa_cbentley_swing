@@ -154,6 +154,11 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
       return data.size();
    }
 
+   /**
+    * Returns the string for the column title tool tip.
+    * @param col
+    * @return
+    */
    public abstract String getToolTips(int col);
 
    /**
