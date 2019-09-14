@@ -10,7 +10,6 @@ import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.utils.ColorUtils;
 import pasa.cbentley.swing.ctx.SwingCtx;
-import pasa.robcamick.layout.HSLColor;
 
 /**
  * Create and cache {@link Color}
@@ -40,6 +39,10 @@ public class SwingColorStore implements IStringable {
    
    public void clear() {
       colors.clear();
+   }
+   
+   public Color getColorGrey(int grey) {
+      return getColorRGB(grey, grey, grey);
    }
    
    public Color getColorRGB(int r, int g, int b) {
