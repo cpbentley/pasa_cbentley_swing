@@ -33,7 +33,7 @@ public class BLabelHTML extends JLabel implements IMyGui {
    }
 
    public void guiUpdate() {
-      StringBBuilder sb = new StringBBuilder();
+      StringBBuilder sb = new StringBBuilder(sc.getUCtx());
       sb.append("<html> <font size=\"");
       sb.append(textSize);
       sb.append("\" color=\"");

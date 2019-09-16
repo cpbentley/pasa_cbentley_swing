@@ -63,7 +63,7 @@ public class CellRendererIntegerStringPascal extends DefaultTableCellRenderer im
    public CellRendererIntegerStringPascal(SwingCtx sc) {
       this.sc = sc;
       istr = new IntegerString(sc.getUCtx());
-      sb = new StringBBuilder(500);
+      sb = new StringBBuilder(sc.getUCtx(),500);
       font = new java.awt.Font("Lucida Console", 0, 12);
       fontMono = new Font("Monospaced", Font.PLAIN, 12);
       colorData = new ColorData(sc.getUCtx());

@@ -55,7 +55,7 @@ public class CellRendererIntegerStringHSLPasc extends DefaultTableCellRenderer i
 
    public CellRendererIntegerStringHSLPasc(SwingCtx sc) {
       this.sc = sc;
-      sb = new StringBBuilder(500);
+      sb = new StringBBuilder(sc.getUCtx(),500);
       df2 = new DecimalFormat("0.00");
       df1 = new DecimalFormat("0.0");
       font = new java.awt.Font("Lucida Console", 0, 12);

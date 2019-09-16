@@ -66,7 +66,7 @@ public class MemoryPanelProgressBar extends JPanel implements ActionListener, Mo
       long usedMemoryInMebibytes = usedMemory / (1024 * 1024);
       int usedPct = (int) ((100 * usedMemory) / totalMemory);
       String textToShow = usedMemoryInMebibytes + "Mb of " + totalMemoryInMebibytes + "Mb";
-      StringBBuilder sbb = new StringBBuilder(100);
+      StringBBuilder sbb = new StringBBuilder(sc.getUCtx(),100);
       sbb.append("<html><p width=\"400\">");
       sbb.append("Memory used (" + usedMemoryInMebibytes + "Mb)");
       sbb.append("<br>");

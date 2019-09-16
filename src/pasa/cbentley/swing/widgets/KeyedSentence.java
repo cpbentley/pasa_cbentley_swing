@@ -52,7 +52,7 @@ public class KeyedSentence implements IStringable {
    }
 
    public String getSentence() {
-      StringBBuilder sb = new StringBBuilder();
+      StringBBuilder sb = new StringBBuilder(sc.getUCtx());
       for (int i = 0; i < data.getSize(); i++) {
          if (data.getID(i) == KEY) {
             sb.append(sc.getResString(data.getString(i)));

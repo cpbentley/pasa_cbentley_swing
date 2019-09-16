@@ -43,7 +43,7 @@ public class CellRendererIntegerStringHSL extends DefaultTableCellRenderer imple
 
    public CellRendererIntegerStringHSL(SwingCtx sc) {
       this.sc = sc;
-      sb = new StringBBuilder(500);
+      sb = new StringBBuilder(sc.getUCtx(),500);
       df2 = new DecimalFormat("#.00");
       df1 = new DecimalFormat("#.0");
       font = new java.awt.Font("Lucida Console", 0, 12);
