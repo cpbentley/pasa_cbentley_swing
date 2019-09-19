@@ -40,6 +40,8 @@ public class FrameIMyTab extends CBentleyFrame {
     */
    private final IMyTab      tab;
 
+   private FrameReference frameReference;
+
    /**
     * <li>Custom close listener. Uses the 
     * <li>Close event is hard wired to the {@link TabbedBentleyPanel}.
@@ -54,13 +56,20 @@ public class FrameIMyTab extends CBentleyFrame {
       super(tab.getSwingCtx());
       this.tab = tab;
       sc = tab.getSwingCtx();
-      init(tab);
+      aInitConstructor(tab);
       //make sure the frame has its GUI up to date
       this.guiUpdate();
    }
 
+   public void cmdClose() {
+      this.setVisible(false);
+      closeFrame();
+   }
+   
    /**
+    * Called when the Frame has been closed by the user.
     * 
+    * This means the tab can be disposed.
     */
    private void closeFrame() {
       TabbedBentleyPanel tabbedpane = tab.getTabPosition().getParent();
@@ -77,6 +86,9 @@ public class FrameIMyTab extends CBentleyFrame {
          //close
          tab.getSwingCtx().eventCloseThis(this);
          tab.disposeTab();
+      }
+      if(frameReference != null) {
+         frameReference.setFrame(null);
       }
    }
 
@@ -102,10 +114,25 @@ public class FrameIMyTab extends CBentleyFrame {
       return tab;
    }
 
-   private void init(IMyTab tab) {
+   public String getTitleFrame() {
+      return tab.getTabTitle();
+   }
+
+   /**
+    * The frame reference to set to null
+    * @param frameReference
+    */
+   public void setFrameReference(FrameReference frameReference) {
+      this.frameReference = frameReference;
+      frameReference.setFrame(this);
+   }
+
+   private void aInitConstructor(IMyTab tab) {
       this.setTitle(tab.getTabTitle());
       //TODO what if there is several of the same frames? Like showing several 
       this.setPrefID("frame_" + tab.getTabInternalID());
+
+      //but we want the title to be the tab
 
       //maps the ICON of frame to a Size.. could be changed in ctx
       int size = sc.getIconSize(IconFamily.ICON_SIZE_FRAME);
