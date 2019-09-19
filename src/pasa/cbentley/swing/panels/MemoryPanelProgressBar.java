@@ -67,7 +67,7 @@ public class MemoryPanelProgressBar extends JPanel implements ActionListener, Mo
       int usedPct = (int) ((100 * usedMemory) / totalMemory);
 
       String s1 = String.valueOf(usedMemoryInMebibytes);
-      String s2 = " Mbs out of ";
+      String s2 = " / ";
       String s3 = String.valueOf(totalMemoryInMebibytes);
       String s4 = " Mbs";
       String textToShow = sc.buildStringUISerial(s1, s2, s3, s4);
