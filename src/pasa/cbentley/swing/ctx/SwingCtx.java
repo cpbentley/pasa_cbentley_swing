@@ -43,6 +43,7 @@ import pasa.cbentley.core.src4.event.BusEvent;
 import pasa.cbentley.core.src4.event.EventBusArray;
 import pasa.cbentley.core.src4.event.IEventBus;
 import pasa.cbentley.core.src4.event.IEventConsumer;
+import pasa.cbentley.core.src4.helpers.StringBBuilder;
 import pasa.cbentley.core.src4.interfaces.IPrefs;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
@@ -152,7 +153,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
 
    private SwingUtilsBentley        utils;
 
-   private SwingColorStore swingColorStore;
+   private SwingColorStore          swingColorStore;
 
    /**
     * Cannot create GUI elements. 
@@ -170,11 +171,13 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       events[PID_02_UI] = EID_02_UI_ZZ_NUM;
       eventBusSwing = new EventBusArray(uc, this, events);
 
+      sb = new StringBBuilder(uc);
+
       swingColorStore = new SwingColorStore(this);
-      
+
       //we want memory events
       uc.getEventBusRoot().addConsumer(this, PID_3_MEMORY, EID_MEMORY_0_ANY);
-      
+
       //#debug
       sd = new SwingDebug(this);
    }
@@ -296,6 +299,10 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       } else {
          SwingUtilities.invokeLater(r);
       }
+   }
+
+   public void executeLaterInUIThread(Runnable r) {
+      SwingUtilities.invokeLater(r);
    }
 
    public List<CBentleyFrame> getAllFrames() {
@@ -556,7 +563,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
          return null;
       } else {
          //first check if ID has a res for icon
-         String resIcon = getResStringNull(category + "." + id + "+.icon");
+         String str = buildStringUISerial(category, ".", id, ".icon");
+         String resIcon = getResStringNull(str);
          if (resIcon != null) {
             //we have one. use it as alis
             id = resIcon;
@@ -732,7 +740,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
          }
       }
    }
-   
+
    public SwingColorStore getSwingColorStore() {
       return swingColorStore;
    }
@@ -934,6 +942,19 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       return f;
    }
 
+   public FrameIMyTab showInNewFrame(FrameIMyTab f, float width, float height) {
+      f.pack();
+      //default dimension? decided based on several parameters based on hints
+      // current size
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      int w = (int) ((float) screenSize.width * width);
+      int h = (int) ((float) screenSize.height * height);
+      f.setLocation(screenSize.width / 2 - w / 2, screenSize.height / 2 - h / 2);
+      f.setSize(w, h);
+      f.setVisible(true);
+      return f;
+   }
+
    /**
     * Shows the {@link IMyTab} as a root in its own {@link FrameIMyTab}.
     * <br>
@@ -1122,13 +1143,41 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
    }
 
    public void consumeEvent(BusEvent e) {
-      if(e.getProducerID() == PID_3_MEMORY) {
+      if (e.getProducerID() == PID_3_MEMORY) {
          //#debug
          toDLog().pMemory("Memory Event", e, SwingCtx.class, "consumeEvent", LVL_05_FINE, true);
-         if(e.getEventID() == EID_MEMORY_2_USER_REQUESTED_GC) {
+         if (e.getEventID() == EID_MEMORY_2_USER_REQUESTED_GC) {
             swingColorStore.clear();
          }
       }
+   }
+
+   private StringBBuilder sb;
+
+   /**
+    * Uses the {@link SwingCtx} {@link StringBBuilder} to build a string
+    * 
+    * Only called from the GUI thread.
+    * @param s1
+    * @param s2
+    * @param s3
+    * @return
+    */
+   public String buildStringUISerial(String s1, String s2, String s3) {
+      sb.reset();
+      sb.append(s1);
+      sb.append(s2);
+      sb.append(s3);
+      return sb.toString();
+   }
+
+   public String buildStringUISerial(String s1, String s2, String s3, String s4) {
+      sb.reset();
+      sb.append(s1);
+      sb.append(s2);
+      sb.append(s3);
+      sb.append(s4);
+      return sb.toString();
    }
 
 }
