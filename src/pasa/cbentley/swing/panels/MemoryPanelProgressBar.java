@@ -65,19 +65,15 @@ public class MemoryPanelProgressBar extends JPanel implements ActionListener, Mo
       long maxMemoryInMebibytes = maxMemory / (1024 * 1024);
       long usedMemoryInMebibytes = usedMemory / (1024 * 1024);
       int usedPct = (int) ((100 * usedMemory) / totalMemory);
-      String textToShow = usedMemoryInMebibytes + "Mb of " + totalMemoryInMebibytes + "Mb";
-      StringBBuilder sbb = new StringBBuilder(sc.getUCtx(),100);
-      sbb.append("<html><p width=\"400\">");
-      sbb.append("Memory used (" + usedMemoryInMebibytes + "Mb)");
-      sbb.append("<br>");
-      sbb.append("out of");
-      sbb.append("Memory available (" + totalMemoryInMebibytes + "Mb).");
-      sbb.append("<br>");
-      sbb.append("Mb of total: " + totalMemoryInMebibytes + "Mb max: " + maxMemoryInMebibytes + "Mb");
-      sbb.append("</p></html>");
+
+      String s1 = String.valueOf(usedMemoryInMebibytes);
+      String s2 = " Mbs out of ";
+      String s3 = String.valueOf(totalMemoryInMebibytes);
+      String s4 = " Mbs";
+      String textToShow = sc.buildStringUISerial(s1, s2, s3, s4);
       this.pBar.setValue(usedPct);
       this.pBar.setString(textToShow);
-      this.pBar.setToolTipText(sbb.toString());
+      this.pBar.setToolTipText(sc.getResString("text.memory.tip"));
    }
 
    public void actionPerformed(ActionEvent e) {
