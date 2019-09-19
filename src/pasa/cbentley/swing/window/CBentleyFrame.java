@@ -116,9 +116,17 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
       return sc;
    }
 
+   /**
+    * Compute the title of the frame
+    * @return
+    */
+   public String getTitleFrame() {
+      return sc.getResString(pid + ".title");
+   }
+   
    public void guiUpdate() {
       //if title was set using key
-      String title = sc.getResString(pid + ".title");
+      String title = getTitleFrame();
       this.setTitle(title);
       JMenuBar jm = this.getJMenuBar();
       if (jm instanceof IMyGui) {
@@ -173,6 +181,16 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
 
    }
 
+   /**
+    * TODO Close this frame. If single last, exits the
+    * The main window won't be called here.
+    * 
+    * Subclass implements specific behavior
+    */
+   public void cmdClose() {
+      
+   }
+   
    /**
     * Save frame preferences using {@link SwingCtx#getPrefs()}
     *

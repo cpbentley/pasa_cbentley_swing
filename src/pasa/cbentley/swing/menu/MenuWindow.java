@@ -6,11 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JSeparator;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.widgets.b.BMenu;
+import pasa.cbentley.swing.widgets.b.BMenuItem;
 import pasa.cbentley.swing.window.CBentleyFrame;
 import pasa.cbentley.swing.window.Screen;
 
@@ -26,17 +28,19 @@ public class MenuWindow extends BMenu implements MenuListener, ActionListener {
     */
    private static final long serialVersionUID = 3993125157226169609L;
 
-   public static final int TYPE_0_FS  = 0;
+   public static final int   TYPE_0_FS        = 0;
 
-   public static final int TYPE_1_MAX = 1;
+   public static final int   TYPE_1_MAX       = 1;
 
-   public static final int TYPE_2_MIN = 2;
+   public static final int   TYPE_2_MIN       = 2;
 
-   private BMenu           menuMidTo;
+   private BMenu             menuMidTo;
 
-   private BMenu           menuMaxTo;
+   private BMenu             menuMaxTo;
 
-   private BMenu           menuFullscreenTo;
+   private BMenu             menuFullscreenTo;
+
+   private BMenuItem         menuItemClose;
 
    public MenuWindow(SwingCtx sc) {
       super(sc, "menu.window");
@@ -50,6 +54,12 @@ public class MenuWindow extends BMenu implements MenuListener, ActionListener {
       this.add(menuMidTo);
       this.add(menuMaxTo);
       //this.add(menuFullscreenTo);
+   }
+
+   public void addCloseItem() {
+      menuItemClose = new BMenuItem(sc, this, "menu.close");
+      this.add(new JSeparator());
+      this.add(menuItemClose);
    }
 
    public void menuCanceled(MenuEvent arg0) {
@@ -87,7 +97,10 @@ public class MenuWindow extends BMenu implements MenuListener, ActionListener {
    }
 
    public void actionPerformed(ActionEvent e) {
-      if (e.getSource() instanceof ScreenMenuItem) {
+      if (e.getSource() == menuItemClose) {
+         CBentleyFrame frame = (CBentleyFrame) sc.getFrame(this);
+         frame.cmdClose();
+      } else if (e.getSource() instanceof ScreenMenuItem) {
          ScreenMenuItem smi = (ScreenMenuItem) e.getSource();
          int type = smi.getType();
          int screenID = smi.getScreenID();
