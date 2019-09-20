@@ -62,7 +62,12 @@ public class FirePlasmaEffectTestView extends JFrame {
 
       for (int y = 5; y < 320 - 2; y++) {
          for (int x = 5; x < 400 - 2; x++) {
-            data2[x + 400 * y] = (int) ((int) ((data2[x + 400 * y] + data2[x + 400 * (y + 1)] + data2[(x - 1) + 400 * (y + 1)] + data2[(x + 1) + 400 * (y + 1)] + data2[x + 400 * (y + 2)]) / 5.02) * 1.01);
+            int dataNext = data2[x + 400 * y];
+            int dataBottom = data2[x + 400 * (y + 1)];
+            int dataBottomRight = data2[(x - 1) + 400 * (y + 1)];
+            int dataBottomLeft = data2[(x + 1) + 400 * (y + 1)];
+            int dateBottom2 = data2[x + 400 * (y + 2)];
+            data2[x + 400 * y] = (int) ((int) ((dataNext + dataBottom + dataBottomRight + dataBottomLeft + dateBottom2) / 5.02) * 1.01);
          }
       }
 

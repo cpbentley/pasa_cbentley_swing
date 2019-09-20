@@ -4,33 +4,44 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import pasa.cbentley.core.src4.ctx.UCtx;
+import pasa.cbentley.core.src4.logging.Dctx;
+import pasa.cbentley.core.src4.logging.IDLog;
+import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.utils.ColorUtils;
+import pasa.cbentley.swing.ctx.SwingCtx;
 
 /**
  *
  * @author leonardo
  */
-public class FireEffectView extends JFrame {
+public class FireEffectView extends JFrame implements IStringable {
 
-   private int[]         palette = new int[256];
+   private int[]            palette = new int[256];
 
-   private BufferedImage offscreen;
+   private BufferedImage    offscreen;
 
-   private int[]         data;
+   private int[]            data;
 
-   private int[]         pixels;
+   private int[]            pixels;
 
-   private int           w;
+   private int              w;
 
-   private int           h;
+   private int              h;
 
-   public FireEffectView() {
+   Random                   r       = new Random();
+
+   protected final SwingCtx sc;
+
+   public FireEffectView(SwingCtx sc) {
+      this.sc = sc;
       setSize(800, 600);
       setLocationRelativeTo(null);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,7 +72,6 @@ public class FireEffectView extends JFrame {
          palette[x] = ColorUtils.getRGBInt(rgb);
       }
 
-      
       new Thread(new Runnable() {
          public void run() {
             while (true) {
@@ -82,46 +92,111 @@ public class FireEffectView extends JFrame {
 
       int offset = w * (h - 1);
       for (int x = 0; x < w; x++) {
-         pixels[x + offset] = (int) ((Math.random() + 32768) % 256); //random pallete indexes
+         pixels[x + offset] = r.nextInt(256); //random pallete indexes
+      }
+      for (int x = 0; x < w; x++) {
+         pixels[x + w * (h - 30)] = Math.random() > 0.55 ? 0 : 255;
       }
 
       //do the fire calculations for every pixel, from top to bottom
-      offset = 0;
-      for (int y = 0; y < h - 1; y++) {
-         for (int x = 0; x < w; x++) {
-            int offset1 = (y + 1 % h) * ((x - 1 + w) % w);
-            int p1 = pixels[offset1];
-            int offset2 = (y + 1 % h) * (x % w);
-            int p2 = pixels[offset2];
-            int offset3 = (y + 1 % h) * ((x + 1) % w);
-            int p3 = pixels[offset3];
-            int offset4 = (y + 2 % h) * (x % w);
-            int p4 = pixels[offset4];
-            int total = p1 + p2 + p3 + p4;
-            int value = total * 32 / 129;
-            pixels[x * y] = value; //current value is a combination of what is above
+      //      offset = 0;
+      //      for (int y = 5; y < h - 1; y++) {
+      //         for (int x = 5; x < w - 2; x++) {
+      //            int offset1 = (y + w) * (x - 1 + w);
+      //            //int p1 = pixels[offset1];
+      //            
+      //            int offset2 = ((y + w) % h) * (x % w);
+      //            int p2 = pixels[offset2];
+      //            int p1 = p2;
+      //            
+      //            int offset3 = ((y + w) % h) * ((x + 1) % w);
+      //            int p3 = pixels[offset3];
+      //            
+      //            int offset4 = ((y + (2 * w)) % h) * (x % w);
+      //            int p4 = pixels[offset4];
+      //            
+      //            int total = p1 + p2 + p3 + p4;
+      //            int value = total * 32 / 129;
+      //            pixels[x + (w * y)] = value; //current value is a combination of what is above
+      //         }
+      //      }
+
+      for (int y = 5; y < h - 2; y++) {
+         for (int x = 5; x < w - 2; x++) {
+            int dataNext = pixels[x + w * y];
+            int dataBottom = pixels[x + w * (y + 1)];
+            int dataBottomRight = pixels[(x - 1) + w * (y + 1)];
+            int dataBottomLeft = pixels[(x + 1) + w * (y + 1)];
+            int dateBottom2 = pixels[x + w * (y + 2)];
+            pixels[x + w * y] = (int) ((int) ((dataNext + dataBottom + dataBottomRight + dataBottomLeft + dateBottom2) / 5.02) * 1.01);
          }
       }
 
-//      for (int y = 5; y < 320 - 2; y++) {
-//         for (int x = 5; x < 400 - 2; x++) {
-//            pixels[x + 400 * y] = (int) ((int) ((pixels[x + 400 * y] + pixels[x + 400 * (y + 1)] + pixels[(x - 1) + 400 * (y + 1)] + pixels[(x + 1) + 400 * (y + 1)] + pixels[x + 400 * (y + 2)]) / 5.02) * 1.01);
-//         }
-//      }
+      //#debug
+      //toDLog().pAlways("msg", this, FireEffectView.class, "paint", LVL_05_FINE, false);
+
+      //      for (int y = 5; y < 320 - 2; y++) {
+      //         for (int x = 5; x < 400 - 2; x++) {
+      //            pixels[x + 400 * y] = (int) ((int) ((pixels[x + 400 * y] + pixels[x + 400 * (y + 1)] + pixels[(x - 1) + 400 * (y + 1)] + pixels[(x + 1) + 400 * (y + 1)] + pixels[x + 400 * (y + 2)]) / 5.02) * 1.01);
+      //         }
+      //      }
 
       for (int i = 0; i < data.length; i++) {
-         data[i] = palette[pixels[i]];
+         int paletteIndex = pixels[i];
+         //int paletteIndex = r.nextInt(palette.length);
+         data[i] = palette[paletteIndex];
       }
       g.drawImage(offscreen, 0, 0, 800, 600, null);
 
    }
 
    public static void main(String[] args) {
+      UCtx uc = new UCtx();
+      final SwingCtx sc = new SwingCtx(uc);
       SwingUtilities.invokeLater(new Runnable() {
          public void run() {
-            new FireEffectView().setVisible(true);
+            new FireEffectView(sc).setVisible(true);
          }
       });
    }
+
+   //#mdebug
+   public IDLog toDLog() {
+      return toStringGetUCtx().toDLog();
+   }
+
+   public String toString() {
+      return Dctx.toString(this);
+   }
+
+   public void toString(Dctx dc) {
+      dc.root(this, "FireEffectView");
+      toStringPrivate(dc);
+
+      dc.nlLvl("palette", palette, 10);
+
+      dc.nlLvl("data", pixels, 64);
+
+   }
+
+   public String toString1Line() {
+      return Dctx.toString1Line(this);
+   }
+
+   private void toStringPrivate(Dctx dc) {
+      dc.appendVarWithSpace("w", w);
+      dc.appendVarWithSpace("h", h);
+   }
+
+   public void toString1Line(Dctx dc) {
+      dc.root1Line(this, "FireEffectView");
+      toStringPrivate(dc);
+   }
+
+   public UCtx toStringGetUCtx() {
+      return sc.getUCtx();
+   }
+
+   //#enddebug
 
 }

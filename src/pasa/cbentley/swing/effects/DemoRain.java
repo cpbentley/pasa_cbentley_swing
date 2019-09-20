@@ -31,6 +31,7 @@ public class DemoRain {
 
    protected void createAndShowGUI() {
       frame = new CBentleyFrame(sc);
+      frame.setDefExitProcedure();
       frame.setTitle("Image Animation Demo");
       frame.setPrefID("anim_demo");
 
