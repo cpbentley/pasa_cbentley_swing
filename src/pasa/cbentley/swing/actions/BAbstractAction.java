@@ -8,12 +8,19 @@ import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.imytab.IMyGui;
 
+/**
+ * Abstract stub class for all our Swing Actions
+ * @author Charles Bentley
+ *
+ */
 public abstract class BAbstractAction extends AbstractAction implements IMyGui, IStringable {
 
    /**
     * 
     */
    private static final long serialVersionUID = 4061766705523249393L;
+   
+   
    protected final SwingCtx sc;
 
    public BAbstractAction(SwingCtx sc) {
