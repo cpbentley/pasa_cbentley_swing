@@ -31,8 +31,9 @@ public class RainGenerator extends Thread {
 
             it++;
             sleep(10);
-            if (it % 5 == 0)
+            if (it % 5 == 0) {
                sleep(rando.nextInt(1000));
+            }
 
          } catch (Exception e) {
             e.printStackTrace(System.out);
