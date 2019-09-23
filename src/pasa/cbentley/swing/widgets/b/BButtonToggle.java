@@ -102,11 +102,11 @@ public class BButtonToggle extends JButton implements MouseListener, IMyGui, ISt
       if (isSelected()) {
          this.setIcon(iconSelected);
          this.setText(sc.getResString(keySelected));
-         this.setToolTipText(sc.getResString(keySelected + ".tip"));
+         sc.guiUpdateTooltip(this, keySelected);
       } else {
          this.setIcon(iconNormal);
          this.setText(sc.getResString(keyNormal));
-         this.setToolTipText(sc.getResString(keyNormal + ".tip"));
+         sc.guiUpdateTooltip(this, keyNormal);
       }
    }
 

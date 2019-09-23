@@ -11,40 +11,41 @@ import pasa.cbentley.swing.IconFamily;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.imytab.IMyGui;
 
-public class BMenuItem extends JMenuItem implements IMyGui {
+public class BMenuItemToggle extends JMenuItem implements IMyGui {
 
    /**
     * 
     */
    private static final long serialVersionUID = -643480505038526391L;
 
-   private int               commandID        = -1;
-
-   private String            key;
-
-   private Icon              normal;
+   private String            keyNormal;
 
    private SwingCtx          sc;
 
-   public BMenuItem(SwingCtx sc, ActionListener al, String key) {
+   private String            keySelected;
+
+   public BMenuItemToggle(SwingCtx sc, ActionListener al) {
       this.sc = sc;
-      this.key = key;
       this.addActionListener(al);
    }
 
-   public void guiUpdate() {
-      if (key != null) {
-         this.setText(sc.getResString(key));
-      }
-      if (normal != null) {
-         this.setIcon(normal);
-      }
-      sc.guiUpdateTooltip(this, key);
+   public void setTextKeys(String key, String keySelected) {
+      this.keyNormal = key;
+      this.keySelected = keySelected;
    }
 
-   public void setIcon(String iconID, String iconCategory, int iconSize) {
-      normal = sc.getResIcon(iconID, iconCategory, iconSize, IconFamily.ICON_MODE_0_DEFAULT);
-
+   public void guiUpdate() {
+      if (isSelected()) {
+         if (keySelected != null) {
+            this.setText(sc.getResString(keySelected));
+            sc.guiUpdateTooltip(this, keySelected);
+         }
+      } else {
+         if (keyNormal != null) {
+            this.setText(sc.getResString(keyNormal));
+            sc.guiUpdateTooltip(this, keyNormal);
+         }
+      }
    }
 
    //#mdebug
@@ -53,7 +54,7 @@ public class BMenuItem extends JMenuItem implements IMyGui {
    }
 
    public void toString(Dctx dc) {
-      dc.root(this, "BMenuItem");
+      dc.root(this, "BMenuItemToggle");
    }
 
    public String toString1Line() {
@@ -61,7 +62,7 @@ public class BMenuItem extends JMenuItem implements IMyGui {
    }
 
    public void toString1Line(Dctx dc) {
-      dc.root1Line(this, "BMenuItem");
+      dc.root1Line(this, "BMenuItemToggle");
    }
 
    public UCtx toStringGetUCtx() {

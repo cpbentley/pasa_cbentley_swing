@@ -9,14 +9,13 @@ import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.imytab.IMyGui;
 import pasa.cbentley.swing.menu.ITechMenu;
 
-public class BMenu extends JMenu implements IMyGui,ITechMenu {
+public class BMenu extends JMenu implements IMyGui, ITechMenu {
 
    private String           key;
 
    private MenuListener     lis;
 
    protected final SwingCtx sc;
-
 
    public BMenu(SwingCtx sc, MenuListener lis, String key) {
       this.sc = sc;
@@ -35,10 +34,10 @@ public class BMenu extends JMenu implements IMyGui,ITechMenu {
       if (key != null) {
          this.setText(sc.getResString(key));
       }
+      sc.guiUpdateTooltip(this, key);
       //since we are a container.. we must update below us
       sc.guiUpdateOnChildrenMenu(this);
    }
-   
 
    //#mdebug
    public String toString() {

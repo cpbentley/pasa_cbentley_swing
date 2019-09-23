@@ -28,11 +28,17 @@ import java.util.concurrent.Executors;
 import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.MenuElement;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
@@ -74,6 +80,7 @@ import pasa.cbentley.swing.table.TableUtils;
 import pasa.cbentley.swing.threads.PanelSwingWorker;
 import pasa.cbentley.swing.utils.BufferedImageUtils;
 import pasa.cbentley.swing.utils.SwingColorStore;
+import pasa.cbentley.swing.widgets.b.BButton;
 import pasa.cbentley.swing.window.CBentleyFrame;
 
 /**
@@ -700,6 +707,17 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
    }
 
    /**
+    * Creates a runnable for Gui update later
+    */
+   public void guiUpdateLater() {
+      this.executeLaterInUIThread(new Runnable() {
+         public void run() {
+            guiUpdate();
+         }
+      });
+   }
+
+   /**
     * Call {@link IMyGui#guiUpdate()} on all registered components and on active {@link CBentleyFrame}
     * <br>
     * <br>
@@ -743,6 +761,26 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
 
    public SwingColorStore getSwingColorStore() {
       return swingColorStore;
+   }
+
+   public void guiUpdateOnChildrenMenuPopup(JPopupMenu menu) {
+      MenuElement[] menuElements = menu.getSubElements();
+      for (int i = 0; i < menuElements.length; i++) {
+         MenuElement menuElement = menuElements[i];
+         //check the easiest case first
+         if (menuElement instanceof IMyGui) {
+            ((IMyGui) (menuElements[i])).guiUpdate();
+         } else if (menuElement instanceof JMenuItem) {
+            //special case for JPopupMenu where menuElement is a JMenuItem of type JPopupMenu$1 
+            JMenuItem jitem = (JMenuItem) menuElement;
+            Action action = jitem.getAction();
+            if (action != null) {
+               if (action instanceof IMyGui) {
+                  ((IMyGui) action).guiUpdate();
+               }
+            }
+         }
+      }
    }
 
    public void guiUpdateOnChildrenMenu(JMenu menu) {
@@ -1171,6 +1209,13 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       return sb.toString();
    }
 
+   public String buildStringUISerial(String s1, String s2) {
+      sb.reset();
+      sb.append(s1);
+      sb.append(s2);
+      return sb.toString();
+   }
+
    public String buildStringUISerial(String s1, String s2, String s3, String s4) {
       sb.reset();
       sb.append(s1);
@@ -1178,6 +1223,14 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       sb.append(s3);
       sb.append(s4);
       return sb.toString();
+   }
+
+   public void guiUpdateTooltip(JComponent comp, String keyNormal) {
+      if (keyNormal != null) {
+         String tipKey = buildStringUISerial(keyNormal, ".tip");
+         String tipString = getResString(tipKey);
+         comp.setToolTipText(tipString);
+      }
    }
 
 }

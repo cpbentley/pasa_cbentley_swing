@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IStringable;
-import pasa.cbentley.swing.actions.ClearAction;
+import pasa.cbentley.swing.actions.BActionClear;
 import pasa.cbentley.swing.actions.IClearable;
 
 public class SwingCmds implements IStringable {
@@ -14,15 +14,15 @@ public class SwingCmds implements IStringable {
 
    private ArrayList<IClearable> clearables = new ArrayList<IClearable>();
 
-   private ClearAction clearAction;
+   private BActionClear clearAction;
    
    public SwingCmds(SwingCtx sc) {
       this.sc = sc;
    }
    
-   public ClearAction getClearAction() {
+   public BActionClear getClearAction() {
       if(clearAction == null) {
-         clearAction = new ClearAction(sc);
+         clearAction = new BActionClear(sc);
       }
       return clearAction;
    }
