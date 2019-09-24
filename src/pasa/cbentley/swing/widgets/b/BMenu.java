@@ -7,9 +7,10 @@ import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.imytab.IMyGui;
+import pasa.cbentley.swing.interfaces.IMenuSwing;
 import pasa.cbentley.swing.menu.ITechMenu;
 
-public class BMenu extends JMenu implements IMyGui, ITechMenu {
+public class BMenu extends JMenu implements IMyGui, ITechMenu, IMenuSwing {
 
    private String           key;
 

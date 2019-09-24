@@ -14,8 +14,9 @@ import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.imytab.IMyGui;
+import pasa.cbentley.swing.interfaces.IMenuSwing;
 
-public class BPopupMenu extends JPopupMenu implements IMyGui, PopupMenuListener {
+public class BPopupMenu extends JPopupMenu implements IMyGui, PopupMenuListener, IMenuSwing {
 
    protected final SwingCtx sc;
 
