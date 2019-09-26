@@ -21,6 +21,13 @@ import pasa.cbentley.swing.ctx.SwingCtx;
 
 public class UIData implements IStringable, PropertyChangeListener {
 
+   public static void main(String[] args) {
+      UCtx uc = new UCtx();
+      SwingCtx sc = new SwingCtx(uc);
+      System.out.println(sc.getUIData());
+      System.out.println(javax.swing.UIManager.getDefaults().getFont("Label.font"));
+   }
+
    private SwingCtx sc;
 
    public UIData(SwingCtx sc) {
@@ -31,47 +38,78 @@ public class UIData implements IStringable, PropertyChangeListener {
       UIManager.addPropertyChangeListener(this);
    }
 
-   public void propertyChange(PropertyChangeEvent e) {
-      String name = e.getPropertyName();
-      if (name.equals("lookAndFeel")) {
-         //send event to my classes
-         BusEvent be = sc.getEventBusSwing().createEvent(IEventsSwing.PID_02_UI, IEventsSwing.EID_02_UI_01_CHANGE, this);
-         //add a few things
-         be.setParamO1(e);
-         sc.getEventBusSwing().putOnBus(be);
-
-      }
-   }
-
-   public Color getCPanelBackground() {
-      return UIManager.getColor("Panel.background");
-   }
-
    public Color getCLabelBackground() {
       return UIManager.getColor("Label.background");
-   }
-
-   public Color getCTextFieldForeground() {
-      return UIManager.getColor("TextField.foreground");
    }
 
    public Color getCLabelForeground() {
       return UIManager.getColor("Label.foreground");
    }
 
-   public boolean isLabelForegroundDark() {
-      Color labelFg = getCLabelForeground();
-      //analyse color of label
-      int r = labelFg.getRed();
-      int g = labelFg.getGreen();
-      int b = labelFg.getBlue();
-      int add = r + g + b;
-      //average is 128*3 = 384
-      if (add < 400) {
-         return true;
-      } else {
-         return false;
+   public Color getCPanelBackground() {
+      return UIManager.getColor("Panel.background");
+   }
+
+   public Color getCTextFieldForeground() {
+      return UIManager.getColor("TextField.foreground");
+   }
+
+   public List<UIDataElement> getElementsAll() {
+      List<UIDataElement> fontKeys = new ArrayList<UIDataElement>();
+      Set<Entry<Object, Object>> entries = UIManager.getLookAndFeelDefaults().entrySet();
+      for (Entry entry : entries) {
+         UIDataElement ui = new UIDataElement(sc);
+         String keyElement = entry.getKey().toString();
+         if (keyElement.endsWith(".font")) {
+            Object key = entry.getKey();
+            Font font = javax.swing.UIManager.getDefaults().getFont(key);
+            ui.setKey(keyElement);
+            ui.setFont(font);
+         } else if (entry.getValue() instanceof Color) {
+            ui.setKey(keyElement);
+            ui.setColor((Color) entry.getValue());
+         } else {
+            ui.setKey(keyElement);
+            ui.setValueStr(entry.getValue().toString());
+         }
+         fontKeys.add(ui);
       }
+
+      return fontKeys;
+   }
+
+   public List<UIDataElement> getElementsColors() {
+      List<UIDataElement> colorElements = new ArrayList<UIDataElement>();
+      Set<Entry<Object, Object>> entries = UIManager.getLookAndFeelDefaults().entrySet();
+      for (Entry entry : entries) {
+         if (entry.getValue() instanceof Color) {
+            UIDataElement ui = new UIDataElement(sc);
+            ui.setKey((String) entry.getKey());
+            ui.setColor((Color) entry.getValue());
+
+            colorElements.add(ui);
+         }
+      }
+      return colorElements;
+   }
+
+   public List<UIDataElement> getElementsFonts() {
+      List<UIDataElement> fontKeys = new ArrayList<UIDataElement>();
+      Set<Entry<Object, Object>> entries = UIManager.getLookAndFeelDefaults().entrySet();
+      for (Entry entry : entries) {
+         if (entry.getKey().toString().endsWith(".font")) {
+            Object key = entry.getKey();
+            UIDataElement ui = new UIDataElement(sc);
+            Font font = javax.swing.UIManager.getDefaults().getFont(key);
+
+            ui.setKey((String) entry.getKey());
+            ui.setFont(font);
+
+            fontKeys.add(ui);
+         }
+      }
+
+      return fontKeys;
    }
 
    public Font getFontLabel() {
@@ -92,25 +130,6 @@ public class UIData implements IStringable, PropertyChangeListener {
       return keys;
    }
 
-   public List<String> getKeysFont() {
-      List<String> fontKeys = new ArrayList<String>();
-      Set<Entry<Object, Object>> entries = UIManager.getLookAndFeelDefaults().entrySet();
-      for (Entry entry : entries) {
-         if (entry.getKey().toString().endsWith(".font")) {
-            Object key = entry.getKey();
-            String str = key.toString() + " " + entry.getValue();
-            Font font = javax.swing.UIManager.getDefaults().getFont(key);
-            str += font.toString();
-            fontKeys.add(str);
-
-         }
-      }
-
-      // sort the color keys
-      Collections.sort(fontKeys);
-      return fontKeys;
-   }
-
    public List<String> getKeysColor() {
       List<String> colorKeys = new ArrayList<String>();
       Set<Entry<Object, Object>> entries = UIManager.getLookAndFeelDefaults().entrySet();
@@ -123,6 +142,51 @@ public class UIData implements IStringable, PropertyChangeListener {
       // sort the color keys
       Collections.sort(colorKeys);
       return colorKeys;
+   }
+
+   public List<String> getKeysFont() {
+      List<String> fontKeys = new ArrayList<String>();
+      Set<Entry<Object, Object>> entries = UIManager.getLookAndFeelDefaults().entrySet();
+      for (Entry entry : entries) {
+         if (entry.getKey().toString().endsWith(".font")) {
+            Object key = entry.getKey();
+            String str = key.toString() + " " + entry.getValue();
+            Font font = javax.swing.UIManager.getDefaults().getFont(key);
+            str += font.toString();
+            fontKeys.add(str);
+         }
+      }
+
+      // sort the color keys
+      Collections.sort(fontKeys);
+      return fontKeys;
+   }
+
+   public boolean isLabelForegroundDark() {
+      Color labelFg = getCLabelForeground();
+      //analyse color of label
+      int r = labelFg.getRed();
+      int g = labelFg.getGreen();
+      int b = labelFg.getBlue();
+      int add = r + g + b;
+      //average is 128*3 = 384
+      if (add < 400) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+
+   public void propertyChange(PropertyChangeEvent e) {
+      String name = e.getPropertyName();
+      if (name.equals("lookAndFeel")) {
+         //send event to my classes
+         BusEvent be = sc.getEventBusSwing().createEvent(IEventsSwing.PID_02_UI, IEventsSwing.EID_02_UI_01_CHANGE, this);
+         //add a few things
+         be.setParamO1(e);
+         sc.getEventBusSwing().putOnBus(be);
+
+      }
    }
 
    //#mdebug
@@ -149,17 +213,10 @@ public class UIData implements IStringable, PropertyChangeListener {
       dc.root1Line(this, "UIData");
    }
 
-   public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
-   }
-
    //#enddebug
 
-   public static void main(String[] args) {
-      UCtx uc = new UCtx();
-      SwingCtx sc = new SwingCtx(uc);
-      System.out.println(sc.getUIData());
-      System.out.println(javax.swing.UIManager.getDefaults().getFont("Label.font"));
+   public UCtx toStringGetUCtx() {
+      return sc.getUCtx();
    }
 
 }

@@ -297,8 +297,11 @@ public class IntToColor {
          colorsCarouselLight.add(new Color(ColorUtils.FR_JAUNE_Or));
          colorsCarouselLight.add(new Color(ColorUtils.FR_ROSE_Clair));
          colorsCarouselLight.add(new Color(ColorUtils.FR_VERT_Ocean_moyen));
+         colorsCarouselLight.add(new Color(ColorUtils.FR_BLEU_Dragee));
          colorsCarouselLight.add(new Color(ColorUtils.FR_BRUN_Sable));
+         colorsCarouselLight.add(new Color(ColorUtils.FR_VERT_Asperge));
          colorsCarouselLight.add(new Color(ColorUtils.FR_BLEU_Acier));
+         colorsCarouselLight.add(new Color(ColorUtils.FR_JAUNE_Imperial));
       }
 
       return colorsCarouselLight;
