@@ -33,7 +33,7 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
 
    private ArrayList<T>      data             = new ArrayList<T>();
 
-   protected SwingCtx        sc;
+   protected final SwingCtx  sc;
 
    /**
     * Simple constructor. Assign the context.
