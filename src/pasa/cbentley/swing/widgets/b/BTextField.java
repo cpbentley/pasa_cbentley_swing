@@ -29,10 +29,16 @@ public class BTextField extends JTextField implements IMyGui, FocusListener {
 
    private String            keyHint;
 
+   private String            keyTip;
+
    private boolean           isShowingHint;
 
-
    public BTextField(SwingCtx sc) {
+      this.sc = sc;
+   }
+
+   public BTextField(SwingCtx sc, int cols) {
+      super(cols);
       this.sc = sc;
    }
 
@@ -48,7 +54,6 @@ public class BTextField extends JTextField implements IMyGui, FocusListener {
       this.getDocument().addDocumentListener(doc);
    }
 
-   
    /**
     * Correct way to check if this {@link BTextField} is empty.
     * 
@@ -86,8 +91,12 @@ public class BTextField extends JTextField implements IMyGui, FocusListener {
    public void guiUpdate() {
       if (key != null) {
          setText(sc.getResString(key));
-         setToolTipText(sc.getResString(key + ".tip"));
-
+         if (getKeyTip() == null) {
+            sc.guiUpdateTooltip(this, key);
+         }
+      }
+      if (getKeyTip() != null) {
+         setToolTipText(sc.getResString(getKeyTip()));
       }
    }
 
@@ -121,6 +130,14 @@ public class BTextField extends JTextField implements IMyGui, FocusListener {
       return sc.getUCtx();
    }
    //#enddebug
+
+   public String getKeyTip() {
+      return keyTip;
+   }
+
+   public void setKeyTip(String keyTip) {
+      this.keyTip = keyTip;
+   }
 
    //
    //   @Override

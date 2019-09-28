@@ -1,10 +1,15 @@
 package pasa.cbentley.swing.table;
 
 import java.awt.event.MouseListener;
+import java.util.Comparator;
 
+import javax.swing.DefaultRowSorter;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
@@ -115,13 +120,26 @@ public class TableBentley<T> implements IStringable, IMyGui {
     */
    public void setDefSort(int col) {
       table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-      table.setAutoCreateRowSorter(true);
+      //table.setAutoCreateRowSorter(true);
+      TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+      table.setRowSorter(sorter);
       table.getRowSorter().toggleSortOrder(col);
 
    }
 
-   public void setModel(ModelTableBAbstract model) {
+   public void setComparator(int col, Comparator comparator) {
+      RowSorter<? extends TableModel> rowSorter = table.getRowSorter();
+      if(rowSorter != null && rowSorter instanceof DefaultRowSorter) {
+         DefaultRowSorter sorter = (DefaultRowSorter) rowSorter;
+         sorter.setComparator(col, comparator);
+      }
+   }
+   
+   public void setModel(ModelTableBAbstract<T> model) {
+      this.model = model;
       this.table.setModel(model);
+      TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+      table.setRowSorter(sorter);
    }
 
    public void setTable(JTable table) {
