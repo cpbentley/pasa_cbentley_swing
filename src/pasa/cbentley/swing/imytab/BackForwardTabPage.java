@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.ITechLvl;
-import pasa.cbentley.swing.actions.BackAction;
-import pasa.cbentley.swing.actions.ForwardAction;
+import pasa.cbentley.swing.actions.BActionBack;
+import pasa.cbentley.swing.actions.BActionForward;
 import pasa.cbentley.swing.actions.IBackForwardable;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
@@ -19,9 +19,9 @@ import pasa.cbentley.swing.ctx.SwingCtx;
  */
 public class BackForwardTabPage implements IBackForwardable {
 
-   private BackAction          actionBack;
+   private BActionBack          actionBack;
 
-   private ForwardAction       actionForward;
+   private BActionForward       actionForward;
 
    /**
     * 
@@ -51,8 +51,8 @@ public class BackForwardTabPage implements IBackForwardable {
       super();
       this.sc = sc;
       this.setter = setter;
-      actionBack = new BackAction(sc, this, KeyEvent.VK_LEFT);
-      actionForward = new ForwardAction(sc, this, KeyEvent.VK_RIGHT);
+      actionBack = new BActionBack(sc, this, KeyEvent.VK_LEFT);
+      actionForward = new BActionForward(sc, this, KeyEvent.VK_RIGHT);
 
       actionBack.setEnabled(false);
       actionForward.setEnabled(false);
@@ -134,11 +134,11 @@ public class BackForwardTabPage implements IBackForwardable {
       }
    }
 
-   public BackAction getActionBack() {
+   public BActionBack getActionBack() {
       return actionBack;
    }
 
-   public ForwardAction getActionForward() {
+   public BActionForward getActionForward() {
       return actionForward;
    }
 

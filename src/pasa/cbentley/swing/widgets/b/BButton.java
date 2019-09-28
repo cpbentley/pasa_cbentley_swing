@@ -131,10 +131,7 @@ public class BButton extends JButton implements MouseListener, IMyGui {
 
    public void guiUpdate() {
       updateGuiState();
-      if(keyNormal != null) {
-         this.setToolTipText(sc.getResString(keyNormal + ".tip"));
-      }
-
+      sc.guiUpdateTooltip(this, keyNormal);
    }
 
    //#mdebug

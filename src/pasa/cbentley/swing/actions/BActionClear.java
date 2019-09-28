@@ -15,19 +15,19 @@ import pasa.cbentley.swing.imytab.IMyGui;
  * @author Charles Bentley
  *
  */
-public class ClearAction extends BAbstractAction implements IMyGui {
+public class BActionClear extends BActionAbstract implements IMyGui {
 
    /**
     * 
     */
    private static final long serialVersionUID = -1955694886937869519L;
 
-   public ClearAction(SwingCtx sc) {
+   public BActionClear(SwingCtx sc) {
       super(sc);
       guiUpdate();
    }
 
-   public ClearAction(SwingCtx sc, Integer mnemonic) {
+   public BActionClear(SwingCtx sc, Integer mnemonic) {
       super(sc);
       putValue(MNEMONIC_KEY, mnemonic);
       guiUpdate();
@@ -35,7 +35,7 @@ public class ClearAction extends BAbstractAction implements IMyGui {
 
    public void actionPerformed(ActionEvent e) {
       //#debug
-      sc.toDLog().pFlow("", null, ClearAction.class, "actionPerformed", ITechLvl.LVL_05_FINE, true);
+      sc.toDLog().pFlow("", null, BActionClear.class, "actionPerformed", ITechLvl.LVL_05_FINE, true);
       sc.getCmds().cmdClear();
    }
 

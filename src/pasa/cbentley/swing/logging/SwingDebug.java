@@ -1,5 +1,6 @@
 package pasa.cbentley.swing.logging;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Frame;
@@ -380,6 +381,25 @@ public class SwingDebug {
       return dc.toString();
    }
 
+   public String d1(Color color) {
+      Dctx dc = new Dctx(sc.getUCtx());
+      d1(color, dc);
+      return dc.toString();
+   }
+
+   public String d1(Color color, Dctx dc) {
+      dc.root1Line(color, "Color");
+      if(color == null) {
+         dc.append(" is null");
+      } else {
+         dc.appendVarWithSpace("r", color.getRed());
+         dc.appendVarWithSpace("g", color.getGreen());
+         dc.appendVarWithSpace("b", color.getBlue());
+         dc.appendVarWithSpace("a", color.getAlpha());
+      }
+      return dc.toString();
+   }
+
    public void d1(ChangeEvent e, Dctx dc) {
       dc.root1Line(e, "ChangeEvent");
       dc.sameLineO1(e.getSource(), "Source", sc);
@@ -422,7 +442,6 @@ public class SwingDebug {
       return dc.toString();
    }
 
-
    public void d(DefaultComboBoxModel model, Dctx dc) {
       dc.root(model, "DefaultComboBoxModel");
       dc.appendVarWithSpace("size", model.getSize());
@@ -432,6 +451,6 @@ public class SwingDebug {
          dc.appendVar(i + "", model.getElementAt(i));
       }
    }
-   
+
    //#enddebug
 }

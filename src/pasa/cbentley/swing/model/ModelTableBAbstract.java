@@ -63,11 +63,17 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
     */
    public void addRows(List<T> rows) {
       int rowCount = getRowCount();
+      int numNewRows = rows.size();
+      int lastNewRow = rowCount + numNewRows - 1;
       data.addAll(rows);
-      for (int i = 0; i < rows.size(); i++) {
+      for (int i = 0; i < numNewRows; i++) {
          computeStats(rows.get(i), rowCount + i);
       }
-      fireTableRowsInserted(rowCount, getRowCount() - 1);
+      try {
+         fireTableRowsInserted(rowCount, lastNewRow);
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
    }
 
    /**
@@ -116,9 +122,8 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
     * @param row
     */
    public void computeStatsGlobal() {
-      
-   }
 
+   }
 
    /**
     * Returns a read only copy of the model data.

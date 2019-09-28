@@ -1,6 +1,7 @@
 package pasa.cbentley.swing.actions;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
@@ -13,21 +14,31 @@ import pasa.cbentley.swing.imytab.IMyGui;
  * @author Charles Bentley
  *
  */
-public abstract class BAbstractAction extends AbstractAction implements IMyGui, IStringable {
+public abstract class BActionAbstract extends AbstractAction implements IMyGui, IStringable {
 
    /**
     * 
     */
    private static final long serialVersionUID = 4061766705523249393L;
-   
-   
-   protected final SwingCtx sc;
 
-   public BAbstractAction(SwingCtx sc) {
+   protected String          keyName;
+
+   protected String          keyIconSmall;
+
+   protected final SwingCtx  sc;
+
+   public BActionAbstract(SwingCtx sc) {
       this.sc = sc;
    }
-   
-   
+
+   public void guiUpdate() {
+      this.putValue(Action.NAME, sc.getResString(keyName));
+      //based on global theme size take an icon 16/32/64
+      if (keyIconSmall != null) {
+         this.putValue(Action.SMALL_ICON, sc.getResIcon(keyIconSmall));
+      }
+   }
+
    //#mdebug
    public String toString() {
       return Dctx.toString(this);
@@ -49,5 +60,5 @@ public abstract class BAbstractAction extends AbstractAction implements IMyGui, 
       return sc.getUCtx();
    }
    //#enddebug
-   
+
 }

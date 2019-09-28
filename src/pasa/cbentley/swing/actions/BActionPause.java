@@ -15,19 +15,19 @@ import pasa.cbentley.swing.imytab.IMyGui;
  * @author Charles Bentley
  *
  */
-public class ActionStop extends BAbstractAction implements IMyGui {
+public class BActionPause extends BActionAbstract implements IMyGui {
 
    /**
     * 
     */
    private static final long serialVersionUID = -1955694886937869519L;
 
-   public ActionStop(SwingCtx sc) {
+   public BActionPause(SwingCtx sc) {
       super(sc);
       guiUpdate();
    }
 
-   public ActionStop(SwingCtx sc, Integer mnemonic) {
+   public BActionPause(SwingCtx sc, Integer mnemonic) {
       super(sc);
       putValue(MNEMONIC_KEY, mnemonic);
       guiUpdate();
@@ -35,23 +35,23 @@ public class ActionStop extends BAbstractAction implements IMyGui {
 
    public void actionPerformed(ActionEvent e) {
       //#debug
-      sc.toDLog().pFlow("", null, ActionStop.class, "actionPerformed", ITechLvl.LVL_05_FINE, true);
+      sc.toDLog().pFlow("", null, BActionPause.class, "actionPerformed", ITechLvl.LVL_05_FINE, true);
       sc.getCmds().cmdClear();
    }
 
    public void guiUpdate() {
-      this.putValue(Action.NAME, sc.getResString("action.stop.name")); //update with res bundle
-      this.putValue(Action.SMALL_ICON, sc.getResIcon("action.stop.icon"));
+      this.putValue(Action.NAME, sc.getResString("action.pause.name")); //update with res bundle
+      this.putValue(Action.SMALL_ICON, sc.getResIcon("action.pause.icon"));
    }
 
    //#mdebug
    public void toString(Dctx dc) {
-      dc.root(this, "ActionStop");
+      dc.root(this, "ActionPause");
       super.toString(dc.sup());
    }
 
    public void toString1Line(Dctx dc) {
-      dc.root1Line(this, "ActionStop");
+      dc.root1Line(this, "ActionPause");
       super.toString1Line(dc.sup1Line());
    }
    //#enddebug

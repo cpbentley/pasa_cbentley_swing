@@ -101,7 +101,7 @@ public class Renderer extends JComponent implements Runnable, MouseMotionListene
 
          System.out.println("Paint");
          try {
-            Thread.sleep(20L);
+            Thread.sleep(100L);
          } catch (InterruptedException interruptedexception) {
          }
 

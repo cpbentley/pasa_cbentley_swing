@@ -7,7 +7,7 @@ import javax.swing.Action;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
-public class ForwardAction extends BAbstractAction {
+public class BActionForward extends BActionAbstract {
 
    /**
     * 
@@ -16,12 +16,12 @@ public class ForwardAction extends BAbstractAction {
 
    private IBackForwardable  r;
 
-   public ForwardAction(SwingCtx sc, IBackForwardable r) {
+   public BActionForward(SwingCtx sc, IBackForwardable r) {
       super(sc);
       this.r = r;
    }
 
-   public ForwardAction(SwingCtx sc, IBackForwardable r, Integer mnemonic) {
+   public BActionForward(SwingCtx sc, IBackForwardable r, Integer mnemonic) {
       super(sc);
       this.r = r;
       putValue(MNEMONIC_KEY, mnemonic);

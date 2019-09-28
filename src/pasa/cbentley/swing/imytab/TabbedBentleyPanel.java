@@ -160,10 +160,19 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
    public final void initTab() {
       changeEventDisable();
       initTabs();
+      boolean isRequiredToSelectFirst = true;
       //select tab from preference here
       String tabID = sc.getPrefs().get(getPrefKeySelectedTab(), "");
       if (tabID != null && !tabID.equals("")) {
-         selectTabChildByID(tabID);
+         boolean wasFoundAndSelected = selectTabChildByID(tabID);
+         if(wasFoundAndSelected) {
+            isRequiredToSelectFirst = false;
+         }
+      } 
+      if(isRequiredToSelectFirst && !managedPanels.isEmpty()) {
+         IMyTab iMyTab = managedPanels.get(0);
+         iMyTab.initCheck();
+         selectTab(iMyTab);
       }
       changeEventEnable();
    }
@@ -924,15 +933,17 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
    /**
     * Select the Tab with the given ID and initCheck it
     * @param id
+    * @return true if found and selected
     */
-   private void selectTabChildByID(String id) {
+   private boolean selectTabChildByID(String id) {
       for (IMyTab tab : managedPanels) {
          if (id.equals(tab.getTabInternalID())) {
             tab.initCheck();
             selectTab(tab);
-            break;
+            return true;
          }
       }
+      return false;
    }
 
    public void showTab(IMyTab tab) {
@@ -1017,18 +1028,18 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
       Component newSelectedTab1 = jtabbePane.getSelectedComponent();
       IMyTab newSelectedTab = null;
       if (newSelectedTab1 instanceof IMyTab) {
-         newSelectedTab = (IMyTab)newSelectedTab1;
+         newSelectedTab = (IMyTab) newSelectedTab1;
       } else {
          throw new IllegalArgumentException("Only IMyTabs");
       }
 
       //update current tab data with sss if not done already
       if (myCurrentTab != null) {
-         if(myCurrentTab == oldSelectedTabInWaiting) {
+         if (myCurrentTab == oldSelectedTabInWaiting) {
             //case of tab requests user action before being hidden by another
             return;
          }
-         
+
          //when tab is selected and sent to a frame. we come here
          //when tab is moving to another TBLR position as well
          if (myCurrentTab.getTabPosition().isFramed()) {
