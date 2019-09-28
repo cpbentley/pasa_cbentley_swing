@@ -29,7 +29,6 @@ import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
 import javax.swing.Action;
-import javax.swing.ActionMap;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -50,6 +49,7 @@ import pasa.cbentley.core.src4.event.EventBusArray;
 import pasa.cbentley.core.src4.event.IEventBus;
 import pasa.cbentley.core.src4.event.IEventConsumer;
 import pasa.cbentley.core.src4.helpers.StringBBuilder;
+import pasa.cbentley.core.src4.helpers.StringParametrized;
 import pasa.cbentley.core.src4.interfaces.IPrefs;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
@@ -80,7 +80,6 @@ import pasa.cbentley.swing.table.TableUtils;
 import pasa.cbentley.swing.threads.PanelSwingWorker;
 import pasa.cbentley.swing.utils.BufferedImageUtils;
 import pasa.cbentley.swing.utils.SwingColorStore;
-import pasa.cbentley.swing.widgets.b.BButton;
 import pasa.cbentley.swing.window.CBentleyFrame;
 
 /**
@@ -89,6 +88,8 @@ import pasa.cbentley.swing.window.CBentleyFrame;
  *
  */
 public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, IEventConsumer {
+   public static final char         DEF_CHECK             = '%';
+
    public static final String       PREF_LOCALE_COUNTRY   = "localecountry";
 
    public static final String       PREF_LOCALE_LANG      = "localelang";
@@ -120,6 +121,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
 
    private IntToColor               intToColor;
 
+   private boolean                  isGlobalLabelTip      = true;
+
    private List<IMyGui>             listGuis              = new ArrayList<IMyGui>(3);
 
    private Locale                   locale;
@@ -144,9 +147,13 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
    //#debug
    private IStringable              root;
 
+   private StringBBuilder           sb;
+
    private SwingDebug               sd;
 
    private SwingCmds                swingCmds;
+
+   private SwingColorStore          swingColorStore;
 
    private TabIconSettings          tabIcons;
 
@@ -159,8 +166,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
    private UIData                   uiData;
 
    private SwingUtilsBentley        utils;
-
-   private SwingColorStore          swingColorStore;
 
    /**
     * Cannot create GUI elements. 
@@ -220,6 +225,46 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       });
    }
 
+   public String buildStringUISerial(char c1, String s2) {
+      sb.reset();
+      sb.append(c1);
+      sb.append(s2);
+      return sb.toString();
+   }
+
+   public String buildStringUISerial(String s1, String s2) {
+      sb.reset();
+      sb.append(s1);
+      sb.append(s2);
+      return sb.toString();
+   }
+
+   /**
+    * Uses the {@link SwingCtx} {@link StringBBuilder} to build a string
+    * 
+    * Only called from the GUI thread.
+    * @param s1
+    * @param s2
+    * @param s3
+    * @return
+    */
+   public String buildStringUISerial(String s1, String s2, String s3) {
+      sb.reset();
+      sb.append(s1);
+      sb.append(s2);
+      sb.append(s3);
+      return sb.toString();
+   }
+
+   public String buildStringUISerial(String s1, String s2, String s3, String s4) {
+      sb.reset();
+      sb.append(s1);
+      sb.append(s2);
+      sb.append(s3);
+      sb.append(s4);
+      return sb.toString();
+   }
+
    public void callBackInMainThread(final ICallBackSwing callBack, final Object o) {
       execute(new Runnable() {
 
@@ -227,6 +272,16 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
             callBack.callBackInSwingThread(o);
          }
       });
+   }
+
+   public void consumeEvent(BusEvent e) {
+      if (e.getProducerID() == PID_3_MEMORY) {
+         //#debug
+         toDLog().pMemory("Memory Event", e, SwingCtx.class, "consumeEvent", LVL_05_FINE, true);
+         if (e.getEventID() == EID_MEMORY_2_USER_REQUESTED_GC) {
+            swingColorStore.clear();
+         }
+      }
    }
 
    public void copyStringToClipboard(String str) {
@@ -646,6 +701,39 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       }
    }
 
+   public String getResString(String key, char check, String param1) {
+      String rootTitle = getResString(key);
+      if (rootTitle != null && rootTitle.charAt(0) == check) {
+         StringParametrized strp = new StringParametrized(uc);
+         strp.setString(rootTitle.substring(1, rootTitle.length()));
+         strp.setParam(buildStringUISerial(check, "1"), param1);
+         return strp.getString();
+      } else {
+         return rootTitle;
+      }
+   }
+
+   public String getResString(String key, char check, String param1, String param2) {
+      String rootTitle = getResString(key);
+      if (rootTitle != null && rootTitle.charAt(0) == check) {
+         StringParametrized strp = new StringParametrized(uc);
+         strp.setString(rootTitle.substring(1, rootTitle.length()));
+         strp.setParam(buildStringUISerial(check, "1"), param1);
+         strp.setParam(buildStringUISerial(check, "2"), param2);
+         return strp.getString();
+      } else {
+         return rootTitle;
+      }
+   }
+
+   public String getResString(String key, int param1) {
+      return getResString(key, DEF_CHECK, String.valueOf(param1));
+   }
+
+   public String getResString(String key, int param1, int param2) {
+      return getResString(key, DEF_CHECK, String.valueOf(param1), String.valueOf(param2));
+   }
+
    /**
     * Null if none. used as a query. No error msg sent.
     * @param key
@@ -657,6 +745,10 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       } catch (MissingResourceException e) {
          return null;
       }
+   }
+
+   public SwingColorStore getSwingColorStore() {
+      return swingColorStore;
    }
 
    public TabIconSettings getTabIcons() {
@@ -707,17 +799,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
    }
 
    /**
-    * Creates a runnable for Gui update later
-    */
-   public void guiUpdateLater() {
-      this.executeLaterInUIThread(new Runnable() {
-         public void run() {
-            guiUpdate();
-         }
-      });
-   }
-
-   /**
     * Call {@link IMyGui#guiUpdate()} on all registered components and on active {@link CBentleyFrame}
     * <br>
     * <br>
@@ -746,6 +827,23 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       //end of log
    }
 
+   public void guiUpdate(IMyTab tab) {
+      if (tab instanceof IMyGui) {
+         ((IMyGui) tab).guiUpdate();
+      }
+   }
+
+   /**
+    * Creates a runnable for Gui update later
+    */
+   public void guiUpdateLater() {
+      this.executeLaterInUIThread(new Runnable() {
+         public void run() {
+            guiUpdate();
+         }
+      });
+   }
+
    public void guiUpdateOnChildren(Container panel) {
       Component[] components = panel.getComponents();
       //#debug
@@ -759,8 +857,15 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       }
    }
 
-   public SwingColorStore getSwingColorStore() {
-      return swingColorStore;
+   public void guiUpdateOnChildrenMenu(JMenu menu) {
+      Component[] components = menu.getMenuComponents();
+      for (int i = 0; i < components.length; i++) {
+         if (components[i] instanceof IMyGui) {
+            ((IMyGui) (components[i])).guiUpdate();
+         } else if (components[i] instanceof Container) {
+            guiUpdateOnChildren((Container) components[i]);
+         }
+      }
    }
 
    public void guiUpdateOnChildrenMenuPopup(JPopupMenu menu) {
@@ -783,21 +888,14 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       }
    }
 
-   public void guiUpdateOnChildrenMenu(JMenu menu) {
-      Component[] components = menu.getMenuComponents();
-      for (int i = 0; i < components.length; i++) {
-         if (components[i] instanceof IMyGui) {
-            ((IMyGui) (components[i])).guiUpdate();
-         } else if (components[i] instanceof Container) {
-            guiUpdateOnChildren((Container) components[i]);
-         }
+   //#enddebug
+
+   public void guiUpdateTooltip(JComponent comp, String keyNormal) {
+      if (keyNormal != null) {
+         String tipKey = buildStringUISerial(keyNormal, ".tip");
+         String tipString = getResString(tipKey);
+         comp.setToolTipText(tipString);
       }
-   }
-
-   private boolean isGlobalLabelTip = true;
-
-   public void setGlobalLabelTip(boolean isGlobalLabelTip) {
-      this.isGlobalLabelTip = isGlobalLabelTip;
    }
 
    /**
@@ -889,8 +987,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       }
    }
 
-   //#enddebug
-
    public void revalidateSwingTree() {
       for (CBentleyFrame frame : allFrames) {
          frame.invalidate();
@@ -920,6 +1016,10 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
          f = f.getParentFile();
       }
       getPrefs().put("folder_" + key, f.getAbsolutePath());
+   }
+
+   public void setGlobalLabelTip(boolean isGlobalLabelTip) {
+      this.isGlobalLabelTip = isGlobalLabelTip;
    }
 
    public void setIBackForwardable(IBackForwardable backforwardable) {
@@ -959,6 +1059,19 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       this.tabMenuBarFactory = tabMenuBarFactory;
    }
 
+   public FrameIMyTab showInNewFrame(FrameIMyTab f, float width, float height) {
+      f.pack();
+      //default dimension? decided based on several parameters based on hints
+      // current size
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      int w = (int) ((float) screenSize.width * width);
+      int h = (int) ((float) screenSize.height * height);
+      f.setLocation(screenSize.width / 2 - w / 2, screenSize.height / 2 - h / 2);
+      f.setSize(w, h);
+      f.setVisible(true);
+      return f;
+   }
+
    /**
     * Shows the {@link IMyTab} as a root in its own {@link FrameIMyTab}.
     * <br>
@@ -974,19 +1087,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       int w = 940;
       int h = 600;
-      f.setLocation(screenSize.width / 2 - w / 2, screenSize.height / 2 - h / 2);
-      f.setSize(w, h);
-      f.setVisible(true);
-      return f;
-   }
-
-   public FrameIMyTab showInNewFrame(FrameIMyTab f, float width, float height) {
-      f.pack();
-      //default dimension? decided based on several parameters based on hints
-      // current size
-      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-      int w = (int) ((float) screenSize.width * width);
-      int h = (int) ((float) screenSize.height * height);
       f.setLocation(screenSize.width / 2 - w / 2, screenSize.height / 2 - h / 2);
       f.setSize(w, h);
       f.setVisible(true);
@@ -1177,59 +1277,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       } catch (MissingResourceException e) {
          getLog().consoleLogError("Resource Bundle for " + lang + " and " + country + " not found.");
          return false;
-      }
-   }
-
-   public void consumeEvent(BusEvent e) {
-      if (e.getProducerID() == PID_3_MEMORY) {
-         //#debug
-         toDLog().pMemory("Memory Event", e, SwingCtx.class, "consumeEvent", LVL_05_FINE, true);
-         if (e.getEventID() == EID_MEMORY_2_USER_REQUESTED_GC) {
-            swingColorStore.clear();
-         }
-      }
-   }
-
-   private StringBBuilder sb;
-
-   /**
-    * Uses the {@link SwingCtx} {@link StringBBuilder} to build a string
-    * 
-    * Only called from the GUI thread.
-    * @param s1
-    * @param s2
-    * @param s3
-    * @return
-    */
-   public String buildStringUISerial(String s1, String s2, String s3) {
-      sb.reset();
-      sb.append(s1);
-      sb.append(s2);
-      sb.append(s3);
-      return sb.toString();
-   }
-
-   public String buildStringUISerial(String s1, String s2) {
-      sb.reset();
-      sb.append(s1);
-      sb.append(s2);
-      return sb.toString();
-   }
-
-   public String buildStringUISerial(String s1, String s2, String s3, String s4) {
-      sb.reset();
-      sb.append(s1);
-      sb.append(s2);
-      sb.append(s3);
-      sb.append(s4);
-      return sb.toString();
-   }
-
-   public void guiUpdateTooltip(JComponent comp, String keyNormal) {
-      if (keyNormal != null) {
-         String tipKey = buildStringUISerial(keyNormal, ".tip");
-         String tipString = getResString(tipKey);
-         comp.setToolTipText(tipString);
       }
    }
 

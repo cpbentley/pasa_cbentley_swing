@@ -16,6 +16,8 @@ public class BTextArea extends JTextArea implements IMyGui {
 
    private String        textKey;
 
+   private String        textKeyTip;
+
    public String getTextKey() {
       return textKey;
    }
@@ -42,8 +44,11 @@ public class BTextArea extends JTextArea implements IMyGui {
    }
 
    public void guiUpdate() {
-      if(textKey != null) {
+      if (textKey != null) {
          this.setText(sc.getResString(textKey));
+      }
+      if (textKeyTip != null) {
+         this.setToolTipText(sc.getResString(textKeyTip));
       }
    }
 
@@ -74,5 +79,13 @@ public class BTextArea extends JTextArea implements IMyGui {
       return sc.getUCtx();
    }
    //#enddebug
+
+   public String getTextKeyTip() {
+      return textKeyTip;
+   }
+
+   public void setTextKeyTip(String textKeyTip) {
+      this.textKeyTip = textKeyTip;
+   }
 
 }

@@ -78,26 +78,41 @@ public class ModelColumnBAbstract implements IStringable {
    }
 
    public void setBoolean(int colIndex, String key) {
+      if(colIndex < 0) {
+         return;
+      }
       classes[colIndex] = Boolean.class;
       colKey[colIndex] = key;
    }
 
    public void setClass(int colIndex, String key, Class c) {
+      if(colIndex < 0) {
+         return;
+      }
       classes[colIndex] = c;
       colKey[colIndex] = key;
    }
 
    public void setDate(int colIndex, String key) {
+      if(colIndex < 0) {
+         return;
+      }
       classes[colIndex] = Date.class;
       colKey[colIndex] = key;
    }
 
    public void setDouble(int colIndex, String key) {
+      if(colIndex < 0) {
+         return;
+      }
       classes[colIndex] = Double.class;
       colKey[colIndex] = key;
    }
 
    public void setInteger(int colIndex, String key) {
+      if(colIndex < 0) {
+         return;
+      }
       classes[colIndex] = Integer.class;
       colKey[colIndex] = key;
    }
@@ -111,11 +126,17 @@ public class ModelColumnBAbstract implements IStringable {
    }
 
    public void setLong(int colIndex, String key) {
+      if(colIndex < 0) {
+         return;
+      }
       classes[colIndex] = Long.class;
       colKey[colIndex] = key;
    }
 
    public void setString(int colIndex, String key) {
+      if(colIndex < 0) {
+         return;
+      }
       classes[colIndex] = String.class;
       colKey[colIndex] = key;
    }

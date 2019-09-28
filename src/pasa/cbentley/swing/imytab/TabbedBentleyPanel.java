@@ -946,8 +946,18 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
       return false;
    }
 
+   /**
+    * Programmatically selects and show the tab which should belong to this
+    * {@link TabbedBentleyPanel}
+    * Contrary to {@link TabbedBentleyPanel#setSelected(IMyTab)}
+    * 
+    * this method will make sure Tab has been GuiUpdated
+    * @param tab
+    */
    public void showTab(IMyTab tab) {
       selectTab(tab);
+      //TODO fix the GUI update problem globally
+      sc.guiUpdate(tab);
    }
 
    public void showPage(String page) {

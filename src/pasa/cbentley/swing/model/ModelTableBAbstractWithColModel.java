@@ -22,25 +22,33 @@ import pasa.cbentley.swing.ctx.SwingCtx;
 public abstract class ModelTableBAbstractWithColModel<T> extends ModelTableBAbstract<T> implements IStringable {
 
    private ModelColumnBAbstract columnModel;
-   
+
    public ModelTableBAbstractWithColModel(SwingCtx sc, int numColumns) {
       super(sc);
+      initColumnModel(numColumns);
+   }
+
+   public ModelTableBAbstractWithColModel(SwingCtx sc) {
+      super(sc);
+    
+   }
+   
+   protected void initColumnModel(int numColumns) {
       columnModel = new ModelColumnBAbstract(sc);
       columnModel.initFor(numColumns);
    }
-   
+
    public ModelColumnBAbstract getColumnModel() {
       return columnModel;
    }
-
 
    /**
     * Reset the col
     */
    public void guiUpdate() {
-      
+
    }
-   
+
    /**
     * Returns the tooltip text for the column.
     * @param col
@@ -58,11 +66,9 @@ public abstract class ModelTableBAbstractWithColModel<T> extends ModelTableBAbst
       return columnModel.getColumnCount();
    }
 
-
    public String getColumnName(int col) {
       return columnModel.getColumnName(col);
    }
-
 
    //#mdebug
    public void toString(Dctx dc) {
@@ -82,6 +88,5 @@ public abstract class ModelTableBAbstractWithColModel<T> extends ModelTableBAbst
    }
 
    //#enddebug
-   
 
 }
