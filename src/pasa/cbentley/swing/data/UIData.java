@@ -197,11 +197,11 @@ public class UIData implements IStringable, PropertyChangeListener {
    public void toString(Dctx dc) {
       dc.root(this, "UIData");
       dc.nl();
-      sc.getC5().toString(dc, getKeysColor(), "Colors");
+      sc.getC5().toStringListString(dc, getKeysColor(), "Colors");
       dc.nl();
-      sc.getC5().toString(dc, getKeysFont(), "Fonts");
+      sc.getC5().toStringListString(dc, getKeysFont(), "Fonts");
       dc.nl();
-      sc.getC5().toString(dc, getKeysAll(), "All");
+      sc.getC5().toStringListString(dc, getKeysAll(), "All");
 
    }
 
