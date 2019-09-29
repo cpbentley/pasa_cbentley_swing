@@ -56,6 +56,10 @@ public abstract class AbstractTabTable<T> extends AbstractMyTab implements IWork
    public void cmdToggleRowHeader() {
       table.cmdToggleRowHeader();
    }
+   
+   public void cmdFit() {
+      resizeTableColumns();
+   }
 
    /**
     * 
