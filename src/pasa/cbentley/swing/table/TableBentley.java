@@ -18,6 +18,7 @@ import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.imytab.IMyGui;
 import pasa.cbentley.swing.model.ModelTableBAbstract;
 import pasa.cbentley.swing.widgets.b.BPopupMenu;
+import pasa.darrylburke.renderer.MultisortTableHeaderCellRenderer;
 
 public class TableBentley<T> implements IStringable, IMyGui {
 
@@ -87,8 +88,13 @@ public class TableBentley<T> implements IStringable, IMyGui {
    }
 
    public void guiUpdate() {
+
       lis.setGlobalTip(sc.getResString("table.globaltip"));
+      
+      //this line remove comparator from RowSorter.. we have to add them back in the guiUpdate
+      //method of TablePanelAbstract!
       model.fireTableStructureChanged(); //force update of columns, cell renderers
+      
       if (popupMenu != null) {
          popupMenu.guiUpdate();
       }
@@ -124,6 +130,8 @@ public class TableBentley<T> implements IStringable, IMyGui {
       TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
       table.setRowSorter(sorter);
       table.getRowSorter().toggleSortOrder(col);
+      
+      table.getTableHeader().setDefaultRenderer(new MultisortTableHeaderCellRenderer());
 
    }
 
