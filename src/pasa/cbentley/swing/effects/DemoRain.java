@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.io.IOException;
 
 import pasa.cbentley.core.src4.ctx.UCtx;
+import pasa.cbentley.core.src5.ctx.C5Ctx;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.window.CBentleyFrame;
 
@@ -20,7 +21,8 @@ public class DemoRain {
 
    public static void main(final String[] args) {
       UCtx uc = new UCtx();
-      SwingCtx sc = new SwingCtx(uc);
+      C5Ctx c5 = new C5Ctx(uc);
+      SwingCtx sc = new SwingCtx(c5);
       final DemoRain demo = new DemoRain(sc);
       javax.swing.SwingUtilities.invokeLater(new Runnable() {
          public void run() {

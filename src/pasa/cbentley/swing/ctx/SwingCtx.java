@@ -132,6 +132,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
     */
    private Locale                   localeFull;
 
+   private Icon placeHolder;
+
    private IPrefs                   prefs;
 
    /**
@@ -169,11 +171,11 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
 
    /**
     * Cannot create GUI elements. 
-    * @param uc
+    * @param c5 {@link SwingCtx} is a src 5 compatible library
     */
-   public SwingCtx(UCtx uc) {
-      super(uc);
-      c5 = new C5Ctx(uc);
+   public SwingCtx(C5Ctx c5) {
+      super(c5.getUCtx());
+      this.c5 = c5;
       this.swingCmds = new SwingCmds(this);
       this.locale = Locale.getDefault();
       this.tu = new TableUtils(this);
@@ -504,6 +506,18 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       return allFrames.get(0);
    }
 
+   private Icon getIconPlaceHolder() {
+      if (placeHolder == null) {
+         placeHolder = createImageIcon("/icons/placeholder.png", null);
+         //#mdebug
+         if (placeHolder == null) {
+            throw new NullPointerException("Place Holder must be defined");
+         }
+         //#enddebug
+      }
+      return placeHolder;
+   }
+
    public int getIconSize(int iconSizeFrame) {
       if (iconSizeFrame == IconFamily.ICON_SIZE_FRAME) {
          return IconFamily.ICON_SIZE_0_SMALLEST;
@@ -641,6 +655,26 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
          }
          return ico;
       }
+   }
+
+   /**
+    * Never null.
+    * If place holder is not found, throw an exception
+    * Icon whose path is located in the resource bundle.
+    * Ignore theme.
+    * @param key
+    * @return
+    */
+   public Icon getResIconOrPlaceHolder(String key) {
+      String iconPath = resBund.getString(key);
+      Icon icon = null;
+      if (iconPath != null) {
+         icon = createImageIcon(iconPath, null);
+      }
+      if (icon == null) {
+         icon = getIconPlaceHolder();
+      }
+      return icon;
    }
 
    public InputStream getResourceAsStream(String name) {

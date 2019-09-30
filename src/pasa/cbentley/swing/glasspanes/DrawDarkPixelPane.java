@@ -29,6 +29,7 @@ import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
+import pasa.cbentley.core.src5.ctx.C5Ctx;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.panels.MemoryPanelProgressBar;
 import pasa.cbentley.swing.window.CBentleyFrame;
@@ -53,7 +54,8 @@ public class DrawDarkPixelPane extends JComponent implements IStringable, Compon
 
    public static void main(String[] args) {
       UCtx uc = new UCtx();
-      final SwingCtx sc = new SwingCtx(uc);
+      C5Ctx c5 = new C5Ctx(uc);
+      final SwingCtx sc = new SwingCtx(c5);
       javax.swing.SwingUtilities.invokeLater(new Runnable() {
          public void run() {
             final CBentleyFrame frame = new CBentleyFrame(sc);

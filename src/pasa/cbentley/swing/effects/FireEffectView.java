@@ -16,6 +16,7 @@ import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.utils.ColorUtils;
+import pasa.cbentley.core.src5.ctx.C5Ctx;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
 /**
@@ -152,7 +153,8 @@ public class FireEffectView extends JFrame implements IStringable {
 
    public static void main(String[] args) {
       UCtx uc = new UCtx();
-      final SwingCtx sc = new SwingCtx(uc);
+      C5Ctx c5 = new C5Ctx(uc);
+      final SwingCtx sc = new SwingCtx(c5);
       SwingUtilities.invokeLater(new Runnable() {
          public void run() {
             new FireEffectView(sc).setVisible(true);

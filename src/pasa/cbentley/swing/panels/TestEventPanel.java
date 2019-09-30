@@ -16,6 +16,7 @@ import javax.swing.event.AncestorListener;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.ITechLvl;
+import pasa.cbentley.core.src5.ctx.C5Ctx;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.imytab.TabbedBentleyPanel;
 import pasa.cbentley.swing.window.CBentleyFrame;
@@ -145,8 +146,8 @@ public class TestEventPanel extends JPanel implements ActionListener {
             UCtx uc = new UCtx();
             //#debug
             uc.toDLog().getDefault().getConfig().setLevelGlobal(ITechLvl.LVL_03_FINEST);
-            
-            SwingCtx sc = new SwingCtx(uc);
+            C5Ctx c5 = new C5Ctx(uc);
+            SwingCtx sc = new SwingCtx(c5);
             CBentleyFrame rootFrame = new CBentleyFrame(sc);
             rootFrame.setDefExitProcedure();
             TestEventPanel panel = new TestEventPanel(sc);

@@ -16,6 +16,7 @@ import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.event.BusEvent;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IStringable;
+import pasa.cbentley.core.src5.ctx.C5Ctx;
 import pasa.cbentley.swing.ctx.IEventsSwing;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
@@ -23,7 +24,8 @@ public class UIData implements IStringable, PropertyChangeListener {
 
    public static void main(String[] args) {
       UCtx uc = new UCtx();
-      SwingCtx sc = new SwingCtx(uc);
+      C5Ctx c5 = new C5Ctx(uc);
+      SwingCtx sc = new SwingCtx(c5);
       System.out.println(sc.getUIData());
       System.out.println(javax.swing.UIManager.getDefaults().getFont("Label.font"));
    }

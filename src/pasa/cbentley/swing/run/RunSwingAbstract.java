@@ -38,8 +38,8 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
 
    public RunSwingAbstract() {
       this.uc = new UCtx();
-      this.sc = new SwingCtx(uc);
       this.c5 = new C5Ctx(uc);
+      this.sc = new SwingCtx(c5);
 
       //#debug
       this.sc.toStringSetRoot(this);
