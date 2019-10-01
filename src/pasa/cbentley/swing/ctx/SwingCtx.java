@@ -916,10 +916,11 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       //#debug
       toDLog().pFlow(components.length + "\t children for container " + panel.getClass().getSimpleName(), null, SwingCtx.class, "guiUpdateOnChildren", LVL_05_FINE, true);
       for (int i = 0; i < components.length; i++) {
-         if (components[i] instanceof IMyGui) {
-            ((IMyGui) (components[i])).guiUpdate();
-         } else if (components[i] instanceof Container) {
-            guiUpdateOnChildren((Container) components[i]);
+         Component c = components[i];
+         if (c instanceof IMyGui) {
+            ((IMyGui) c).guiUpdate();
+         } else if (c instanceof Container) {
+            guiUpdateOnChildren((Container) c);
          }
       }
    }

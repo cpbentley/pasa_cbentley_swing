@@ -1106,7 +1106,9 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
          //this.invalidate();
          sc.revalidateFrame(this);
          if(newSelectedTab instanceof Container) {
-            sc.guiUpdateOnChildren((Container)newSelectedTab);
+            //TODO fix for perf on children
+            sc.guiUpdate(); 
+            //sc.guiUpdateOnChildren((Container)newSelectedTab);
          } else {
             newSelectedTab.guiUpdate();
          }
