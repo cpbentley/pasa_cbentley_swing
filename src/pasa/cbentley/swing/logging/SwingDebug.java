@@ -19,11 +19,14 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
+import javax.swing.MenuElement;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 
 import pasa.cbentley.core.src4.logging.Dctx;
+import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
 /**
@@ -286,7 +289,36 @@ public class SwingDebug {
       dc.nl();
       dc.append(" Located at " + c.getLocation().x + "," + c.getLocation().y);
       dc.nl();
+      JPopupMenu popMenu = c.getComponentPopupMenu();
+      if (popMenu == null) {
+         dc.append("Component PopupMenu is null");
+      } else {
+         if (popMenu instanceof IStringable) {
+            dc.nlLvl("Component PopupMenu", (IStringable) popMenu);
+         } else {
+            this.d(popMenu, dc);
+         }
+      }
+
       this.d((Container) c, dc);
+   }
+
+   public void d(JPopupMenu e, Dctx dc) {
+      dc.root1Line(e, "JPopupMenu");
+      MenuElement[] menuElements = e.getSubElements();
+      dc.appendVarWithSpace(" #elements", menuElements.length);
+      for (int i = 0; i < menuElements.length; i++) {
+         MenuElement menuElement = menuElements[i];
+         this.d(menuElement, dc);
+      }
+   }
+
+   public void d(MenuElement e, Dctx dc) {
+      dc.root(e, "MenuElement");
+   }
+
+   public void d1(JPopupMenu e, Dctx dc) {
+      dc.root1Line(e, "JPopupMenu");
    }
 
    public void d1(ActionEvent e, Dctx dc) {
@@ -389,7 +421,7 @@ public class SwingDebug {
 
    public String d1(Color color, Dctx dc) {
       dc.root1Line(color, "Color");
-      if(color == null) {
+      if (color == null) {
          dc.append(" is null");
       } else {
          dc.appendVarWithSpace("r", color.getRed());
