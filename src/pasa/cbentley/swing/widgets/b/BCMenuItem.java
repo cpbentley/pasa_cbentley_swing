@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 
 import pasa.cbentley.core.src4.ctx.UCtx;
+import pasa.cbentley.core.src4.event.BusEvent;
+import pasa.cbentley.core.src4.event.IEventConsumer;
 import pasa.cbentley.core.src4.interfaces.ICommandable;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.swing.cmd.CmdSwingAbstract;
@@ -26,7 +28,7 @@ import pasa.cbentley.swing.imytab.IMyGui;
  * 
  * @see ICommandable
  */
-public class BCMenuItem<T extends ICommandable> extends JMenuItem implements IMyGui, ActionListener {
+public class BCMenuItem<T extends ICommandable> extends JMenuItem implements IMyGui, ActionListener, IEventConsumer {
 
    /**
     * 
@@ -48,14 +50,39 @@ public class BCMenuItem<T extends ICommandable> extends JMenuItem implements IMy
     * @param cmd
     */
    public BCMenuItem(SwingCtx sc, T t, CmdSwingAbstract<T> cmd) {
+      //#mdebug
+      if (t == null) {
+         throw new NullPointerException();
+      }
+      if (cmd == null) {
+         throw new NullPointerException();
+      }
+      //#enddebug
       this.sc = sc;
       this.t = t;
       this.cmd = cmd;
       this.addActionListener(this);
+      
+      setEnableStateFromCmd();  
+   }
+
+   private void setEnableStateFromCmd() {
+      this.setEnabled(cmd.isEnabled());
    }
 
    public CmdSwingAbstract<T> getCmd() {
       return cmd;
+   }
+
+   public void startListeningToCmdChanges() {
+      sc.getEventBusSwing().addConsumer(this, PID_03_CMD, EID_03_CMD_1_STATE_CHANGE);
+   }
+
+   public void consumeEvent(BusEvent e) {
+      //#debug
+      e.checkSanity(sc, PID_03_CMD, EID_03_CMD_1_STATE_CHANGE);
+
+      setEnableStateFromCmd(); 
    }
 
    public void actionPerformed(ActionEvent e) {
