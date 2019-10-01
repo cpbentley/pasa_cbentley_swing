@@ -1105,7 +1105,11 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
          toDLog().pFlow(" for " + newSelectedTab.getTabInternalID(), this, TabbedBentleyPanel.class, "newTabLayoutValidations", LVL_05_FINE, true);
          //this.invalidate();
          sc.revalidateFrame(this);
-         sc.guiUpdate();
+         if(newSelectedTab instanceof Container) {
+            sc.guiUpdateOnChildren((Container)newSelectedTab);
+         } else {
+            newSelectedTab.guiUpdate();
+         }
       }
    }
 

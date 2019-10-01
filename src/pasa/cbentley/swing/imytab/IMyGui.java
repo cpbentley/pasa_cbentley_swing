@@ -1,6 +1,7 @@
 package pasa.cbentley.swing.imytab;
 
 import pasa.cbentley.core.src4.logging.IStringable;
+import pasa.cbentley.swing.ctx.IEventsSwing;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
 /**
@@ -8,7 +9,7 @@ import pasa.cbentley.swing.ctx.SwingCtx;
  * @author Charles Bentley
  *
  */
-public interface IMyGui extends IStringable {
+public interface IMyGui extends IStringable, IEventsSwing {
 
    /**
     * Update GUI components as if component was created.

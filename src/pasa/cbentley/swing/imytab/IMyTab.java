@@ -24,7 +24,7 @@ import pasa.cbentley.swing.ctx.SwingCtx;
  * @author Charles Bentley
  *
  */
-public interface IMyTab extends IStringable {
+public interface IMyTab extends IStringable, IMyGui {
 
    public static final int TITLE_0_SHOW         = 0;
 
