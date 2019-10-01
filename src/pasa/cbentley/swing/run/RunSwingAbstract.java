@@ -23,6 +23,7 @@ import pasa.cbentley.swing.window.CBentleyFrame;
 /**
  * Preferences will be based on this implementation's class name
  * 
+ * The default behavior has a default frame. however it can become null
  * @author Charles Bentley
  *
  */
@@ -30,6 +31,9 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
 
    protected final C5Ctx    c5;
 
+   /**
+    * The first frame.
+    */
    protected CBentleyFrame  frame;
 
    protected final SwingCtx sc;
@@ -73,14 +77,21 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
       initSkinner();
 
       frame = initUIThreadInsideSwing();
-      
-      frame.setExitable(this);
-      sc.guiUpdate();
-      frame.positionFrame();
+
+      if (frame != null) {
+         frame.setExitable(this);
+         sc.guiUpdate();
+         frame.positionFrame();
+      }
    }
 
    /**
     * Implementation must create a {@link CBentleyFrame}
+    * 
+    * The first frame to be shown using the default behavior of {@link RunSwingAbstract}.
+    * 
+    * Could be null if none
+    * 
     * @return CBentleyFrame main frame that will be displayed
     */
    protected abstract CBentleyFrame initUIThreadInsideSwing();
