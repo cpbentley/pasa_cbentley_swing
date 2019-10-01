@@ -4,7 +4,6 @@ import javax.swing.Icon;
 import javax.swing.JPanel;
 
 import pasa.cbentley.core.src4.ctx.UCtx;
-import pasa.cbentley.core.src4.helpers.StringBBuilder;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.ITechLvl;
@@ -35,7 +34,6 @@ public abstract class AbstractMyTab extends JPanel implements IMyTab, IMyGui, IS
     * Set by the {@link TabbedBentleyPanel} when the 
     */
    private final TabPosition position;
-
 
    protected final SwingCtx  sc;
 
@@ -183,11 +181,11 @@ public abstract class AbstractMyTab extends JPanel implements IMyTab, IMyGui, IS
       return true;
    }
 
+   //#mdebug
    public IDLog toDLog() {
       return sc.toDLog();
    }
 
-   //#mdebug
    public String toString() {
       return Dctx.toString(this);
    }
