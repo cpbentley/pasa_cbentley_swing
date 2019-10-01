@@ -132,7 +132,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
     */
    private Locale                   localeFull;
 
-   private Icon placeHolder;
+   private Icon                     placeHolder;
 
    private IPrefs                   prefs;
 
@@ -169,6 +169,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
 
    private SwingUtilsBentley        utils;
 
+   private SwingExecutor executor;
+
    /**
     * Cannot create GUI elements. 
     * @param c5 {@link SwingCtx} is a src 5 compatible library
@@ -181,10 +183,19 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       this.tu = new TableUtils(this);
       this.du = new DrawUtils(this);
       utils = new SwingUtilsBentley(this);
+      
       int[] events = new int[BASE_EVENTS];
+      events[PID_01_SWING] = EID_01_SWING_ZZ_NUM;
       events[PID_02_UI] = EID_02_UI_ZZ_NUM;
+      events[PID_03_CMD] = EID_03_CMD_ZZ_NUM;
       eventBusSwing = new EventBusArray(uc, this, events);
 
+      executor = new SwingExecutor(this);
+      
+      eventBusSwing.setExecutor(executor);
+      uc.getEventBusRoot().setExecutor(executor);
+      
+      
       sb = new StringBBuilder(uc);
 
       swingColorStore = new SwingColorStore(this);
@@ -194,6 +205,10 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
 
       //#debug
       sd = new SwingDebug(this);
+   }
+   
+   public SwingExecutor getSwingExecutor() {
+      return executor;
    }
 
    /**
@@ -232,6 +247,15 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       sb.append(c1);
       sb.append(s2);
       return sb.toString();
+   }
+
+   /**
+    * Only valid in the GUI thread
+    * @return
+    */
+   public StringBBuilder getSBBuilder() {
+      sb.reset();
+      return sb;
    }
 
    public String buildStringUISerial(String s1, String s2) {
@@ -561,6 +585,15 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
          return tabMenuBarFactory.getMenuBar(tab, frame);
       }
       return null;
+   }
+
+   /**
+    * Exit clean up
+    */
+   public void cmdExit() {
+      for (CBentleyFrame frame : allFrames) {
+         frame.savePrefs();
+      }
    }
 
    /**
@@ -1102,6 +1135,17 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       int h = (int) ((float) screenSize.height * height);
       f.setLocation(screenSize.width / 2 - w / 2, screenSize.height / 2 - h / 2);
       f.setSize(w, h);
+      f.setVisible(true);
+      return f;
+   }
+
+   public FrameIMyTab showInNewFramePackCenter(FrameIMyTab f) {
+      f.pack();
+      //default dimension? decided based on several parameters based on hints
+      int width = f.getPreferredSize().width;
+      int height = f.getPreferredSize().height;
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      f.setLocation(screenSize.width / 2 - width / 2, screenSize.height / 2 - height / 2);
       f.setVisible(true);
       return f;
    }
