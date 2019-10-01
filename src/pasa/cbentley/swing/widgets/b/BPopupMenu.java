@@ -58,7 +58,7 @@ public class BPopupMenu extends JPopupMenu implements IMyGui, PopupMenuListener,
    }
 
    public void guiUpdate() {
-      sc.guiUpdateOnChildren(this);
+      sc.guiUpdateOnChildrenMenuPopup(this);
    }
 
    //#mdebug
