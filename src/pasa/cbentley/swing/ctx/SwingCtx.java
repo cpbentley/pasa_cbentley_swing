@@ -169,7 +169,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
 
    private SwingUtilsBentley        utils;
 
-   private SwingExecutor executor;
+   private SwingExecutor            executor;
 
    /**
     * Cannot create GUI elements. 
@@ -183,7 +183,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       this.tu = new TableUtils(this);
       this.du = new DrawUtils(this);
       utils = new SwingUtilsBentley(this);
-      
+
       int[] events = new int[BASE_EVENTS];
       events[PID_01_SWING] = EID_01_SWING_ZZ_NUM;
       events[PID_02_UI] = EID_02_UI_ZZ_NUM;
@@ -191,11 +191,10 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       eventBusSwing = new EventBusArray(uc, this, events);
 
       executor = new SwingExecutor(this);
-      
+
       eventBusSwing.setExecutor(executor);
       uc.getEventBusRoot().setExecutor(executor);
-      
-      
+
       sb = new StringBBuilder(uc);
 
       swingColorStore = new SwingColorStore(this);
@@ -206,7 +205,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       //#debug
       sd = new SwingDebug(this);
    }
-   
+
    public SwingExecutor getSwingExecutor() {
       return executor;
    }
@@ -763,10 +762,15 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
          //#enddebug
          return resBund.getString(key);
       } catch (MissingResourceException e) {
-         getLog().consoleLogError("Cannot find String resource with ID:" + key);
+         //check if we need to log this
+         if (isResMissingLog) {
+            getLog().consoleLogError("Cannot find String resource with ID:" + key);
+         }
          return key;
       }
    }
+
+   private boolean isResMissingLog = true;
 
    public String getResString(String key, char check, String param1) {
       String rootTitle = getResString(key);
@@ -1357,6 +1361,14 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
          getLog().consoleLogError("Resource Bundle for " + lang + " and " + country + " not found.");
          return false;
       }
+   }
+
+   public boolean isResMissingLog() {
+      return isResMissingLog;
+   }
+
+   public void setResMissingLog(boolean isResMissingLog) {
+      this.isResMissingLog = isResMissingLog;
    }
 
 }

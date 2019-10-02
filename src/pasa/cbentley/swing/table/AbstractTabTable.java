@@ -100,10 +100,13 @@ public abstract class AbstractTabTable<T> extends AbstractMyTab implements IWork
     * 
     */
    public void guiUpdate() {
+      //remember current size of columns
+      int[] sizes =  getSwingCtx().getTU().getColumnsSizes(getBenTable().getTable());
       super.guiUpdate();
       if (table != null) {
          table.guiUpdate();
       }
+      getSwingCtx().getTU().setColumnsSizes(getBenTable().getTable(),sizes);
    }
 
    /**

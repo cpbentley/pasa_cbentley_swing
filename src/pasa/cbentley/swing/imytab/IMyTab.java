@@ -124,9 +124,8 @@ public interface IMyTab extends IStringable, IMyGui {
     * 
     * Return true if current tabs accept this fact.
     * Return false if tab refuses because something important must be done before by the user.
-    * When the action has been done by the user, tab will call on its owner
     * 
     * @param newSelectedTab
     */
-   public boolean tabWillBeHiddenByAnotherTab(IMyTab newSelectedTab);
+   public boolean shouldTabBeHiddenByAnotherTab(IMyTab newSelectedTab);
 }

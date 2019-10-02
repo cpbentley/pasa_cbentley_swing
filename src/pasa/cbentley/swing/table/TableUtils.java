@@ -20,14 +20,15 @@ public class TableUtils {
    public TableUtils(SwingCtx sc) {
       this.sc = sc;
    }
-   
+
    public void sortTableDescending(JTable table, int column) {
       sortTable(table, column, SortOrder.DESCENDING);
    }
+
    public void sortTableAscending(JTable table, int column) {
       sortTable(table, column, SortOrder.ASCENDING);
    }
-   
+
    public void sortTable(JTable table, int column, SortOrder sortOrder) {
       DefaultRowSorter<?, ?> sorter = ((DefaultRowSorter) table.getRowSorter());
       ArrayList<RowSorter.SortKey> list = new ArrayList<RowSorter.SortKey>();
@@ -61,6 +62,17 @@ public class TableUtils {
       }
    }
 
+   public int[] getColumnsSizes(JTable table) {
+      int numColumns = table.getColumnCount();
+      TableColumnModel columnModel = table.getColumnModel();
+      int[] sizes = new int[numColumns];
+      for (int column = 0; column < numColumns; column++) {
+         TableColumn tableCol = columnModel.getColumn(column);
+         sizes[column] = tableCol.getWidth();
+      }
+      return sizes;
+   }
+
    public int getColumnHeaderWidth(JTable table, int column) {
 
       TableColumn tableColumn = table.getColumnModel().getColumn(column);
@@ -82,5 +94,14 @@ public class TableUtils {
          width = Math.max(comp.getPreferredSize().width + 4, width);
       }
       columnModel.getColumn(column).setPreferredWidth(width);
+   }
+
+   public void setColumnsSizes(JTable table, int[] sizes) {
+      int numColumns = table.getColumnCount();
+      TableColumnModel columnModel = table.getColumnModel();
+      for (int column = 0; column < numColumns; column++) {
+         TableColumn tableCol = columnModel.getColumn(column);
+         tableCol.setPreferredWidth(sizes[column]);
+      }
    }
 }

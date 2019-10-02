@@ -50,10 +50,11 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
     * Exception handling
     */
    protected void done() {
+      boolean isCancelled = isCancelled();
       //#debug
-      toDLog().pFlow("for ", this, PanelSwingWorker.class, "done", LVL_04_FINER, true);
+      toDLog().pFlow("("+((isCancelled)?"canceled":"success")+") for ", this, PanelSwingWorker.class, "done", LVL_04_FINER, true);
 
-      if (isCancelled()) {
+      if (isCancelled) {
          //no need to get execution exceptions
          wp.panelSwingWorkerCancelled(this);
       } else {
@@ -82,6 +83,13 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
    }
 
    /**
+    * Custom cancel behavior. if its fails, it will call the 
+    * {@link SwingWorker#cancel(boolean)}
+    */
+   public void cancelNiceButInterrupt() {
+      cancel(true);
+   }
+   /**
     * Try to pause the worker.
     */
    public final void pause() {
@@ -95,6 +103,8 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
 
    }
 
+   public abstract String getNameForUser();
+   
    public void propertyChange(PropertyChangeEvent e) {
       //this log shows, this method is called ins the AWT thread
       //#debug

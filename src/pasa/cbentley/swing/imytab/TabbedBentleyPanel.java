@@ -73,6 +73,8 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
     * This class has its own pointer to the current {@link IMyTab}.
     * <br>
     * It allows change state when a Tab is framed out.
+    * 
+    * When a tab is selected, it must be set
     */
    private IMyTab                   myCurrentTab;
 
@@ -165,16 +167,32 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
       String tabID = sc.getPrefs().get(getPrefKeySelectedTab(), "");
       if (tabID != null && !tabID.equals("")) {
          boolean wasFoundAndSelected = selectTabChildByID(tabID);
-         if(wasFoundAndSelected) {
+         if (wasFoundAndSelected) {
             isRequiredToSelectFirst = false;
          }
-      } 
-      if(isRequiredToSelectFirst && !managedPanels.isEmpty()) {
+      }
+      if (isRequiredToSelectFirst && !managedPanels.isEmpty()) {
          IMyTab iMyTab = managedPanels.get(0);
          iMyTab.initCheck();
          selectTab(iMyTab);
       }
+      //we must initialize this field because the ChangeEvent is disabled
+      myCurrentTab = getTabSelected();
       changeEventEnable();
+   }
+
+   /**
+    * Returns the {@link IMyTab} directly from the {@link JTabbedPane} 
+    * 
+    * @return null if there is no tab
+    */
+   protected IMyTab getTabSelected() {
+      int selected = jtabbePane.getSelectedIndex();
+      IMyTab tab = null;
+      if (selected != -1) {
+         tab = (IMyTab) jtabbePane.getComponentAt(selected);
+      }
+      return tab;
    }
 
    /**
@@ -1046,6 +1064,8 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
       //update current tab data with sss if not done already
       if (myCurrentTab != null) {
          if (myCurrentTab == oldSelectedTabInWaiting) {
+            //#debug
+            toDLog().pFlow("myCurrentTab == oldSelectedTabInWaiting", this, TabbedBentleyPanel.class, "stateChanged", LVL_05_FINE, true);
             //case of tab requests user action before being hidden by another
             return;
          }
@@ -1061,13 +1081,16 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
             //in case something important must be dealt with (saving file or stopping on going task)
             //unfortunately JTabbedPane does not send an event before the fact
             //hack by selecting currentTab and keep new 
-            boolean isAccepted = myCurrentTab.tabWillBeHiddenByAnotherTab(newSelectedTab);
+            //THIS IS BAD DESIGN implement new tabbed pane
+            boolean isAccepted = myCurrentTab.shouldTabBeHiddenByAnotherTab(newSelectedTab);
             if (!isAccepted) {
                newSelectedTabInWaiting = newSelectedTab;
                oldSelectedTabInWaiting = myCurrentTab;
                //disable events otherwise it will loop
                setSelected(myCurrentTab);
             }
+            //#debug
+            toDLog().pFlow("calling tabLostFocus on ->", myCurrentTab, TabbedBentleyPanel.class, "stateChanged", LVL_05_FINE, true);
             myCurrentTab.tabLostFocus();
             //index is still valid? NO. if 
             int index = myCurrentTab.getTabPosition().getIndex();
@@ -1079,13 +1102,16 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
          //get access from Swing ? Playing tab sounds
          //order.. exit sounds are played. deepest tab first.. highest tap last
          // entry sounds are queued after exit, highest first. deepest last
+      } else {
+         //#debug
+         toDLog().pFlow("myCurrentTab == null", this, TabbedBentleyPanel.class, "stateChanged", LVL_05_FINE, true);
       }
       boolean isNew = stateChangeITab(newSelectedTab);
       newTabLayoutValidations(isNew, (IMyTab) newSelectedTab);
    }
 
    /**
-    * Called after {@link IMyTab#tabWillBeHiddenByAnotherTab(IMyTab)}
+    * Called after {@link IMyTab#shouldTabBeHiddenByAnotherTab(IMyTab)}
     * @param tab
     */
    public void tabAcceptBeingHidden(IMyTab tab) {
@@ -1105,9 +1131,9 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
          toDLog().pFlow(" for " + newSelectedTab.getTabInternalID(), this, TabbedBentleyPanel.class, "newTabLayoutValidations", LVL_05_FINE, true);
          //this.invalidate();
          sc.revalidateFrame(this);
-         if(newSelectedTab instanceof Container) {
+         if (newSelectedTab instanceof Container) {
             //TODO fix for perf on children
-            sc.guiUpdate(); 
+            sc.guiUpdate();
             //sc.guiUpdateOnChildren((Container)newSelectedTab);
          } else {
             newSelectedTab.guiUpdate();

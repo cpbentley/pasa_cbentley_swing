@@ -177,7 +177,7 @@ public abstract class AbstractMyTab extends JPanel implements IMyTab, IMyGui, IS
       toDLog().pFlow(getClass().getSimpleName() + "", this, AbstractMyTab.class, "subTabDidFinishInitCheck", ITechLvl.LVL_05_FINE, true);
    }
 
-   public boolean tabWillBeHiddenByAnotherTab(IMyTab newSelectedTab) {
+   public boolean shouldTabBeHiddenByAnotherTab(IMyTab newSelectedTab) {
       return true;
    }
 
