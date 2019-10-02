@@ -46,6 +46,8 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
     */
    private static final long  serialVersionUID     = -5719466067073255318L;
 
+   private boolean isMainFrame;
+
    private String             pid                  = "";
 
    private SwingCtx           sc;
@@ -77,6 +79,16 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
       sc.addAllFrames(this);
       this.addWindowFocusListener(this);
       this.addWindowListener(this);
+   }
+
+   /**
+    * TODO Close this frame. If single last, exits the
+    * The main window won't be called here.
+    * 
+    * Subclass implements specific behavior
+    */
+   public void cmdClose() {
+
    }
 
    private void cmdToggleFullScreen(JButton butTogFullScreen) {
@@ -123,7 +135,7 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    public String getTitleFrame() {
       return sc.getResString(pid + ".title");
    }
-   
+
    public void guiUpdate() {
       //if title was set using key
       String title = getTitleFrame();
@@ -138,6 +150,10 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
 
    public boolean isFullScreen() {
       return screenManager.isFullScreen();
+   }
+
+   public boolean isMainFrame() {
+      return isMainFrame;
    }
 
    /**
@@ -182,16 +198,6 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    }
 
    /**
-    * TODO Close this frame. If single last, exits the
-    * The main window won't be called here.
-    * 
-    * Subclass implements specific behavior
-    */
-   public void cmdClose() {
-      
-   }
-   
-   /**
     * Save frame preferences using {@link SwingCtx#getPrefs()}
     *
     */
@@ -229,6 +235,13 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
       });
    }
 
+   /**
+    * When setting an {@link IExitable} callback, you add
+    * a window listener with exitable.
+    * 
+    * 
+    * @param ex
+    */
    public void setExitable(final IExitable ex) {
       this.addWindowListener(new WindowAdapter() {
          public void windowClosing(WindowEvent e) {
@@ -249,6 +262,19 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    public void setFullScreenTrue(int screenid) {
       screenManager.setScreenID(screenid);
       screenManager.setFullScreen(true);
+   }
+
+   /**
+    * Flags this frame as main, which means that when it is closed,
+    * the {@link IExitable} is executed and all frames are closed.
+    * The application is exited.
+    * 
+    * False by default.
+    * 
+    * If no main frame is defined, Exitable will be called when all frames are closed
+    */
+   public void setMainFrame() {
+      isMainFrame = true;
    }
 
    public void setPrefID(String pid) {
@@ -307,19 +333,19 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
 
    }
 
-   public void windowIconified(WindowEvent e) {
-
-   }
-
-   public void windowOpened(WindowEvent e) {
-
-   }
-
    public void windowGainedFocus(WindowEvent e) {
 
    }
 
+   public void windowIconified(WindowEvent e) {
+
+   }
+
    public void windowLostFocus(WindowEvent e) {
+
+   }
+
+   public void windowOpened(WindowEvent e) {
 
    }
 
