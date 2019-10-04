@@ -33,25 +33,13 @@ public interface IMyTab extends IStringable, IMyGui {
    public static final int TITLE_2_HIDE         = 2;
 
    /**
-    * A IMyTab can be in several mode:
-    * <li> Docked in Root TabPane
-    * <li> Docked in 2nd line Tab
-    * <li> Framed (Root in a frame)
-    *
-   public int getMode();
-   /**
-    * Tab was deselected
+    * 
+    * Clear the tab of objects. Sets to null all components. Next time it is shown, {@link IMyTab#initTab()}
+    * must be called
     */
-   public void tabLostFocus();
+   public void disposeTab();
 
    public SwingCtx getSwingCtx();
-
-   /**
-    * Tab was selected by user
-    */
-   public void tabGainFocus();
-
-   public String getTabTitle();
 
    /**
     * Returns the {@link Icon} of the {@link IMyTab} based on the <code>themeID</code>.
@@ -70,26 +58,30 @@ public interface IMyTab extends IStringable, IMyGui {
     */
    public Icon getTabIcon(int size, int mode);
 
-   public String getTabTip();
-
-   /**
-    * Sets the Init flag to false. Force initialization again
-    */
-   public void setDisposed();
-
-   public TabPosition getTabPosition();
-
    /**
     * Internal name id
     * @return
     */
    public String getTabInternalID();
 
+   public ITabOwner getTabOwner();
+
    /**
     * The page object representing this tab
     * @return
     */
    public TabPage getTabPage();
+
+   public TabPosition getTabPosition();
+
+   public String getTabTip();
+
+   public String getTabTitle();
+
+   /**
+    * Checks if the Tab was initialized. If not, initializes it
+    */
+   public void initCheck();
 
    /**
     * True when init was called
@@ -103,21 +95,16 @@ public interface IMyTab extends IStringable, IMyGui {
    public void positionUpdate();
 
    /**
+    * Sets the Init flag to false. Force initialization again
+    */
+   public void setDisposed();
+
+   public void setTabOwner(ITabOwner owner);
+
+   /**
     * Creates new component. Set state to init
     */
    //public void initTab();
-
-   /**
-    * Checks if the Tab was initialized. If not, initializes it
-    */
-   public void initCheck();
-
-   /**
-    * 
-    * Clear the tab of objects. Sets to null all components. Next time it is shown, {@link IMyTab#initTab()}
-    * must be called
-    */
-   public void disposeTab();
 
    /**
     * The tab will be hidden by the given {@link IMyTab}
@@ -128,4 +115,21 @@ public interface IMyTab extends IStringable, IMyGui {
     * @param newSelectedTab
     */
    public boolean shouldTabBeHiddenByAnotherTab(IMyTab newSelectedTab);
+
+   /**
+    * Tab was selected by user
+    */
+   public void tabGainFocus();
+
+   /**
+    * A IMyTab can be in several mode:
+    * <li> Docked in Root TabPane
+    * <li> Docked in 2nd line Tab
+    * <li> Framed (Root in a frame)
+    *
+   public int getMode();
+   /**
+    * Tab was deselected
+    */
+   public void tabLostFocus();
 }
