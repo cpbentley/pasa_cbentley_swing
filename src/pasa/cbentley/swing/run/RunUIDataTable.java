@@ -37,7 +37,7 @@ public class RunUIDataTable extends RunSwingAbstract {
    protected CBentleyFrame initUIThreadInsideSwing() {
 
       CBentleyFrame frame = new CBentleyFrame(sc);
-      frame.setDefExitProcedure();
+      frame.setExitProcedureExit0();
 
       TabbedBentleyPanelComp tabbedPanel = new TabbedBentleyPanelComp(sc, "root_uidata");
       

@@ -52,7 +52,7 @@ public class RunTableColors extends RunSwingAbstract {
    protected CBentleyFrame initUIThreadInsideSwing() {
 
       CBentleyFrame frame = new CBentleyFrame(sc);
-      frame.setDefExitProcedure();
+      frame.setExitProcedureExit0();
 
       final String[] columnNames = new String[] { "Number" };
       Object[][] data = null;

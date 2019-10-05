@@ -11,9 +11,9 @@ public class SwingExecutor implements IExecutor {
 
    public SwingExecutor(SwingCtx sc) {
       this.sc = sc;
-      
+
    }
-   
+
    public void executeWorker(Runnable run) {
       sc.getExecutorService().execute(run);
    }
@@ -25,7 +25,11 @@ public class SwingExecutor implements IExecutor {
    public void executeMainLater(Runnable run) {
       sc.executeLaterInUIThread(run);
    }
-   
+
+   public void executeMainLater(Runnable run, int millis) {
+      sc.executeLaterInUIThread(run, millis);
+   }
+
    //#mdebug
    public IDLog toDLog() {
       return toStringGetUCtx().toDLog();
@@ -58,6 +62,5 @@ public class SwingExecutor implements IExecutor {
    }
 
    //#enddebug
-   
 
 }

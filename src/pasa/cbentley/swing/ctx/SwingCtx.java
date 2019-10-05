@@ -14,15 +14,18 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.prefs.Preferences;
@@ -61,6 +64,7 @@ import pasa.cbentley.swing.IconFamily;
 import pasa.cbentley.swing.SwingPrefs;
 import pasa.cbentley.swing.SwingUtilsBentley;
 import pasa.cbentley.swing.actions.IBackForwardable;
+import pasa.cbentley.swing.actions.IExitable;
 import pasa.cbentley.swing.cache.IIconCache;
 import pasa.cbentley.swing.color.IntToColor;
 import pasa.cbentley.swing.data.CombinedResourceBundle;
@@ -69,6 +73,7 @@ import pasa.cbentley.swing.data.UTF8Control;
 import pasa.cbentley.swing.image.DrawUtils;
 import pasa.cbentley.swing.imytab.BackForwardTabPage;
 import pasa.cbentley.swing.imytab.FrameIMyTab;
+import pasa.cbentley.swing.imytab.FrameReference;
 import pasa.cbentley.swing.imytab.IMyGui;
 import pasa.cbentley.swing.imytab.IMyTab;
 import pasa.cbentley.swing.imytab.ITabMenuBarFactory;
@@ -77,8 +82,12 @@ import pasa.cbentley.swing.imytab.TabbedBentleyPanel;
 import pasa.cbentley.swing.interfaces.ICallBackSwing;
 import pasa.cbentley.swing.logging.SwingDebug;
 import pasa.cbentley.swing.table.TableUtils;
+import pasa.cbentley.swing.task.TaskExitSmoothIfNoFrames;
+import pasa.cbentley.swing.task.TaskGuiUpdate;
+import pasa.cbentley.swing.task.TaskUserLog;
 import pasa.cbentley.swing.threads.PanelSwingWorker;
 import pasa.cbentley.swing.utils.BufferedImageUtils;
+import pasa.cbentley.swing.utils.ColorUtilsSwing;
 import pasa.cbentley.swing.utils.SwingColorStore;
 import pasa.cbentley.swing.window.CBentleyFrame;
 
@@ -88,53 +97,70 @@ import pasa.cbentley.swing.window.CBentleyFrame;
  *
  */
 public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, IEventConsumer {
-   public static final char         DEF_CHECK             = '%';
+   public static final char       DEF_CHECK             = '%';
 
-   public static final String       PREF_LOCALE_COUNTRY   = "localecountry";
+   public static final String     PREF_LOCALE_COUNTRY   = "localecountry";
 
-   public static final String       PREF_LOCALE_LANG      = "localelang";
+   public static final String     PREF_LOCALE_LANG      = "localelang";
 
-   private ArrayList<CBentleyFrame> allFrames             = new ArrayList<CBentleyFrame>();
+   private IBackForwardable       backforwardable;
 
-   private IBackForwardable         backforwardable;
+   private ExecutorService        backgroundExec;
 
-   private ExecutorService          backgroundExec;
+   private BufferedImageUtils     bufferedImageUtils;
 
-   private BufferedImageUtils       bufferedImageUtils;
+   private List<String>           bundleNames;
 
-   private List<String>             bundleNames;
+   private C5Ctx                  c5;
 
-   private C5Ctx                    c5;
+   private final int              defaultDismissTimeout = ToolTipManager.sharedInstance().getDismissDelay();
 
-   private final int                defaultDismissTimeout = ToolTipManager.sharedInstance().getDismissDelay();
+   private DrawUtils              du;
 
-   private DrawUtils                du;
+   private IEventBus              eventBusSwing;
 
-   private IEventBus                eventBusSwing;
+   private SwingExecutor          executor;
 
-   private IMyTab                   focusedTab;
+   private IExitable              exitTask;
+
+   public IExitable getExitTask() {
+      return exitTask;
+   }
+
+   private TaskExitSmoothIfNoFrames taskExitSmooth;
+
+   public TaskExitSmoothIfNoFrames getTaskExitSmoothIfNoFrames() {
+      if (taskExitSmooth == null) {
+         taskExitSmooth = new TaskExitSmoothIfNoFrames(this);
+      }
+      return taskExitSmooth;
+   }
+
+   private IMyTab                 focusedTab;
 
    /**
     * Never null. Dummy implementation does not any caching. Just creation
     */
-   private IIconCache               iconCache;
+   private IIconCache             iconCache;
 
-   private IntToColor               intToColor;
+   private IntToColor             intToColor;
 
-   private boolean                  isGlobalLabelTip      = true;
+   private boolean                isGlobalLabelTip      = true;
 
-   private List<IMyGui>             listGuis              = new ArrayList<IMyGui>(3);
+   private boolean                isResMissingLog       = true;
 
-   private Locale                   locale;
+   private List<IMyGui>           listGuis              = new ArrayList<IMyGui>(3);
+
+   private Locale                 locale;
 
    /**
     * Locale with all the Strings
     */
-   private Locale                   localeFull;
+   private Locale                 localeFull;
 
-   private Icon                     placeHolder;
+   private Icon                   placeHolder;
 
-   private IPrefs                   prefs;
+   private IPrefs                 prefs;
 
    /**
     * This resource bundle allows for a root data of US locale data.
@@ -144,32 +170,34 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
     * 
     * This means you can have 
     */
-   private CombinedResourceBundle   resBund;
+   private CombinedResourceBundle resBund;
 
    //#debug
-   private IStringable              root;
+   private IStringable            root;
 
-   private StringBBuilder           sb;
+   private StringBBuilder         sb;
 
-   private SwingDebug               sd;
+   private SwingDebug             sd;
 
-   private SwingCmds                swingCmds;
+   private SwingCmds              swingCmds;
 
-   private SwingColorStore          swingColorStore;
+   private SwingColorStore        swingColorStore;
 
-   private TabIconSettings          tabIcons;
+   private TabIconSettings        tabIcons;
 
-   private ITabMenuBarFactory       tabMenuBarFactory;
+   private ITabMenuBarFactory     tabMenuBarFactory;
 
-   private int                      themeIDSound;
+   private int                    themeIDSound;
 
-   private TableUtils               tu;
+   private TableUtils             tu;
 
-   private UIData                   uiData;
+   private UIData                 uiData;
 
-   private SwingUtilsBentley        utils;
+   private SwingUtilsBentley      utils;
 
-   private SwingExecutor            executor;
+   private SwingCtxFrames         frames;
+
+   private ColorUtilsSwing        colorUtilsSwing;
 
    /**
     * Cannot create GUI elements. 
@@ -183,6 +211,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       this.tu = new TableUtils(this);
       this.du = new DrawUtils(this);
       utils = new SwingUtilsBentley(this);
+
+      frames = new SwingCtxFrames(this);
 
       int[] events = new int[BASE_EVENTS];
       events[PID_01_SWING] = EID_01_SWING_ZZ_NUM;
@@ -206,8 +236,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       sd = new SwingDebug(this);
    }
 
-   public SwingExecutor getSwingExecutor() {
-      return executor;
+   public SwingCtxFrames getFrames() {
+      return frames;
    }
 
    /**
@@ -215,9 +245,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
     * @param f
     */
    public void addAllFrames(CBentleyFrame f) {
-      if (!allFrames.contains(f)) {
-         allFrames.add(f);
-      }
+      frames.addFrame(f);
    }
 
    public void addI18NKey(ArrayList<String> list) {
@@ -246,15 +274,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       sb.append(c1);
       sb.append(s2);
       return sb.toString();
-   }
-
-   /**
-    * Only valid in the GUI thread
-    * @return
-    */
-   public StringBBuilder getSBBuilder() {
-      sb.reset();
-      return sb;
    }
 
    public String buildStringUISerial(String s1, String s2) {
@@ -297,6 +316,13 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
             callBack.callBackInSwingThread(o);
          }
       });
+   }
+
+   /**
+    * Exit clean up
+    */
+   public void cmdExit() {
+      frames.savePrefs();
    }
 
    public void consumeEvent(BusEvent e) {
@@ -373,7 +399,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
    public void eventCloseThis(CBentleyFrame frame) {
       BusEvent be = this.getEventBusSwing().createEvent(CBentleyFrame.PRODUCER_ID_2, CBentleyFrame.EVENT_ID_1_CLOSE, frame);
       be.setUserEvent();
-      this.getEventBusSwing().putOnBus(be);
+      be.putOnBus();
    }
 
    /**
@@ -392,8 +418,15 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       SwingUtilities.invokeLater(r);
    }
 
-   public List<CBentleyFrame> getAllFrames() {
-      return Collections.unmodifiableList(allFrames);
+   public void executeLaterInUIThread(final Runnable r, int millis) {
+      Timer timer = new Timer();
+      timer.schedule(new TimerTask() {
+
+         public void run() {
+            SwingUtilities.invokeLater(r);
+
+         }
+      }, millis);
    }
 
    /**
@@ -425,6 +458,13 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
 
    public C5Ctx getC5() {
       return c5;
+   }
+
+   public ColorUtilsSwing getColorUtilsSwing() {
+      if (colorUtilsSwing == null) {
+         colorUtilsSwing = new ColorUtilsSwing(this);
+      }
+      return colorUtilsSwing;
    }
 
    public String getClipboardString() {
@@ -520,15 +560,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       }
    }
 
-   public JFrame getFrameFocused() {
-      for (CBentleyFrame frame : allFrames) {
-         if (frame.isActive()) {
-            return frame;
-         }
-      }
-      return allFrames.get(0);
-   }
-
    private Icon getIconPlaceHolder() {
       if (placeHolder == null) {
          placeHolder = createImageIcon("/icons/placeholder.png", null);
@@ -584,15 +615,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
          return tabMenuBarFactory.getMenuBar(tab, frame);
       }
       return null;
-   }
-
-   /**
-    * Exit clean up
-    */
-   public void cmdExit() {
-      for (CBentleyFrame frame : allFrames) {
-         frame.savePrefs();
-      }
    }
 
    /**
@@ -770,8 +792,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       }
    }
 
-   private boolean isResMissingLog = true;
-
    public String getResString(String key, char check, String param1) {
       String rootTitle = getResString(key);
       if (rootTitle != null && rootTitle.charAt(0) == check) {
@@ -818,8 +838,21 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       }
    }
 
+   /**
+    * Only valid in the GUI thread
+    * @return
+    */
+   public StringBBuilder getSBBuilder() {
+      sb.reset();
+      return sb;
+   }
+
    public SwingColorStore getSwingColorStore() {
       return swingColorStore;
+   }
+
+   public SwingExecutor getSwingExecutor() {
+      return executor;
    }
 
    public TabIconSettings getTabIcons() {
@@ -889,9 +922,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       for (IMyGui gui : listGuis) {
          gui.guiUpdate();
       }
-      for (CBentleyFrame frame : allFrames) {
-         frame.guiUpdate();
-      }
+      
+      frames.guiUpdate();
 
       //#debug
       toDLog().methodEnd(SwingCtx.class, "guiUpdate", ITechLvl.LVL_05_FINE);
@@ -904,15 +936,21 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       }
    }
 
+   
+   private TaskGuiUpdate taskGuiUpdate;
+
+   public TaskGuiUpdate getTaskGuiUpdate() {
+      if (taskGuiUpdate == null) {
+         taskGuiUpdate = new TaskGuiUpdate(this);
+      }
+      return taskGuiUpdate;
+   }
+
    /**
     * Creates a runnable for Gui update later
     */
    public void guiUpdateLater() {
-      this.executeLaterInUIThread(new Runnable() {
-         public void run() {
-            guiUpdate();
-         }
-      });
+      this.executeLaterInUIThread(getTaskGuiUpdate());
    }
 
    public void guiUpdateOnChildren(Container panel) {
@@ -927,6 +965,28 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
             guiUpdateOnChildren((Container) c);
          }
       }
+   }
+
+   public void dockExitFor(CBentleyFrame frame) {
+      frame.addWindowListener(new WindowAdapter() {
+         public void windowClosing(WindowEvent e) {
+            //if frame the only visible.. do the exit
+            executeLaterInUIThread(new Runnable() {
+               public void run() {
+                  int numVisible = getFrames().getNumVisible();
+                  //#debug
+                  toDLog().pFlow("numVisible=" + numVisible, frames, SwingCtx.class, "dockExitFor", LVL_05_FINE, true);
+                  if (numVisible == 0) {
+                     if (exitTask != null) {
+                        exitTask.cmdExit();
+                     } else {
+                        System.exit(0);
+                     }
+                  }
+               }
+            }, 2000);
+         }
+      });
    }
 
    public void guiUpdateOnChildrenMenu(JMenu menu) {
@@ -978,13 +1038,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       return isGlobalLabelTip;
    }
 
-   public void publishUIEvent(final BusEvent be, final IEventBus bus) {
-      execute(new Runnable() {
-
-         public void run() {
-            bus.putOnBus(be);
-         }
-      });
+   public boolean isResMissingLog() {
+      return isResMissingLog;
    }
 
    /**
@@ -993,34 +1048,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
     * @param string
     */
    public void publishUILog(final int type, final String str) {
-      execute(new Runnable() {
-
-         public void run() {
-            switch (type) {
-               case IUserLog.consoleLog:
-                  getLog().consoleLog(str);
-                  break;
-               case IUserLog.consoleLogDate:
-                  getLog().consoleLogDate(str);
-                  break;
-               case IUserLog.consoleLogDateGreen:
-                  getLog().consoleLogDateGreen(str);
-                  break;
-               case IUserLog.consoleLogDateRed:
-                  getLog().consoleLogDateRed(str);
-                  break;
-               case IUserLog.consoleLogError:
-                  getLog().consoleLogError(str);
-                  break;
-               case IUserLog.consoleLogGreen:
-                  getLog().consoleLogGreen(str);
-                  break;
-
-               default:
-                  break;
-            }
-         }
-      });
+      execute(new TaskUserLog(this,type,str));
    }
 
    public void registerFontTrueType(String path) {
@@ -1037,9 +1065,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       }
    }
 
-   public boolean removeAllFrame(JFrame f) {
-      return allFrames.remove(f);
-   }
 
    /**
     * Repack frames to avoid glitches of sizes
@@ -1060,10 +1085,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
    }
 
    public void revalidateSwingTree() {
-      for (CBentleyFrame frame : allFrames) {
-         frame.invalidate();
-         frame.repaint();
-      }
+      frames.revalidateSwingTree();
    }
 
    /**
@@ -1072,6 +1094,11 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
     */
    public void setBundleList(List<String> bundleNames) {
       this.bundleNames = bundleNames;
+   }
+
+   public void setExitableMain(IExitable exitTask) {
+      this.exitTask = exitTask;
+
    }
 
    public void setFocusedTab(IMyTab tab) {
@@ -1115,12 +1142,26 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       }
    }
 
+   public void setResMissingLog(boolean isResMissingLog) {
+      this.isResMissingLog = isResMissingLog;
+   }
+
    /**
     * Null if no tab icons
     * @param tabIcons
     */
    public void setTabIcons(TabIconSettings tabIcons) {
       this.tabIcons = tabIcons;
+   }
+
+   public void showFrame(FrameReference frame) {
+      frame.showFrame();
+   }
+
+   public void showFrameThen(FrameReference frame, FrameReference frameAfter) {
+      frame.showFrame();
+      frame.getFrame().setFrameOnClose(frameAfter);
+      //add close listener to show frame after
    }
 
    /**
@@ -1140,17 +1181,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       int h = (int) ((float) screenSize.height * height);
       f.setLocation(screenSize.width / 2 - w / 2, screenSize.height / 2 - h / 2);
       f.setSize(w, h);
-      f.setVisible(true);
-      return f;
-   }
-
-   public FrameIMyTab showInNewFramePackCenter(FrameIMyTab f) {
-      f.pack();
-      //default dimension? decided based on several parameters based on hints
-      int width = f.getPreferredSize().width;
-      int height = f.getPreferredSize().height;
-      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-      f.setLocation(screenSize.width / 2 - width / 2, screenSize.height / 2 - height / 2);
       f.setVisible(true);
       return f;
    }
@@ -1244,6 +1274,17 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       return f;
    }
 
+   public FrameIMyTab showInNewFramePackCenter(FrameIMyTab f) {
+      f.pack();
+      //default dimension? decided based on several parameters based on hints
+      int width = f.getPreferredSize().width;
+      int height = f.getPreferredSize().height;
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      f.setLocation(screenSize.width / 2 - width / 2, screenSize.height / 2 - height / 2);
+      f.setVisible(true);
+      return f;
+   }
+
    public void swingWorkerCancel(PanelSwingWorker worker) {
       boolean wasCanceled = worker.cancel(true);
       //#debug
@@ -1268,7 +1309,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
    public void toString(Dctx dc) {
       dc.root(this, "SwingCtx");
       toStringPrivate(dc);
-      toStringGuiUpdate(dc.nLevel());
       super.toString(dc.sup());
    }
 
@@ -1297,7 +1337,8 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
     */
    public String toStringGuiUpdate() {
       Dctx dc = new Dctx(getUCtx());
-      toStringGuiUpdate(dc);
+      toStringGu44iUpdate(dc);
+      frames.toStringGuiUpdate(dc);
       return dc.toString();
    }
 
@@ -1305,16 +1346,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
     * String of gui update registered object
     * @param dc
     */
-   public void toStringGuiUpdate(Dctx dc) {
-      dc.append("Frames #" + allFrames.size());
-      for (JFrame frame : allFrames) {
-         if (frame instanceof CBentleyFrame) {
-            dc.nlLvl((CBentleyFrame) frame);
-         } else {
-            //print with utility method
-            toSD().toStringFrame(frame, dc.nLevel());
-         }
-      }
+   public void toStringGu44iUpdate(Dctx dc) {
       dc.append("MyGuis #" + listGuis.size());
       for (IMyGui gui : listGuis) {
          dc.nlLvl("Gui", gui);
@@ -1361,14 +1393,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
          getLog().consoleLogError("Resource Bundle for " + lang + " and " + country + " not found.");
          return false;
       }
-   }
-
-   public boolean isResMissingLog() {
-      return isResMissingLog;
-   }
-
-   public void setResMissingLog(boolean isResMissingLog) {
-      this.isResMissingLog = isResMissingLog;
    }
 
 }

@@ -18,7 +18,9 @@ import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.swing.actions.IExitable;
 import pasa.cbentley.swing.ctx.SwingCtx;
+import pasa.cbentley.swing.imytab.FrameReference;
 import pasa.cbentley.swing.imytab.IMyGui;
+import pasa.cbentley.swing.task.TaskExitHard;
 
 public class CBentleyFrame extends JFrame implements IStringable, IMyGui, WindowListener, WindowFocusListener {
    public static final int    EVENT_ID_0_ANY       = 0;
@@ -46,13 +48,15 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
     */
    private static final long  serialVersionUID     = -5719466067073255318L;
 
-   private boolean isMainFrame;
+   private boolean            isMainFrame;
 
    private String             pid                  = "";
 
    private SwingCtx           sc;
 
    private FrameScreenManager screenManager;
+
+   private boolean            isHardExitOnClose;
 
    public CBentleyFrame(SwingCtx sc) {
       this.sc = sc;
@@ -76,19 +80,27 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
       this.sc = sc;
       pid = frameID;
       screenManager = new FrameScreenManager(this);
-      sc.addAllFrames(this);
+      sc.getFrames().addFrame(this);
       this.addWindowFocusListener(this);
       this.addWindowListener(this);
    }
 
    /**
-    * TODO Close this frame. If single last, exits the
+    * Close this frame. If single last, exits the
     * The main window won't be called here.
     * 
     * Subclass implements specific behavior
     */
    public void cmdClose() {
-
+      //effectively close it
+      WindowEvent we = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+      this.dispatchEvent(we);
+   }
+   
+   protected void closeCleanUp() {
+      sc.guiRemove(this);
+      sc.getFrames().removeFrame(this);
+      sc.eventCloseThis(this);
    }
 
    private void cmdToggleFullScreen(JButton butTogFullScreen) {
@@ -227,27 +239,31 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    /**
     * When no special task required. Equivalent to {@link JFrame#EXIT_ON_CLOSE}
     */
-   public void setDefExitProcedure() {
-      this.addWindowListener(new WindowAdapter() {
-         public void windowClosing(WindowEvent e) {
-            System.exit(0);
-         }
-      });
+   public void setExitProcedureExit0() {
+      isHardExitOnClose = true;
+   }
+
+   private FrameReference frameToShowOnClose;
+
+   /**
+    * On exit, shows this frames
+    * @param frame
+    */
+   public void setFrameOnClose(final FrameReference frame) {
+      frameToShowOnClose = frame;
    }
 
    /**
-    * When setting an {@link IExitable} callback, you add
-    * a window listener with exitable.
-    * 
-    * 
-    * @param ex
+    * When no more frames are visible, the application exits.
     */
-   public void setExitable(final IExitable ex) {
-      this.addWindowListener(new WindowAdapter() {
-         public void windowClosing(WindowEvent e) {
-            ex.cmdExit();
-         }
-      });
+   private boolean isHeadlessAllowed = false;
+
+   /**
+    * Dock this frame to the {@link SwingCtx} exitable framework
+    */
+   public void setHeadlessAllowed() {
+      isHeadlessAllowed = true;
+      sc.dockExitFor(this);
    }
 
    public void setFullScreenTrue() {
@@ -321,8 +337,29 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
 
    }
 
-   public void windowClosing(WindowEvent e) {
+   public boolean isHeadlessNotAllowed() {
+      return !isHeadlessAllowed;
+   }
 
+   public void windowClosing(WindowEvent e) {
+      closeCleanUp();
+
+      //hard exist on close will override all others checks
+      if (isHardExitOnClose) {
+         //exits once the current queue of GUI events is finished
+         sc.executeLaterInUIThread(new TaskExitHard());
+
+      } else {
+
+         if (frameToShowOnClose != null) {
+            frameToShowOnClose.showFrame();
+         }
+
+         if (isHeadlessNotAllowed()) {
+            //if 0 visible call the exit procecdure
+            sc.executeLaterInUIThread(sc.getTaskExitSmoothIfNoFrames(), 2000);
+         }
+      }
    }
 
    public void windowDeactivated(WindowEvent e) {

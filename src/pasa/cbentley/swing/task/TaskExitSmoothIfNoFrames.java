@@ -1,42 +1,36 @@
-package pasa.cbentley.swing.imytab;
+package pasa.cbentley.swing.task;
 
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
+import pasa.cbentley.swing.actions.IExitable;
 import pasa.cbentley.swing.ctx.SwingCtx;
-import pasa.cbentley.swing.window.CBentleyFrame;
 
-public class FrameReference implements IStringable {
+public class TaskExitSmoothIfNoFrames implements Runnable, IStringable {
 
    protected final SwingCtx sc;
 
-   private CBentleyFrame    frame;
-
-   public FrameReference(SwingCtx sc) {
+   public TaskExitSmoothIfNoFrames(SwingCtx sc) {
       this.sc = sc;
+      
    }
 
-   public CBentleyFrame getFrame() {
-      return frame;
-   }
-
-   public void showFrame() {
-      if (frame != null) {
-         frame.setVisible(true);
-      }
+   public void run() {
+      int numVisible = sc.getFrames().getNumVisible();
+      //#debug
+      sc.toDLog().pFlow("numVisible=" + numVisible, sc.getFrames(), TaskExitSmoothIfNoFrames.class, "run", LVL_05_FINE, true);
+      if (numVisible == 0) {
+         IExitable exitable = sc.getExitTask();
+         if (exitable != null) {
+            exitable.cmdExit();
+         } else {
+            System.exit(0);
+         }
+      }      
    }
    
-   public void closeFrame() {
-      if (frame != null) {
-         frame.setVisible(false);
-      }
-   }
-
-   public void setFrame(CBentleyFrame frame) {
-      this.frame = frame;
-   }
-
+   
    //#mdebug
    public IDLog toDLog() {
       return toStringGetUCtx().toDLog();
@@ -47,7 +41,7 @@ public class FrameReference implements IStringable {
    }
 
    public void toString(Dctx dc) {
-      dc.root(this, "FrameReference");
+      dc.root(this, "TaskExitSmooth");
       toStringPrivate(dc);
    }
 
@@ -60,7 +54,7 @@ public class FrameReference implements IStringable {
    }
 
    public void toString1Line(Dctx dc) {
-      dc.root1Line(this, "FrameReference");
+      dc.root1Line(this, "TaskExitSmooth");
       toStringPrivate(dc);
    }
 
@@ -69,5 +63,7 @@ public class FrameReference implements IStringable {
    }
 
    //#enddebug
+   
 
+   
 }

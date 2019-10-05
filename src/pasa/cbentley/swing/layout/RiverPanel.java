@@ -37,11 +37,13 @@ public class RiverPanel extends BPanel implements IStringable {
    public void raddBrHfill(Component c) {
       this.add("br hfill", c);
    }
-
+   public void raddBrHfillCenter(Component c) {
+      this.add("br hfill center", c);
+   }
    public void radd(Component c) {
       this.add("", c);
    }
-
+   
    public void raddVfill(Component c) {
       this.add("vfill", c);
    }

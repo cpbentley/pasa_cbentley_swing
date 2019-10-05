@@ -79,7 +79,6 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
       frame = initUIThreadInsideSwing();
 
       if (frame != null) {
-         frame.setExitable(this);
          sc.guiUpdate();
          frame.positionFrame();
       }

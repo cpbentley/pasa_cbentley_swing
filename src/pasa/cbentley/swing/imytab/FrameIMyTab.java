@@ -2,8 +2,6 @@ package pasa.cbentley.swing.imytab;
 
 import java.awt.Component;
 import java.awt.Image;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -26,12 +24,14 @@ import pasa.cbentley.swing.window.CBentleyFrame;
  * @author Charles Bentley
  *
  */
-public class FrameIMyTab extends CBentleyFrame {
+public class FrameIMyTab extends CBentleyFrame implements ITabOwner {
 
    /**
     * 
     */
    private static final long serialVersionUID = -3157445885360459014L;
+
+   private FrameReference    frameReference;
 
    private final SwingCtx    sc;
 
@@ -39,8 +39,6 @@ public class FrameIMyTab extends CBentleyFrame {
     * No null
     */
    private final IMyTab      tab;
-
-   private FrameReference frameReference;
 
    /**
     * <li>Custom close listener. Uses the 
@@ -55,55 +53,74 @@ public class FrameIMyTab extends CBentleyFrame {
    public FrameIMyTab(final IMyTab tab) {
       super(tab.getSwingCtx());
       this.tab = tab;
+      this.tab.setTabOwner(this);
       sc = tab.getSwingCtx();
       aInitConstructor(tab);
       //make sure the frame has its GUI up to date
       this.guiUpdate();
    }
 
-   public void cmdClose() {
-      this.setVisible(false);
-      closeFrame();
+   /**
+    * @param tab
+    */
+   private void aInitConstructor(IMyTab tab) {
+      this.setTitle(tab.getTabTitle());
+      
+      //TODO what if there is several of the same frames? Like showing several 
+      this.setPrefID("frame_" + tab.getTabInternalID());
+
+      //but we want the title to be the tab
+
+      //maps the ICON of frame to a Size.. could be changed in ctx
+      int size = sc.getIconSize(IconFamily.ICON_SIZE_FRAME);
+      Icon tabIcon = tab.getTabIcon(size, IconFamily.ICON_MODE_1_SELECTED);
+      Image ii = sc.getUtils().iconToImage(tabIcon);
+
+      this.setIconImage(ii);
+
+      this.getContentPane().add((Component) tab);
+
+      tab.getTabPosition().setFrame(this);
+
+      //make sure the tab is initialized
+      tab.initCheck();
+
+      //
+      JMenuBar mb = tab.getSwingCtx().getMenuBar(tab, this);
+      if (mb != null) {
+         this.setJMenuBar(mb);
+      }
    }
-   
+
    /**
     * Called when the Frame has been closed by the user.
     * 
     * This means the tab can be disposed.
     */
-   private void closeFrame() {
+   private void closeCleanUpTab() {
       TabbedBentleyPanel tabbedpane = tab.getTabPosition().getParent();
-      sc.guiRemove(this);
-
+      //frame belongs to a TabPane
       if (tabbedpane != null) {
          //remove tab from 
-         tabbedpane.getSwingCtx().removeAllFrame(this);
          tabbedpane.cmdTabToBackHistory(tab);
          //save to preferences, its size and position
          IPrefs prefs = tabbedpane.getSwingCtx().getPrefs();
          savePrefs(prefs);
       } else {
-         //close
-         tab.getSwingCtx().eventCloseThis(this);
          tab.disposeTab();
       }
-      if(frameReference != null) {
+   }
+
+   /**
+    * If it is the last window standing, the application will exit
+    */
+   protected void closeCleanUp() {
+      if (frameReference != null) {
          frameReference.setFrame(null);
       }
-   }
-
-   public void windowGainedFocus(WindowEvent e) {
-      //#debug
-      toDLog().pFlow("", this, FrameIMyTab.class, "windowGainedFocus", LVL_04_FINER, true);
-      //we act as the owner so we have the responsability to initCheck
-      tab.initCheck();
-      tab.tabGainFocus();
-   }
-
-   public void windowLostFocus(WindowEvent e) {
-      //#debug
-      toDLog().pFlow("", this, FrameIMyTab.class, "windowLostFocus", LVL_04_FINER, true);
-      tab.tabLostFocus();
+      closeCleanUpTab();
+      //once we have done our job.. we can ask super to effectively destroy it
+      super.closeCleanUp();
    }
 
    public JMenuBar getIMyTabMenuBar() {
@@ -127,37 +144,13 @@ public class FrameIMyTab extends CBentleyFrame {
       frameReference.setFrame(this);
    }
 
-   private void aInitConstructor(IMyTab tab) {
-      this.setTitle(tab.getTabTitle());
-      //TODO what if there is several of the same frames? Like showing several 
-      this.setPrefID("frame_" + tab.getTabInternalID());
-
-      //but we want the title to be the tab
-
-      //maps the ICON of frame to a Size.. could be changed in ctx
-      int size = sc.getIconSize(IconFamily.ICON_SIZE_FRAME);
-      Icon tabIcon = tab.getTabIcon(size, IconFamily.ICON_MODE_1_SELECTED);
-      Image ii = sc.getUtils().iconToImage(tabIcon);
-
-      this.setIconImage(ii);
-
-      this.getContentPane().add((Component) tab);
-
-      tab.getTabPosition().setFrame(this);
-
-      //make sure the tab is initialized
-      tab.initCheck();
-      this.addWindowListener(new WindowAdapter() {
-         public void windowClosing(WindowEvent e) {
-            closeFrame();
-         }
-      });
-
-      //
-      JMenuBar mb = tab.getSwingCtx().getMenuBar(tab, this);
-      if (mb != null) {
-         this.setJMenuBar(mb);
+   public void tabIsFinished(IMyTab tab) {
+      //#mdebug
+      if (this.tab != tab) {
+         throw new IllegalArgumentException();
       }
+      //#enddebug
+      cmdClose();
    }
 
    //#mdebug
@@ -172,5 +165,19 @@ public class FrameIMyTab extends CBentleyFrame {
       super.toString1Line(dc.sup1Line());
    }
    //#enddebug
+
+   public void windowGainedFocus(WindowEvent e) {
+      //#debug
+      toDLog().pFlow("", this, FrameIMyTab.class, "windowGainedFocus", LVL_04_FINER, true);
+      //we act as the owner so we have the responsability to initCheck
+      tab.initCheck();
+      tab.tabGainFocus();
+   }
+
+   public void windowLostFocus(WindowEvent e) {
+      //#debug
+      toDLog().pFlow("", this, FrameIMyTab.class, "windowLostFocus", LVL_04_FINER, true);
+      tab.tabLostFocus();
+   }
 
 }

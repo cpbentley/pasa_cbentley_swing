@@ -39,6 +39,8 @@ public abstract class AbstractMyTab extends JPanel implements IMyTab, IMyGui, IS
 
    private TabPage           tapPage;
 
+   protected ITabOwner         owner;
+
    public AbstractMyTab(SwingCtx sc, String internalID) {
       this.sc = sc;
       this.interID = internalID;
@@ -47,6 +49,15 @@ public abstract class AbstractMyTab extends JPanel implements IMyTab, IMyGui, IS
 
    public int getMode() {
       return mode;
+   }
+
+   public ITabOwner getTabOwner() {
+      return owner;
+   }
+
+   public void setTabOwner(ITabOwner owner) {
+      this.owner = owner;
+
    }
 
    public String getSelectorKeyPrefID() {
@@ -197,6 +208,7 @@ public abstract class AbstractMyTab extends JPanel implements IMyTab, IMyGui, IS
       dc.appendVarWithSpace("mode", mode);
       dc.nlLvlTitleIfNull(position, "TabPosition");
       dc.nlLvlTitleIfNull(tapPage, "TapPage");
+      dc.nlLvl(owner, "ITabOwner");
       sc.toSD().d(this, dc.nLevel());
    }
 

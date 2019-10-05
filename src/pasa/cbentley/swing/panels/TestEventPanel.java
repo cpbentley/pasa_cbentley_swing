@@ -149,7 +149,7 @@ public class TestEventPanel extends JPanel implements ActionListener {
             C5Ctx c5 = new C5Ctx(uc);
             SwingCtx sc = new SwingCtx(c5);
             CBentleyFrame rootFrame = new CBentleyFrame(sc);
-            rootFrame.setDefExitProcedure();
+            rootFrame.setExitProcedureExit0();
             TestEventPanel panel = new TestEventPanel(sc);
             rootFrame.getContentPane().add(panel);
             rootFrame.pack();

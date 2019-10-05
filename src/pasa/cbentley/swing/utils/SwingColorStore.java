@@ -45,6 +45,13 @@ public class SwingColorStore implements IStringable {
       return getColorRGB(grey, grey, grey);
    }
    
+   public Color getColorRGB(int rgb) {
+      int r = ((rgb >> 16) & 0xFF);
+      int g = ((rgb >> 8) & 0xFF);
+      int b = (rgb & 0xFF);
+      return getColorRGB(r,g,b);
+   }
+   
    public Color getColorRGB(int r, int g, int b) {
       sb.reset();
       sb.append('@');
