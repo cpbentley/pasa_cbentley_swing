@@ -51,6 +51,7 @@ import pasa.cbentley.core.src4.event.BusEvent;
 import pasa.cbentley.core.src4.event.EventBusArray;
 import pasa.cbentley.core.src4.event.IEventBus;
 import pasa.cbentley.core.src4.event.IEventConsumer;
+import pasa.cbentley.core.src4.helpers.BasicPrefs;
 import pasa.cbentley.core.src4.helpers.StringBBuilder;
 import pasa.cbentley.core.src4.helpers.StringParametrized;
 import pasa.cbentley.core.src4.interfaces.IPrefs;
@@ -630,7 +631,10 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
     */
    public IPrefs getPrefs() {
       if (prefs == null) {
-         prefs = new SwingPrefs(this, Preferences.userNodeForPackage(SwingCtx.class));
+         //we don't want to use the preferences of Java.. too risky
+         //Preferences userNodeForPackage = Preferences.userNodeForPackage(SwingCtx.class);
+         //prefs = new SwingPrefs(this, userNodeForPackage);
+         prefs = new BasicPrefs(uc);
       }
       return prefs;
    }

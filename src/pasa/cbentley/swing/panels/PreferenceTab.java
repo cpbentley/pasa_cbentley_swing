@@ -53,6 +53,7 @@ public class PreferenceTab extends AbstractMyTab implements ActionListener {
    private void cmdClear() {
       IPrefs prefs = sc.getPrefs();
       prefs.clear();
+      fillProps();
    }
 
    private void cmdSave() {
@@ -64,7 +65,6 @@ public class PreferenceTab extends AbstractMyTab implements ActionListener {
    }
 
    private void fillProps() {
-
       IPrefs prefs = sc.getPrefs();
       IntToStrings its = prefs.getKeys();
       if (its != null) {
@@ -78,7 +78,6 @@ public class PreferenceTab extends AbstractMyTab implements ActionListener {
             textArea.append("\n");
          }
       }
-
    }
 
    public void initTab() {

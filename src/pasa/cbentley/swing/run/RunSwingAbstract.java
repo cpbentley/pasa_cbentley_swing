@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.prefs.Preferences;
 
 import pasa.cbentley.core.src4.ctx.UCtx;
+import pasa.cbentley.core.src4.helpers.BasicPrefs;
 import pasa.cbentley.core.src4.interfaces.IPrefs;
 import pasa.cbentley.core.src4.logging.BaseDLogger;
 import pasa.cbentley.core.src4.logging.Dctx;
@@ -104,17 +105,26 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
       toStringSetupLogger(uc);
 
       //setup preferences
-      Preferences preferences = Preferences.userRoot().node(this.getClass().getSimpleName());
+      String namePreferenceKey = this.getClass().getSimpleName();
+      Preferences preferences = Preferences.userRoot().node(namePreferenceKey);
       //windows bug
       //WARNING: Could not open/create prefs root node Software\JavaSoft\Prefs at root 0x80000002. Windows RegCreateKeyEx(...) 
       // Solution Create new key HKEY_LOCAL_MACHINE\Software\JavaSoft\Prefs
 
-      IPrefs prefs = new SwingPrefs(sc, preferences);
+      IPrefs prefs = null;
+
+      //we never know if implementation
+      if (preferences == null) {
+         System.out.println("Failure to create Preferences.userRoot().node(" + namePreferenceKey + ")");
+         System.out.println("Creating dummy BasicPrefs");
+         prefs = new BasicPrefs(uc);
+      } else {
+         System.out.println("Preferences created for class " + namePreferenceKey);
+         prefs = new SwingPrefs(sc, preferences);
+      }
+
       sc.setPrefs(prefs);
       initOutsideUIForPrefs(prefs);
-
-      System.out.println("Preferences at Start for class " + this.getClass().getName());
-      System.out.println(prefs);
 
       ArrayList<String> list = new ArrayList<String>();
       sc.addI18NKey(list);
