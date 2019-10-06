@@ -22,6 +22,9 @@ public abstract class FrameReferenceTabAbstract extends FrameReference {
       }
    }
 
+   public FrameIMyTab getFrameIMyTab() {
+      return (FrameIMyTab)getFrame();
+   }
    protected void customizeLaunch(FrameIMyTab f) {
       sc.showInNewFrame(f, 0.6f, 0.9f);
    }

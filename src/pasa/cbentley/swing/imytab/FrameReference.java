@@ -21,12 +21,20 @@ public class FrameReference implements IStringable {
       return frame;
    }
 
+   public boolean isInactive() {
+      return frame == null;
+   }
+
+   public boolean isActive() {
+      return frame != null;
+   }
+
    public void showFrame() {
       if (frame != null) {
          frame.setVisible(true);
       }
    }
-   
+
    public void closeFrame() {
       if (frame != null) {
          frame.setVisible(false);

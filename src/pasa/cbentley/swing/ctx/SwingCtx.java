@@ -97,31 +97,31 @@ import pasa.cbentley.swing.window.CBentleyFrame;
  *
  */
 public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, IEventConsumer {
-   public static final char       DEF_CHECK             = '%';
+   public static final char   DEF_CHECK             = '%';
 
-   public static final String     PREF_LOCALE_COUNTRY   = "localecountry";
+   public static final String PREF_LOCALE_COUNTRY   = "localecountry";
 
-   public static final String     PREF_LOCALE_LANG      = "localelang";
+   public static final String PREF_LOCALE_LANG      = "localelang";
 
-   private IBackForwardable       backforwardable;
+   private IBackForwardable   backforwardable;
 
-   private ExecutorService        backgroundExec;
+   private ExecutorService    backgroundExec;
 
-   private BufferedImageUtils     bufferedImageUtils;
+   private BufferedImageUtils bufferedImageUtils;
 
-   private List<String>           bundleNames;
+   private List<String>       bundleNames;
 
-   private C5Ctx                  c5;
+   private C5Ctx              c5;
 
-   private final int              defaultDismissTimeout = ToolTipManager.sharedInstance().getDismissDelay();
+   private final int          defaultDismissTimeout = ToolTipManager.sharedInstance().getDismissDelay();
 
-   private DrawUtils              du;
+   private DrawUtils          du;
 
-   private IEventBus              eventBusSwing;
+   private IEventBus          eventBusSwing;
 
-   private SwingExecutor          executor;
+   private SwingExecutor      executor;
 
-   private IExitable              exitTask;
+   private IExitable          exitTask;
 
    public IExitable getExitTask() {
       return exitTask;
@@ -145,11 +145,11 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
 
    private IntToColor             intToColor;
 
-   private boolean                isGlobalLabelTip      = true;
+   private boolean                isGlobalLabelTip = true;
 
-   private boolean                isResMissingLog       = true;
+   private boolean                isResMissingLog  = true;
 
-   private List<IMyGui>           listGuis              = new ArrayList<IMyGui>(3);
+   private List<IMyGui>           listGuis         = new ArrayList<IMyGui>(3);
 
    private Locale                 locale;
 
@@ -322,7 +322,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
     * Exit clean up
     */
    public void cmdExit() {
-      frames.savePrefs();
+
    }
 
    public void consumeEvent(BusEvent e) {
@@ -922,7 +922,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       for (IMyGui gui : listGuis) {
          gui.guiUpdate();
       }
-      
+
       frames.guiUpdate();
 
       //#debug
@@ -936,7 +936,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       }
    }
 
-   
    private TaskGuiUpdate taskGuiUpdate;
 
    public TaskGuiUpdate getTaskGuiUpdate() {
@@ -967,26 +966,15 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
       }
    }
 
-   public void dockExitFor(CBentleyFrame frame) {
-      frame.addWindowListener(new WindowAdapter() {
-         public void windowClosing(WindowEvent e) {
-            //if frame the only visible.. do the exit
-            executeLaterInUIThread(new Runnable() {
-               public void run() {
-                  int numVisible = getFrames().getNumVisible();
-                  //#debug
-                  toDLog().pFlow("numVisible=" + numVisible, frames, SwingCtx.class, "dockExitFor", LVL_05_FINE, true);
-                  if (numVisible == 0) {
-                     if (exitTask != null) {
-                        exitTask.cmdExit();
-                     } else {
-                        System.exit(0);
-                     }
-                  }
-               }
-            }, 2000);
+   public void guiUpdateOnChildrenMenuBar(JMenuBar menuBar) {
+      int numMenus = menuBar.getMenuCount();
+      for (int i = 0; i < numMenus; i++) {
+         JMenu menu = menuBar.getMenu(i);
+         if (menu instanceof IMyGui) {
+            ((IMyGui) menu).guiUpdate();
          }
-      });
+         guiUpdateOnChildrenMenu(menu);
+      }
    }
 
    public void guiUpdateOnChildrenMenu(JMenu menu) {
@@ -1048,7 +1036,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
     * @param string
     */
    public void publishUILog(final int type, final String str) {
-      execute(new TaskUserLog(this,type,str));
+      execute(new TaskUserLog(this, type, str));
    }
 
    public void registerFontTrueType(String path) {
@@ -1064,7 +1052,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
          e.printStackTrace();
       }
    }
-
 
    /**
     * Repack frames to avoid glitches of sizes
@@ -1393,6 +1380,18 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
          getLog().consoleLogError("Resource Bundle for " + lang + " and " + country + " not found.");
          return false;
       }
+   }
+
+   /**
+    * Tries to return the main window
+    * @return
+    */
+   public CBentleyFrame getFrameMain() {
+      CBentleyFrame frame = frames.getFrameMainFirst();
+      if (frame == null) {
+         frame = frames.getFirstActive();
+      }
+      return frame;
    }
 
 }

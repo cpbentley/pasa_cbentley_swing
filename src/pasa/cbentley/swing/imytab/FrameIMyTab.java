@@ -64,6 +64,9 @@ public class FrameIMyTab extends CBentleyFrame implements ITabOwner {
     * @param tab
     */
    private void aInitConstructor(IMyTab tab) {
+      
+      //TODO title of the frame
+      //TODO multi tab of the same type but different title
       this.setTitle(tab.getTabTitle());
       
       //TODO what if there is several of the same frames? Like showing several 
@@ -131,6 +134,9 @@ public class FrameIMyTab extends CBentleyFrame implements ITabOwner {
       return tab;
    }
 
+   /**
+    * 
+    */
    public String getTitleFrame() {
       return tab.getTabTitle();
    }

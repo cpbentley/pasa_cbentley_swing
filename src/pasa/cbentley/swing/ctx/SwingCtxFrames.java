@@ -23,39 +23,23 @@ public class SwingCtxFrames implements IStringable {
       this.sc = sc;
    }
 
-   /**
-    * Exit clean up
-    */
-   public void cmdExit() {
-      savePrefs();
-   }
-
-   public JFrame getFirstActive() {
-      for (CBentleyFrame frame : allFrames) {
-         if (frame.isActive()) {
-            return frame;
-         }
+   public void addFrame(CBentleyFrame f) {
+      if (!allFrames.contains(f)) {
+         allFrames.add(f);
       }
-      return allFrames.get(0);
    }
 
    public List<CBentleyFrame> getAllFrames() {
       return Collections.unmodifiableList(allFrames);
    }
 
-
-   /**
-    * Call {@link IMyGui#guiUpdate()} on all registered components and on active {@link CBentleyFrame}
-    * <br>
-    * <br>
-    * 
-    * <br>
-    * Refreshes the state
-    */
-   public void guiUpdate() {
+   public CBentleyFrame getFirstActive() {
       for (CBentleyFrame frame : allFrames) {
-         frame.guiUpdate();
+         if (frame.isActive()) {
+            return frame;
+         }
       }
+      return allFrames.get(0);
    }
 
    /**
@@ -70,6 +54,32 @@ public class SwingCtxFrames implements IStringable {
          }
       }
       return count;
+   }
+
+   public CBentleyFrame getFrameMainFirst() {
+      for (CBentleyFrame frame : allFrames) {
+         if (frame.isMainFrame()) {
+            return frame;
+         }
+      }
+      return null;
+   }
+
+   /**
+    * Call {@link IMyGui#guiUpdate()} on all registered components and on active {@link CBentleyFrame}
+    * <br>
+    * <br>
+    * 
+    * <br>
+    * Refreshes the state
+    */
+   public void guiUpdate() {
+      for (CBentleyFrame frame : allFrames) {
+         if(frame.getJMenuBar() != null) {
+            sc.guiUpdateOnChildrenMenuBar(frame.getJMenuBar());
+         }
+         frame.guiUpdate();
+      }
    }
 
    public boolean removeFrame(JFrame f) {
@@ -128,18 +138,6 @@ public class SwingCtxFrames implements IStringable {
 
    private void toStringPrivate(Dctx dc) {
       dc.appendVarWithSpace("numVisible", getNumVisible());
-   }
-
-   public void addFrame(CBentleyFrame f) {
-      if (!allFrames.contains(f)) {
-         allFrames.add(f);
-      }
-   }
-
-   public void savePrefs() {
-      for (CBentleyFrame frame : allFrames) {
-         frame.savePrefs();
-      }
    }
 
    //#enddebug

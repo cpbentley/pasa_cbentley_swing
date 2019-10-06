@@ -98,6 +98,7 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    }
    
    protected void closeCleanUp() {
+      this.savePrefs();
       sc.guiRemove(this);
       sc.getFrames().removeFrame(this);
       sc.eventCloseThis(this);
@@ -263,7 +264,6 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
     */
    public void setHeadlessAllowed() {
       isHeadlessAllowed = true;
-      sc.dockExitFor(this);
    }
 
    public void setFullScreenTrue() {
@@ -357,7 +357,7 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
 
          if (isHeadlessNotAllowed()) {
             //if 0 visible call the exit procecdure
-            sc.executeLaterInUIThread(sc.getTaskExitSmoothIfNoFrames(), 2000);
+            sc.executeLaterInUIThread(sc.getTaskExitSmoothIfNoFrames());
          }
       }
    }

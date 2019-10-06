@@ -49,6 +49,10 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
       this.sc.toStringSetRoot(this);
    }
 
+   public void prepareExit() {
+
+   }
+
    /**
     * Subclass add its i18n filename to the list.
     * @param list
