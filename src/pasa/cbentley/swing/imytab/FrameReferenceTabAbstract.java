@@ -10,8 +10,8 @@ public abstract class FrameReferenceTabAbstract extends FrameReference {
 
    public void showFrame() {
       if (getFrame() == null) {
-         IMyTab about = createTab();
-         FrameIMyTab frameTab = new FrameIMyTab(about); //deal with tab dispose auto
+         IMyTab tab = createTab();
+         FrameIMyTab frameTab = new FrameIMyTab(tab); //deal with tab dispose auto
          //so the reference to be set to null when closed
          frameTab.setFrameReference(this);
          customizeFrame(frameTab);
