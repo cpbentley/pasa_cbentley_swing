@@ -1,6 +1,8 @@
 package pasa.cbentley.swing.cmd;
 
-public interface ICommandableRefresh {
+import pasa.cbentley.core.src4.logging.IStringable;
+
+public interface ICommandableRefresh extends IStringable {
 
    
    /**

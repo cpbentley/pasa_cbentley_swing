@@ -56,6 +56,7 @@ public abstract class ModelComboMapCache<E extends INameable<V>, V extends IStri
       for (String name : map.getKeySet()) {
          addElement(name);
       }
+      isDataLoaded = true;
    }
    
    /**
@@ -184,7 +185,7 @@ public abstract class ModelComboMapCache<E extends INameable<V>, V extends IStri
    }
 
    public void toString(Dctx dc) {
-      dc.root(this, "ComboModelMapCache");
+      dc.root(this, "ModelComboMapCache");
       toStringPrivate(dc);
       dc.nl();
       sc.toSD().d((DefaultComboBoxModel)this,dc);
@@ -198,10 +199,11 @@ public abstract class ModelComboMapCache<E extends INameable<V>, V extends IStri
 
    private void toStringPrivate(Dctx dc) {
       dc.appendVarWithSpace("isUpdating", isUpdating);
+      dc.appendVarWithSpace("isDataLoaded", isDataLoaded);
    }
 
    public void toString1Line(Dctx dc) {
-      dc.root1Line(this, "ComboModelMapCache");
+      dc.root1Line(this, "ModelComboMapCache");
       toStringPrivate(dc);
    }
 

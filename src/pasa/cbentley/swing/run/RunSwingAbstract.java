@@ -15,6 +15,7 @@ import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.logging.ITechConfig;
 import pasa.cbentley.core.src4.logging.ITechLvl;
+import pasa.cbentley.core.src4.logging.PreferencesSpyLogger;
 import pasa.cbentley.core.src5.ctx.C5Ctx;
 import pasa.cbentley.swing.SwingPrefs;
 import pasa.cbentley.swing.actions.IExitable;
@@ -41,6 +42,8 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
 
    protected final UCtx     uc;
 
+   protected boolean isSpyLoggerEnabled;
+   
    public RunSwingAbstract() {
       this.uc = new UCtx();
       this.c5 = new C5Ctx(uc);
@@ -100,7 +103,13 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
     */
    protected abstract CBentleyFrame initUIThreadInsideSwing();
 
+   /**
+    * Called first before anything else.
+    * 
+    * <li> Loads {@link IPrefs}
+    */
    public final void initUIThreadOutside() {
+      
       //#debug
       toStringSetupLogger(uc);
 
@@ -122,13 +131,18 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
          System.out.println("Preferences created for class " + namePreferenceKey);
          prefs = new SwingPrefs(sc, preferences);
       }
-
+      
+      if(isSpyLoggerEnabled) {
+         prefs = new PreferencesSpyLogger(uc, prefs);
+      }
+      
       sc.setPrefs(prefs);
       initOutsideUIForPrefs(prefs);
 
       ArrayList<String> list = new ArrayList<String>();
       sc.addI18NKey(list);
       addI18n(list);
+      
       sc.setBundleList(list);
 
       String language = "en";

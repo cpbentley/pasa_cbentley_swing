@@ -23,7 +23,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.MenuElement;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.DocumentEvent;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.text.BadLocationException;
 
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IStringable;
@@ -482,6 +484,26 @@ public class SwingDebug {
          dc.nl();
          dc.appendVar(i + "", model.getElementAt(i));
       }
+   }
+
+   
+   public void d1(DocumentEvent e, Dctx dc) {
+      dc.root1Line(e, "DocumentEvent");
+      dc.appendVarWithSpace("offset",e.getOffset());
+      dc.appendVarWithSpace("len",e.getLength());
+      String data = "";
+      try {
+         data = e.getDocument().getText(e.getOffset(), e.getLength());
+      } catch (BadLocationException e1) {
+         data = "BadLocationException";
+      }
+      dc.appendVarWithSpace("text",data);
+   }
+
+   public String d1(DocumentEvent e) {
+      Dctx dc = new Dctx(sc.getUCtx());
+      d1(e, dc);
+      return dc.toString();
    }
 
    //#enddebug

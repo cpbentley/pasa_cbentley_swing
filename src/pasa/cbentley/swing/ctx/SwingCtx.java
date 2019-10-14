@@ -14,8 +14,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +26,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
 import javax.swing.Action;
@@ -60,17 +57,17 @@ import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.logging.ITechLvl;
 import pasa.cbentley.core.src4.logging.IUserLog;
+import pasa.cbentley.core.src5.bundle.CombinedResourceBundle;
+import pasa.cbentley.core.src5.bundle.UTF8Control;
 import pasa.cbentley.core.src5.ctx.C5Ctx;
+import pasa.cbentley.core.src5.ctx.ITechPrefsC5;
 import pasa.cbentley.swing.IconFamily;
-import pasa.cbentley.swing.SwingPrefs;
 import pasa.cbentley.swing.SwingUtilsBentley;
 import pasa.cbentley.swing.actions.IBackForwardable;
 import pasa.cbentley.swing.actions.IExitable;
 import pasa.cbentley.swing.cache.IIconCache;
 import pasa.cbentley.swing.color.IntToColor;
-import pasa.cbentley.swing.data.CombinedResourceBundle;
 import pasa.cbentley.swing.data.UIData;
-import pasa.cbentley.swing.data.UTF8Control;
 import pasa.cbentley.swing.image.DrawUtils;
 import pasa.cbentley.swing.imytab.BackForwardTabPage;
 import pasa.cbentley.swing.imytab.FrameIMyTab;
@@ -99,10 +96,6 @@ import pasa.cbentley.swing.window.CBentleyFrame;
  */
 public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, IEventConsumer {
    public static final char   DEF_CHECK             = '%';
-
-   public static final String PREF_LOCALE_COUNTRY   = "localecountry";
-
-   public static final String PREF_LOCALE_LANG      = "localelang";
 
    private IBackForwardable   backforwardable;
 
@@ -1118,12 +1111,12 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
 
    public void setLocale(Locale locale) {
       this.locale = locale;
-      prefs.put(SwingCtx.PREF_LOCALE_COUNTRY, locale.getCountry());
-      prefs.put(SwingCtx.PREF_LOCALE_LANG, locale.getLanguage());
+      prefs.put(ITechPrefsC5.PREF_LOCALE_COUNTRY, locale.getCountry());
+      prefs.put(ITechPrefsC5.PREF_LOCALE_LANG, locale.getLanguage());
       if (bundleNames == null) {
          throw new NullPointerException("SwingCtx:BundleNames not initialized");
       }
-      resBund = new CombinedResourceBundle(this, bundleNames, locale, new UTF8Control());
+      resBund = new CombinedResourceBundle(c5, bundleNames, locale, new UTF8Control());
       resBund.load();
    }
 
@@ -1396,6 +1389,12 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
          frame = frames.getFirstActive();
       }
       return frame;
+   }
+
+   public void checkUIThread() {
+      if (!SwingUtilities.isEventDispatchThread()) {
+         throw new IllegalThreadStateException();
+      }
    }
 
 }
