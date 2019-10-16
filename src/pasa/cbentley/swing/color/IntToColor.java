@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import pasa.cbentley.core.src4.logging.ITechLvl;
-import pasa.cbentley.core.src4.structs.IntBuffer;
 import pasa.cbentley.core.src4.utils.CharUtils;
 import pasa.cbentley.core.src4.utils.ColorUtils;
 import pasa.cbentley.core.src4.utils.StringUtils;
+import pasa.cbentley.core.src4.utils.interfaces.IColors;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
 /**
@@ -16,7 +16,7 @@ import pasa.cbentley.swing.ctx.SwingCtx;
  * @author Charles Bentley
  *
  */
-public class IntToColor {
+public class IntToColor implements IColors {
 
    private SwingCtx sc;
 
@@ -26,16 +26,16 @@ public class IntToColor {
 
    public int getColorDarkFgOp(int iv) {
       if (iv == 0) {
-         return ColorUtils.FR_GRIS_BLANC;
+         return FR_GRIS_BLANC;
       } else {
          if (iv <= 5) {
-            return ColorUtils.FR_VIOLET_Pourpre;
+            return FR_VIOLET_Pourpre;
          } else if (iv <= 50) {
-            return ColorUtils.FR_ROUGE_Coquelicot;
+            return FR_ROUGE_Coquelicot;
          } else if (iv <= 500) {
-            return ColorUtils.FR_ORANGE_Orange;
+            return FR_ORANGE_Orange;
          } else {
-            return ColorUtils.FR_BLEU_Petrole;
+            return FR_BLEU_Petrole;
          }
       }
    }
@@ -45,18 +45,20 @@ public class IntToColor {
     * @param iv
     * @return
     */
-   public int getColorLightFgOp(int iv) {
+   public Color getColorLightFgOp(int iv) {
       if (iv == 0) {
-         return ColorUtils.FR_GRIS_BLANC;
+         return getColorsOpAccount().get(0);
       } else {
          if (iv <= 5) {
-            return ColorUtils.FR_JAUNE_Ble;
+            return getColorsOpAccount().get(1);
          } else if (iv <= 50) {
-            return ColorUtils.FR_ORANGE_Orange;
+            return getColorsOpAccount().get(2);
          } else if (iv <= 500) {
-            return ColorUtils.FR_ROUGE_Coquelicot;
+            return getColorsOpAccount().get(3);
+         } else if (iv <= 5000) {
+            return getColorsOpAccount().get(4);
          } else {
-            return ColorUtils.FR_VIOLET_Pourpre;
+            return getColorsOpAccount().get(5);
          }
       }
    }
@@ -290,18 +292,18 @@ public class IntToColor {
    public ArrayList<Color> getColorsCarouselLight() {
       if (colorsCarouselLight == null) {
          colorsCarouselLight = new ArrayList<Color>();
-         colorsCarouselLight.add(new Color(ColorUtils.FR_VIOLET_Orchidee_moyen));
-         colorsCarouselLight.add(new Color(ColorUtils.FR_VERT_Jaune));
-         colorsCarouselLight.add(new Color(ColorUtils.FR_ROUGE_Corail_clair));
-         colorsCarouselLight.add(new Color(ColorUtils.FR_BLEU_Azur));
-         colorsCarouselLight.add(new Color(ColorUtils.FR_JAUNE_Or));
-         colorsCarouselLight.add(new Color(ColorUtils.FR_ROSE_Clair));
-         colorsCarouselLight.add(new Color(ColorUtils.FR_VERT_Ocean_moyen));
-         colorsCarouselLight.add(new Color(ColorUtils.FR_BLEU_Dragee));
-         colorsCarouselLight.add(new Color(ColorUtils.FR_BRUN_Sable));
-         colorsCarouselLight.add(new Color(ColorUtils.FR_VERT_Asperge));
-         colorsCarouselLight.add(new Color(ColorUtils.FR_BLEU_Acier));
-         colorsCarouselLight.add(new Color(ColorUtils.FR_JAUNE_Imperial));
+         colorsCarouselLight.add(new Color(FR_VIOLET_Orchidee_moyen));
+         colorsCarouselLight.add(new Color(FR_VERT_Jaune));
+         colorsCarouselLight.add(new Color(FR_ROUGE_Corail_clair));
+         colorsCarouselLight.add(new Color(FR_BLEU_Azur));
+         colorsCarouselLight.add(new Color(FR_JAUNE_Or));
+         colorsCarouselLight.add(new Color(FR_ROSE_Clair));
+         colorsCarouselLight.add(new Color(FR_VERT_Ocean_moyen));
+         colorsCarouselLight.add(new Color(FR_BLEU_Dragee));
+         colorsCarouselLight.add(new Color(FR_BRUN_Sable));
+         colorsCarouselLight.add(new Color(FR_VERT_Asperge));
+         colorsCarouselLight.add(new Color(FR_BLEU_Acier));
+         colorsCarouselLight.add(new Color(FR_JAUNE_Imperial));
       }
 
       return colorsCarouselLight;
@@ -328,10 +330,10 @@ public class IntToColor {
       return colors.get(colorsCarouselLightIndex);
    }
 
-//   public Color getColorLightBgAccount(int account) {
-//      int rest = account;
-//      return new Color(0xFFFFFF - rest);
-//   }
+   //   public Color getColorLightBgAccount(int account) {
+   //      int rest = account;
+   //      return new Color(0xFFFFFF - rest);
+   //   }
 
    public Color getColorLightBgAccount(int account) {
       int r = 255;
@@ -339,15 +341,15 @@ public class IntToColor {
       int g = 255;
       float ratio = account / 1000000;
       float ratioInverse = 1 - ratio;
-      float saturation =  ratioInverse;
+      float saturation = ratioInverse;
       float brightness = ratioInverse;
-      float accountF = ((float)account / 1670000f) * 360f;
-      
+      float accountF = ((float) account / 1670000f) * 360f;
+
       return Color.getHSBColor(accountF, saturation, brightness);
       //int rest = account >> 2;
       //return new Color(0xFFFFFF - account);
    }
-   
+
    public Color getColorLightBgAccount2(int account) {
 
       //pad with zeros for at least 6 chars
@@ -488,25 +490,22 @@ public class IntToColor {
       return new Color(red, green, bleu);
    }
 
-   
    private ArrayList<Color> colorsBlockTimeAbove;
-   
-   public ArrayList<Color> getColorsBlockTimeAbove(){
-      if(colorsBlockTimeAbove == null) {
+
+   public ArrayList<Color> getColorsBlockTimeAbove() {
+      if (colorsBlockTimeAbove == null) {
          colorsBlockTimeAbove = new ArrayList<Color>(8);
-         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Miellat));
-         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Deau));
-         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Anis));
-         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Absinthe));
-         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Amande));
-         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Ocean));
-         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_VERT_Citron_vert));
-         colorsBlockTimeAbove.add(new Color(ColorUtils.FR_JAUNE_Bouton_dor));
+         colorsBlockTimeAbove.add(new Color(FR_VERT_Miellat));
+         colorsBlockTimeAbove.add(new Color(FR_VERT_Deau));
+         colorsBlockTimeAbove.add(new Color(FR_VERT_Anis));
+         colorsBlockTimeAbove.add(new Color(FR_VERT_Absinthe));
+         colorsBlockTimeAbove.add(new Color(FR_VERT_Amande));
+         colorsBlockTimeAbove.add(new Color(FR_VERT_Ocean));
+         colorsBlockTimeAbove.add(new Color(FR_VERT_Citron_vert));
+         colorsBlockTimeAbove.add(new Color(FR_JAUNE_Bouton_dor));
       }
       return colorsBlockTimeAbove;
    }
-
-
 
    public Color getColorLightBlockTimeAbove(int diff) {
       //best case
@@ -524,7 +523,7 @@ public class IntToColor {
          return getColorsBlockTimeAbove().get(4);
       } else if (diff < 600) {
          return getColorsBlockTimeAbove().get(5);
-      } else if (diff < 1200){
+      } else if (diff < 1200) {
          return getColorsBlockTimeAbove().get(6);
       } else {
          return getColorsBlockTimeAbove().get(7);
@@ -533,20 +532,35 @@ public class IntToColor {
    }
 
    private ArrayList<Color> colorsBlockTimeBelow;
-   
-   public ArrayList<Color> getColorsBlockTimeBelow(){
-      if(colorsBlockTimeBelow == null) {
+
+   public ArrayList<Color> getColorsBlockTimeBelow() {
+      if (colorsBlockTimeBelow == null) {
          colorsBlockTimeBelow = new ArrayList<Color>(6);
-         colorsBlockTimeBelow.add(new Color(ColorUtils.FR_BLEU_Dragee));
-         colorsBlockTimeBelow.add(new Color(ColorUtils.FR_BLEU_Fumee));
-         colorsBlockTimeBelow.add(new Color(ColorUtils.FR_BLEU_Acier_clair));
-         colorsBlockTimeBelow.add(new Color(ColorUtils.FR_BLEU_Ciel));
-         colorsBlockTimeBelow.add(new Color(ColorUtils.FR_BLEU_Acier));
-         colorsBlockTimeBelow.add(new Color(ColorUtils.FR_BLEU_Bleuet_fonce));
+         colorsBlockTimeBelow.add(new Color(FR_GRIS_BLANC));
+         colorsBlockTimeBelow.add(new Color(FR_BLEU_Fumee));
+         colorsBlockTimeBelow.add(new Color(FR_BLEU_Acier_clair));
+         colorsBlockTimeBelow.add(new Color(FR_BLEU_Ciel));
+         colorsBlockTimeBelow.add(new Color(FR_BLEU_Acier));
+         colorsBlockTimeBelow.add(new Color(FR_BLEU_Bleuet_fonce));
       }
       return colorsBlockTimeBelow;
    }
-   
+
+   private ArrayList<Color> colorsOpAccount;
+
+   public ArrayList<Color> getColorsOpAccount() {
+      if (colorsOpAccount == null) {
+         colorsOpAccount = new ArrayList<Color>(6);
+         colorsOpAccount.add(new Color(FR_GRIS_BLANC));
+         colorsOpAccount.add(new Color(FR_JAUNE_Ble));
+         colorsOpAccount.add(new Color(FR_ORANGE_Orange));
+         colorsOpAccount.add(new Color(FR_ROUGE_Coquelicot));
+         colorsOpAccount.add(new Color(FR_VIOLET_Pourpre));
+         colorsOpAccount.add(new Color(FR_GRIS_Noir));
+      }
+      return colorsOpAccount;
+   }
+
    public Color getColorLightBlockTimeBelow(int diff) {
       Color color = Color.WHITE;
       if (diff < 10) {
