@@ -244,6 +244,18 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
       isHardExitOnClose = true;
    }
 
+   /**
+    * Position the frame on the center of the main screen.
+    */
+   public void setFramePositionCenter() {
+      int fw = this.getWidth();
+      int fh = this.getHeight();
+      Screen screen = sc.getUtils().getScreen(0);
+      int nx = screen.getX() + (screen.getWidth() - fw) / 2;
+      int ny = screen.getY() + (screen.getHeight() - fh) / 2;
+      this.setLocation(nx, ny);
+   }
+   
    private FrameReference frameToShowOnClose;
 
    /**
