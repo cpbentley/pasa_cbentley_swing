@@ -10,7 +10,7 @@ import pasa.cbentley.core.src4.helpers.BasicPrefs;
 import pasa.cbentley.core.src4.interfaces.IPrefs;
 import pasa.cbentley.core.src4.logging.BaseDLogger;
 import pasa.cbentley.core.src4.logging.Dctx;
-import pasa.cbentley.core.src4.logging.IConfig;
+import pasa.cbentley.core.src4.logging.IDLogConfig;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.logging.ITechConfig;
@@ -199,7 +199,7 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
     */
    protected void toStringSetupLogger(UCtx uc) {
       BaseDLogger loggerFirst = (BaseDLogger) uc.toDLog();
-      IConfig config = loggerFirst.getDefault().getConfig();
+      IDLogConfig config = loggerFirst.getDefault().getConfig();
       config.setLevelGlobal(ITechLvl.LVL_03_FINEST);
       config.setFlagPrint(ITechConfig.MASTER_FLAG_02_OPEN_ALL_PRINT, true);
    }

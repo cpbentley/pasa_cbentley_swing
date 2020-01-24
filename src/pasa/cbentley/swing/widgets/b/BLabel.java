@@ -67,6 +67,10 @@ public class BLabel extends JLabel implements IMyGui, MouseListener, MouseWheelL
       return key;
    }
 
+   /**
+    * Replace keys in the stored text with values
+    * @return
+    */
    private String getKeyedText() {
       String str = sc.getResString(key);
       if (paramMap != null) {

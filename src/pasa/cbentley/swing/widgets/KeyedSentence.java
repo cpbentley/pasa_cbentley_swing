@@ -54,7 +54,7 @@ public class KeyedSentence implements IStringable {
    public String getSentence() {
       StringBBuilder sb = new StringBBuilder(sc.getUCtx());
       for (int i = 0; i < data.getSize(); i++) {
-         if (data.getID(i) == KEY) {
+         if (data.getInt(i) == KEY) {
             sb.append(sc.getResString(data.getString(i)));
          } else {
             //depending on type.. add a space or a dot
