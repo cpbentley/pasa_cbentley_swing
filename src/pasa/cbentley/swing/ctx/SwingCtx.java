@@ -41,6 +41,7 @@ import javax.swing.MenuElement;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
+import pasa.cbentley.core.j2se.ctx.J2seCtx;
 import pasa.cbentley.core.src4.ctx.ACtx;
 import pasa.cbentley.core.src4.ctx.ICtx;
 import pasa.cbentley.core.src4.ctx.UCtx;
@@ -94,7 +95,7 @@ import pasa.cbentley.swing.window.CBentleyFrame;
  * @author Charles Bentley
  *
  */
-public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, IEventConsumer {
+public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing, IEventConsumer {
    public static final char   DEF_CHECK             = '%';
 
    private IBackForwardable   backforwardable;
@@ -104,8 +105,6 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
    private BufferedImageUtils bufferedImageUtils;
 
    private List<String>       bundleNames;
-
-   private C5Ctx              c5;
 
    private final int          defaultDismissTimeout = ToolTipManager.sharedInstance().getDismissDelay();
 
@@ -198,8 +197,7 @@ public class SwingCtx extends ACtx implements IStringable, ICtx, IEventsSwing, I
     * @param c5 {@link SwingCtx} is a src 5 compatible library
     */
    public SwingCtx(C5Ctx c5) {
-      super(c5.getUCtx());
-      this.c5 = c5;
+      super(c5);
       this.swingCmds = new SwingCmds(this);
       this.locale = Locale.getDefault();
       this.tu = new TableUtils(this);
