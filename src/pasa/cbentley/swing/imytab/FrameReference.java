@@ -7,6 +7,16 @@ import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.window.CBentleyFrame;
 
+/**
+ * Encapsulates a possibly null reference to a {@link CBentleyFrame}
+ * 
+ * When null, frame is deemd inactive. 
+ * 
+ * {@link FrameReference#isInactive()}
+ * 
+ * @author Charles Bentley
+ *
+ */
 public class FrameReference implements IStringable {
 
    protected final SwingCtx sc;
