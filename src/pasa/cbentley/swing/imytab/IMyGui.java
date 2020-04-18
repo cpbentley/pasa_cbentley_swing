@@ -5,6 +5,7 @@ import pasa.cbentley.swing.ctx.IEventsSwing;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
 /**
+ * Avoid that every single Gui components registers for updating itself
  * 
  * @author Charles Bentley
  *

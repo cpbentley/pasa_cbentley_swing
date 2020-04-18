@@ -11,5 +11,10 @@ import pasa.cbentley.core.src4.logging.IStringable;
  */
 public interface ITabOwner extends IStringable {
 
+   /**
+    * Tells the owner that the Tab is done doing its work.
+    * Used by task related {@link IMyTab}s
+    * @param tab
+    */
    public void tabIsFinished(IMyTab tab);
 }
