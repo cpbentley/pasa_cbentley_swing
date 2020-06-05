@@ -23,48 +23,43 @@ import pasa.cbentley.swing.imytab.IMyGui;
 import pasa.cbentley.swing.task.TaskExitHard;
 
 public class CBentleyFrame extends JFrame implements IStringable, IMyGui, WindowListener, WindowFocusListener {
-   public static final int    EVENT_ID_0_ANY       = 0;
+   public static final int          EVENT_ID_0_ANY       = 0;
 
-   public static final int    EVENT_ID_1_CLOSE     = 1;
+   public static final int          EVENT_ID_1_CLOSE     = 1;
 
-   public static final String PREF_MAIN_FULLSCREEN = "fullscreen";
+   public static final String       PREF_MAIN_FULLSCREEN = "fullscreen";
 
-   public static final String PREF_MAIN_H          = "h";
+   public static final String       PREF_MAIN_H          = "h";
 
-   public static final String PREF_MAIN_SCREENID   = "screenid";
+   public static final String       PREF_MAIN_SCREENID   = "screenid";
 
-   public static final String PREF_MAIN_W          = "w";
+   public static final String       PREF_MAIN_W          = "w";
 
-   public static final String PREF_MAIN_X          = "x";
+   public static final String       PREF_MAIN_X          = "x";
 
-   public static final String PREF_MAIN_Y          = "y";
+   public static final String       PREF_MAIN_Y          = "y";
 
-   public static final String PREF_PREFIX          = "frame";
+   public static final String       PREF_PREFIX          = "frame";
 
-   public static final int    PRODUCER_ID_2        = 2;
+   public static final int          PRODUCER_ID_2        = 2;
 
    /**
     * 
     */
-   private static final long  serialVersionUID     = -5719466067073255318L;
+   private static final long        serialVersionUID     = -5719466067073255318L;
 
-   private boolean            isMainFrame;
+   private boolean                  isMainFrame;
 
-   private String             pid                  = "";
+   private String                   pid                  = "";
 
-   private SwingCtx           sc;
+   private SwingCtx                 sc;
 
-   private FrameScreenManager screenManager;
+   private final FrameScreenManager screenManager;
 
-   private boolean            isHardExitOnClose;
+   private boolean                  isHardExitOnClose;
 
    public CBentleyFrame(SwingCtx sc) {
-      this.sc = sc;
-      screenManager = new FrameScreenManager(this);
-      sc.addAllFrames(this);
-      sc.guiRegister(this);
-      this.addWindowFocusListener(this);
-      this.addWindowListener(this);
+      this(sc, "");
    }
 
    /**
@@ -79,8 +74,11 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    public CBentleyFrame(SwingCtx sc, String frameID) {
       this.sc = sc;
       pid = frameID;
-      screenManager = new FrameScreenManager(this);
+
       sc.getFrames().addFrame(this);
+      sc.guiRegister(this);
+
+      screenManager = new FrameScreenManager(this);
       this.addWindowFocusListener(this);
       this.addWindowListener(this);
    }
@@ -96,7 +94,7 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
       WindowEvent we = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
       this.dispatchEvent(we);
    }
-   
+
    protected void closeCleanUp() {
       this.savePrefs();
       sc.guiRemove(this);
@@ -171,6 +169,8 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
 
    /**
     * Position the Frame using {@link SwingCtx#getPrefs()}
+    * 
+    * TODO refactor to framePositionAndShow
     */
    public void positionFrame() {
       positionFrame(sc.getPrefs());
@@ -208,6 +208,8 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
       }
       this.setVisible(true);
 
+      //#debug
+      toDLog().pFlow("Frame shown and positioned", this, CBentleyFrame.class, "positionFrame@line212", LVL_05_FINE, true);
    }
 
    /**
@@ -225,6 +227,9 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
     * @param prefs
     */
    public void savePrefs(IPrefs prefs) {
+      //#debug
+      toDLog().pFlow("", prefs, CBentleyFrame.class, "savePrefs", LVL_04_FINER, false);
+
       if (this.isFullScreen()) {
          prefs.putBoolean(getKeyFullscreen(), true);
          prefs.putInt(getKeyScreenID(), screenManager.getScreenID());
@@ -255,7 +260,7 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
       int ny = screen.getY() + (screen.getHeight() - fh) / 2;
       this.setLocation(nx, ny);
    }
-   
+
    private FrameReference frameToShowOnClose;
 
    /**
@@ -280,6 +285,10 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
 
    public void setFullScreenTrue() {
       screenManager.setFullScreen(true);
+   }
+
+   public void setFullScreenFalse() {
+      screenManager.setFullScreen(false);
    }
 
    /**
@@ -321,10 +330,11 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    }
 
    public void toString(Dctx dc) {
-      dc.root(this, "CBentleyFrame");
+      dc.root(this, CBentleyFrame.class);
       dc.appendVarWithSpace("pid", pid);
-      sc.toSD().toStringFrame(this, dc);
+      sc.toSD().toStringFrameNl(this, dc);
       dc.nlLvl(screenManager);
+      dc.nlLvl(frameToShowOnClose, "frameToShowOnClose");
    }
 
    public String toString1Line() {
@@ -354,6 +364,8 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    }
 
    public void windowClosing(WindowEvent e) {
+      //#debug
+      toDLog().pFlow("isHardExitOnClose=" + isHardExitOnClose, this, CBentleyFrame.class, "windowClosing", LVL_05_FINE, true);
       closeCleanUp();
 
       //hard exist on close will override all others checks

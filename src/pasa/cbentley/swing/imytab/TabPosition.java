@@ -276,11 +276,11 @@ public class TabPosition implements IStringable {
       dc.nlLvl(historyPosition, "HistoryBackward");
       dc.nlLvl(historyForward, "HistoryForward");
 
-      dc.nlLvlOneLine(left, "LeftTab");
-      dc.nlLvlOneLine(right, "RightTab");
-      dc.nlLvlOneLine(owner, "Owner");
+      dc.nlLvl1Line(left, "LeftTab");
+      dc.nlLvl1Line(right, "RightTab");
+      dc.nlLvl1Line(owner, "Owner");
 
-      dc.nlLvlOneLine(frame, "frame");
+      dc.nlLvl1Line(frame, "frame");
 
    }
 

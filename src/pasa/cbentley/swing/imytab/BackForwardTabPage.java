@@ -159,7 +159,7 @@ public class BackForwardTabPage implements IBackForwardable {
       dc.append("History Forward #" + historyForward.size());
       int count = 1;
       for (TabPage page : historyForward) {
-         dc.nlLvlOneLine("page#" + count, page);
+         dc.nlLvl1Line(page, "page#" + count);
          count++;
       }
 
@@ -167,7 +167,7 @@ public class BackForwardTabPage implements IBackForwardable {
       dc.append("History Back #" + historyBack.size());
       count = 1;
       for (TabPage page : historyBack) {
-         dc.nlLvlOneLine("page#" + count, page);
+         dc.nlLvl1Line(page, "page#" + count);
          count++;
       }
       dc.nlLvl("ITabPageSettable", setter);

@@ -65,11 +65,11 @@ public class MenuLanguage extends BMenuLazy implements ActionListener {
       int index = langRadioButtons.indexOf(src);
       if (index != -1) {
          LangMenu menu = langs.get(index);
-         sc.updateLocale(menu.language, menu.country);
+         sc.localeUpdate(menu.language, menu.country);
 
          //generate event
          IEventBus eventBusRoot = sc.getUCtx().getEventBusRoot();
-         BusEvent event = eventBusRoot.createEvent(IEventsCore.PID_1_FRAMEWORK, IEventsCore.EID_FRAMEWORK_2_LANGUAGE_CHANGED, null);
+         BusEvent event = eventBusRoot.createEvent(IEventsCore.PID_1_FRAMEWORK, IEventsCore.PID_1_FRAMEWORK_2_LANGUAGE_CHANGED, null);
          eventBusRoot.putOnBus(event);
       } else {
          //delegate to listeners the cmd id

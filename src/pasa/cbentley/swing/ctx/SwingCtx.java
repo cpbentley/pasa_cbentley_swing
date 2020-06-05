@@ -42,7 +42,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import pasa.cbentley.core.j2se.ctx.J2seCtx;
-import pasa.cbentley.core.src4.ctx.ACtx;
 import pasa.cbentley.core.src4.ctx.ICtx;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.event.BusEvent;
@@ -96,64 +95,57 @@ import pasa.cbentley.swing.window.CBentleyFrame;
  *
  */
 public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing, IEventConsumer {
-   public static final char   DEF_CHECK             = '%';
+   private static final int         CTX_ID                = 350;
 
-   private IBackForwardable   backforwardable;
+   public static final char         DEF_CHECK             = '%';
 
-   private ExecutorService    backgroundExec;
+   private IBackForwardable         backforwardable;
 
-   private BufferedImageUtils bufferedImageUtils;
+   private ExecutorService          backgroundExec;
 
-   private List<String>       bundleNames;
+   private BufferedImageUtils       bufferedImageUtils;
 
-   private final int          defaultDismissTimeout = ToolTipManager.sharedInstance().getDismissDelay();
+   private List<String>             bundleNames;
 
-   private DrawUtils          du;
+   private ColorUtilsSwing          colorUtilsSwing;
 
-   private IEventBus          eventBusSwing;
+   private final int                defaultDismissTimeout = ToolTipManager.sharedInstance().getDismissDelay();
 
-   private SwingExecutor      executor;
+   private DrawUtils                du;
 
-   private IExitable          exitTask;
+   private IEventBus                eventBusSwing;
 
-   public IExitable getExitTask() {
-      return exitTask;
-   }
+   private SwingExecutor            executor;
 
-   private TaskExitSmoothIfNoFrames taskExitSmooth;
+   private IExitable                exitTask;
 
-   public TaskExitSmoothIfNoFrames getTaskExitSmoothIfNoFrames() {
-      if (taskExitSmooth == null) {
-         taskExitSmooth = new TaskExitSmoothIfNoFrames(this);
-      }
-      return taskExitSmooth;
-   }
+   private IMyTab                   focusedTab;
 
-   private IMyTab                 focusedTab;
+   private SwingCtxFrames           frames;
 
    /**
     * Never null. Dummy implementation does not any caching. Just creation
     */
-   private IIconCache             iconCache;
+   private IIconCache               iconCache;
 
-   private IntToColor             intToColor;
+   private IntToColor               intToColor;
 
-   private boolean                isGlobalLabelTip = true;
+   private boolean                  isGlobalLabelTip      = true;
 
-   private boolean                isResMissingLog  = true;
+   private boolean                  isResMissingLog       = true;
 
-   private List<IMyGui>           listGuis         = new ArrayList<IMyGui>(3);
+   private List<IMyGui>             listGuis              = new ArrayList<IMyGui>(3);
 
-   private Locale                 locale;
+   private Locale                   locale;
 
    /**
     * Locale with all the Strings
     */
-   private Locale                 localeFull;
+   private Locale                   localeFull;
 
-   private Icon                   placeHolder;
+   private Icon                     placeHolder;
 
-   private IPrefs                 prefs;
+   private IPrefs                   prefs;
 
    /**
     * This resource bundle allows for a root data of US locale data.
@@ -163,41 +155,51 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
     * 
     * This means you can have 
     */
-   private CombinedResourceBundle resBund;
+   private CombinedResourceBundle   resBund;
 
    //#debug
-   private IStringable            root;
+   private IStringable              root;
 
-   private StringBBuilder         sb;
+   private StringBBuilder           sb;
 
-   private SwingDebug             sd;
+   private SwingDebug               sd;
 
-   private SwingCmds              swingCmds;
+   private SwingCmds                swingCmds;
 
-   private SwingColorStore        swingColorStore;
+   private SwingColorStore          swingColorStore;
 
-   private TabIconSettings        tabIcons;
+   private TabIconSettings          tabIcons;
 
-   private ITabMenuBarFactory     tabMenuBarFactory;
+   private ITabMenuBarFactory       tabMenuBarFactory;
 
-   private int                    themeIDSound;
+   private TaskExitSmoothIfNoFrames taskExitSmooth;
 
-   private TableUtils             tu;
+   private TaskGuiUpdate            taskGuiUpdate;
 
-   private UIData                 uiData;
+   private int                      themeIDSound;
 
-   private SwingUtilsBentley      utils;
+   private TableUtils               tu;
 
-   private SwingCtxFrames         frames;
+   private UIData                   uiData;
 
-   private ColorUtilsSwing        colorUtilsSwing;
+   private SwingUtilsBentley        utils;
+
+   private IConfigSwing             config;
+
+   public SwingCtx(C5Ctx c5) {
+      this(new ConfigSwingDefault(c5.getUCtx()), c5);
+   }
 
    /**
+    * {@link SwingCtx} is JDK 1.5 compatible!
+    * 
     * Cannot create GUI elements. 
+    * 
     * @param c5 {@link SwingCtx} is a src 5 compatible library
     */
-   public SwingCtx(C5Ctx c5) {
+   public SwingCtx(IConfigSwing config, C5Ctx c5) {
       super(c5);
+      this.config = config;
       this.swingCmds = new SwingCmds(this);
       this.locale = Locale.getDefault();
       this.tu = new TableUtils(this);
@@ -222,24 +224,16 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       swingColorStore = new SwingColorStore(this);
 
       //we want memory events
-      uc.getEventBusRoot().addConsumer(this, PID_3_MEMORY, EID_MEMORY_0_ANY);
+      uc.getEventBusRoot().addConsumer(this, PID_3_MEMORY, PID_3_MEMORY_0_ANY);
 
       //#debug
       sd = new SwingDebug(this);
    }
 
-   public SwingCtxFrames getFrames() {
-      return frames;
+   public IConfigSwing getConfigSwing() {
+      return config;
    }
-
-   /**
-    * Add JFrame to currently visible frames managed by this {@link SwingCtx}
-    * @param f
-    */
-   public void addAllFrames(CBentleyFrame f) {
-      frames.addFrame(f);
-   }
-
+   
    public void addI18NKey(ArrayList<String> list) {
       list.add("i18nSwing");
    }
@@ -310,6 +304,12 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       });
    }
 
+   public void checkUIThread() {
+      if (!SwingUtilities.isEventDispatchThread()) {
+         throw new IllegalThreadStateException();
+      }
+   }
+
    /**
     * Exit clean up
     */
@@ -321,7 +321,7 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       if (e.getProducerID() == PID_3_MEMORY) {
          //#debug
          toDLog().pMemory("Memory Event", e, SwingCtx.class, "consumeEvent", LVL_05_FINE, true);
-         if (e.getEventID() == EID_MEMORY_2_USER_REQUESTED_GC) {
+         if (e.getEventID() == PID_3_MEMORY_2_USER_REQUESTED_GC) {
             swingColorStore.clear();
          }
       }
@@ -452,13 +452,6 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       return c5;
    }
 
-   public ColorUtilsSwing getColorUtilsSwing() {
-      if (colorUtilsSwing == null) {
-         colorUtilsSwing = new ColorUtilsSwing(this);
-      }
-      return colorUtilsSwing;
-   }
-
    public String getClipboardString() {
       Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
       String str = null;
@@ -475,6 +468,17 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
 
    public SwingCmds getCmds() {
       return swingCmds;
+   }
+
+   public ColorUtilsSwing getColorUtilsSwing() {
+      if (colorUtilsSwing == null) {
+         colorUtilsSwing = new ColorUtilsSwing(this);
+      }
+      return colorUtilsSwing;
+   }
+
+   public int getCtxID() {
+      return CTX_ID;
    }
 
    public DrawUtils getDU() {
@@ -506,6 +510,10 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
          backgroundExec = Executors.newCachedThreadPool();
       }
       return backgroundExec;
+   }
+
+   public IExitable getExitTask() {
+      return exitTask;
    }
 
    /**
@@ -550,6 +558,22 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       } else {
          return null;
       }
+   }
+
+   /**
+    * Tries to return the main window
+    * @return
+    */
+   public CBentleyFrame getFrameMain() {
+      CBentleyFrame frame = frames.getFrameMainFirst();
+      if (frame == null) {
+         frame = frames.getFirstActive();
+      }
+      return frame;
+   }
+
+   public SwingCtxFrames getFrames() {
+      return frames;
    }
 
    private Icon getIconPlaceHolder() {
@@ -858,6 +882,20 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       return tabMenuBarFactory;
    }
 
+   public TaskExitSmoothIfNoFrames getTaskExitSmoothIfNoFrames() {
+      if (taskExitSmooth == null) {
+         taskExitSmooth = new TaskExitSmoothIfNoFrames(this);
+      }
+      return taskExitSmooth;
+   }
+
+   public TaskGuiUpdate getTaskGuiUpdate() {
+      if (taskGuiUpdate == null) {
+         taskGuiUpdate = new TaskGuiUpdate(this);
+      }
+      return taskGuiUpdate;
+   }
+
    public TableUtils getTU() {
       return tu;
    }
@@ -931,15 +969,6 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       }
    }
 
-   private TaskGuiUpdate taskGuiUpdate;
-
-   public TaskGuiUpdate getTaskGuiUpdate() {
-      if (taskGuiUpdate == null) {
-         taskGuiUpdate = new TaskGuiUpdate(this);
-      }
-      return taskGuiUpdate;
-   }
-
    /**
     * Creates a runnable for Gui update later
     */
@@ -961,17 +990,6 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       }
    }
 
-   public void guiUpdateOnChildrenMenuBar(JMenuBar menuBar) {
-      int numMenus = menuBar.getMenuCount();
-      for (int i = 0; i < numMenus; i++) {
-         JMenu menu = menuBar.getMenu(i);
-         if (menu instanceof IMyGui) {
-            ((IMyGui) menu).guiUpdate();
-         }
-         guiUpdateOnChildrenMenu(menu);
-      }
-   }
-
    public void guiUpdateOnChildrenMenu(JMenu menu) {
       Component[] components = menu.getMenuComponents();
       for (int i = 0; i < components.length; i++) {
@@ -980,6 +998,19 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
          } else if (components[i] instanceof Container) {
             guiUpdateOnChildren((Container) components[i]);
          }
+      }
+   }
+
+   //#enddebug
+
+   public void guiUpdateOnChildrenMenuBar(JMenuBar menuBar) {
+      int numMenus = menuBar.getMenuCount();
+      for (int i = 0; i < numMenus; i++) {
+         JMenu menu = menuBar.getMenu(i);
+         if (menu instanceof IMyGui) {
+            ((IMyGui) menu).guiUpdate();
+         }
+         guiUpdateOnChildrenMenu(menu);
       }
    }
 
@@ -1003,8 +1034,6 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       }
    }
 
-   //#enddebug
-
    public void guiUpdateTooltip(JComponent comp, String keyNormal) {
       if (keyNormal != null) {
          String tipKey = buildStringUISerial(keyNormal, ".tip");
@@ -1023,6 +1052,26 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
 
    public boolean isResMissingLog() {
       return isResMissingLog;
+   }
+
+   /**
+    * 
+    * @param lang
+    * @param country
+    * @return
+    */
+   public boolean localeUpdate(String lang, String country) {
+      Locale newLocale = new Locale(lang, country);
+      try {
+         //locale preference is SwingCtx related
+         setLocale(newLocale);
+         this.guiUpdate();
+         this.getLog().consoleLog("Language set to " + lang + " " + country);
+         return true;
+      } catch (MissingResourceException e) {
+         getLog().consoleLogError("Resource Bundle for " + lang + " and " + country + " not found.");
+         return false;
+      }
    }
 
    /**
@@ -1136,6 +1185,14 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       this.tabIcons = tabIcons;
    }
 
+   /**
+    * TODO change set into Add
+    * @param tabMenuBarFactory
+    */
+   public void setTabMenuBarFactory(ITabMenuBarFactory tabMenuBarFactory) {
+      this.tabMenuBarFactory = tabMenuBarFactory;
+   }
+
    public void showFrame(FrameReference frame) {
       frame.showFrame();
    }
@@ -1144,14 +1201,6 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       frame.showFrame();
       frame.getFrame().setFrameOnClose(frameAfter);
       //add close listener to show frame after
-   }
-
-   /**
-    * TODO change set into Add
-    * @param tabMenuBarFactory
-    */
-   public void setTabMenuBarFactory(ITabMenuBarFactory tabMenuBarFactory) {
-      this.tabMenuBarFactory = tabMenuBarFactory;
    }
 
    public FrameIMyTab showInNewFrame(FrameIMyTab f, float width, float height) {
@@ -1314,17 +1363,6 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
    }
 
    /**
-    * 
-    * @return
-    */
-   public String toStringGuiUpdate() {
-      Dctx dc = new Dctx(getUCtx());
-      toStringGu44iUpdate(dc);
-      frames.toStringGuiUpdate(dc);
-      return dc.toString();
-   }
-
-   /**
     * String of gui update registered object
     * @param dc
     */
@@ -1333,6 +1371,17 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       for (IMyGui gui : listGuis) {
          dc.nlLvl("Gui", gui);
       }
+   }
+
+   /**
+    * 
+    * @return
+    */
+   public String toStringGuiUpdate() {
+      Dctx dc = new Dctx(getUCtx());
+      toStringGu44iUpdate(dc);
+      frames.toStringGuiUpdate(dc);
+      return dc.toString();
    }
 
    private void toStringPrivate(Dctx dc) {
@@ -1350,49 +1399,5 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       this.root = root;
    }
    //#enddebug
-
-   public void updateAllVisibleTabs() {
-      //#debug
-      toDLog().pFlow("", null, SwingCtx.class, "updateAllVisibleTabs", ITechLvl.LVL_04_FINER, true);
-
-   }
-
-   /**
-    * 
-    * @param lang
-    * @param country
-    * @return
-    */
-   public boolean updateLocale(String lang, String country) {
-      Locale newLocale = new Locale(lang, country);
-      try {
-         //locale preference is SwingCtx related
-         setLocale(newLocale);
-         this.guiUpdate();
-         this.getLog().consoleLog("Language set to " + lang + " " + country);
-         return true;
-      } catch (MissingResourceException e) {
-         getLog().consoleLogError("Resource Bundle for " + lang + " and " + country + " not found.");
-         return false;
-      }
-   }
-
-   /**
-    * Tries to return the main window
-    * @return
-    */
-   public CBentleyFrame getFrameMain() {
-      CBentleyFrame frame = frames.getFrameMainFirst();
-      if (frame == null) {
-         frame = frames.getFirstActive();
-      }
-      return frame;
-   }
-
-   public void checkUIThread() {
-      if (!SwingUtilities.isEventDispatchThread()) {
-         throw new IllegalThreadStateException();
-      }
-   }
 
 }

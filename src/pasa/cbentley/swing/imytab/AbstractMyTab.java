@@ -209,7 +209,7 @@ public abstract class AbstractMyTab extends JPanel implements IMyTab, IMyGui, IS
       dc.nlLvlTitleIfNull(position, "TabPosition");
       dc.nlLvlTitleIfNull(tapPage, "TapPage");
       dc.nlLvl(owner, "ITabOwner");
-      sc.toSD().d(this, dc.nLevel());
+      sc.toSD().d(this, dc.newLevel());
    }
 
    public String toString1Line() {

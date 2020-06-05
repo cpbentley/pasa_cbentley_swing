@@ -206,7 +206,7 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
       int count = 0;
       for (T row : data) {
          if (row instanceof IStringable) {
-            dc.nlLvlOneLine((IStringable) row);
+            dc.nlLvl1Line((IStringable) row);
          } else {
             dc.append(row.toString());
          }

@@ -7,6 +7,7 @@ import java.util.prefs.Preferences;
 
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.interfaces.IPrefs;
+import pasa.cbentley.core.src4.io.BADataIS;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.structs.IntToStrings;
@@ -29,10 +30,6 @@ public class SwingPrefs implements IPrefs {
       this.sc = sc;
    }
 
-   public Preferences getPreferences() {
-      return prefs;
-   }
-   
    public void clear() {
       //#debug
       toDLog().pFlow("Erasing contents of Preferences", this, SwingPrefs.class, "clear", LVL_05_FINE, true);
@@ -79,6 +76,10 @@ public class SwingPrefs implements IPrefs {
       return null;
    }
 
+   public Preferences getPreferences() {
+      return prefs;
+   }
+
    /**
     * 
     */
@@ -90,6 +91,11 @@ public class SwingPrefs implements IPrefs {
          String[] data = root1.split(String.valueOf(separator));
          return data;
       }
+   }
+
+   public void importPrefs(BADataIS dis) {
+      // TODO Auto-generated method stub
+
    }
 
    public void put(String key, String value) {
@@ -124,7 +130,7 @@ public class SwingPrefs implements IPrefs {
    public IDLog toDLog() {
       return sc.toDLog();
    }
-   
+
    public String toString() {
       return Dctx.toString(this);
    }

@@ -131,7 +131,7 @@ public class SwingCtxFrames implements IStringable {
             dc.nlLvl((CBentleyFrame) frame);
          } else {
             //print with utility method
-            sc.toSD().toStringFrame(frame, dc.nLevel());
+            sc.toSD().toStringFrame(frame, dc.newLevel());
          }
       }
    }

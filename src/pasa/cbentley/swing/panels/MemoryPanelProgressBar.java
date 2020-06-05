@@ -88,7 +88,7 @@ public class MemoryPanelProgressBar extends JPanel implements ActionListener, Mo
 
          //produce an event on the utils Bus, but people listen on the UtilsBus.
          IEventBus bus = MemoryPanelProgressBar.this.sc.getEventBusRoot();
-         BusEvent be = bus.createEvent(IEventsCore.PID_3_MEMORY, IEventsCore.EID_MEMORY_2_USER_REQUESTED_GC, this);
+         BusEvent be = bus.createEvent(IEventsCore.PID_3_MEMORY, IEventsCore.PID_3_MEMORY_2_USER_REQUESTED_GC, this);
          be.setUserEvent();
          bus.putOnBus(be);
          update();

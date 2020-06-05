@@ -109,7 +109,7 @@ public class TabPage implements IStringable {
       dc.root1Line(this, "TabPage");
       dc.nlLvlTitleIfNull(pageStrings, "pageString");
       dc.append(' ');
-      dc.nlLvlOneLine(tab, "");
+      dc.nlLvl1Line(tab, "");
    }
 
    public UCtx toStringGetUCtx() {

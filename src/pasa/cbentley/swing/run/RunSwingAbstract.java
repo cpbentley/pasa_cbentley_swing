@@ -5,16 +5,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.prefs.Preferences;
 
+import pasa.cbentley.core.src4.ctx.IConfigU;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.helpers.BasicPrefs;
 import pasa.cbentley.core.src4.interfaces.IPrefs;
 import pasa.cbentley.core.src4.logging.BaseDLogger;
 import pasa.cbentley.core.src4.logging.Dctx;
-import pasa.cbentley.core.src4.logging.IDLogConfig;
 import pasa.cbentley.core.src4.logging.IDLog;
+import pasa.cbentley.core.src4.logging.IDLogConfig;
+import pasa.cbentley.core.src4.logging.ILogConfigurator;
+import pasa.cbentley.core.src4.logging.ILogEntryAppender;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.logging.ITechConfig;
 import pasa.cbentley.core.src4.logging.ITechLvl;
+import pasa.cbentley.core.src4.logging.LogConfiguratorAllFinest;
 import pasa.cbentley.core.src4.logging.PreferencesSpyLogger;
 import pasa.cbentley.core.src5.ctx.C5Ctx;
 import pasa.cbentley.swing.SwingPrefs;
@@ -42,8 +46,27 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
 
    protected final UCtx     uc;
 
-   protected boolean isSpyLoggerEnabled;
-   
+   protected boolean        isSpyLoggerEnabled;
+
+   /**
+    * Run it within an existing {@link SwingCtx}
+    * @param sc
+    */
+   public RunSwingAbstract(SwingCtx sc) {
+      this.sc = sc;
+      this.c5 = sc.getC5();
+      this.uc = sc.getUCtx();
+   }
+
+   public RunSwingAbstract(IConfigU configU) {
+      this.uc = new UCtx(configU);
+      this.c5 = new C5Ctx(uc);
+      this.sc = new SwingCtx(c5);
+
+      //#debug
+      this.sc.toStringSetRoot(this);
+   }
+
    public RunSwingAbstract() {
       this.uc = new UCtx();
       this.c5 = new C5Ctx(uc);
@@ -90,6 +113,24 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
          sc.guiUpdate();
          frame.positionFrame();
       }
+
+      initPostFrameShown();
+   }
+
+   protected void initPostFrameShown() {
+
+   }
+
+   /**
+    * Call this method once the runner has been instantiated and configured in the static void main thread.
+    */
+   public void run() {
+      this.initUIThreadOutside();
+      javax.swing.SwingUtilities.invokeLater(new Runnable() {
+         public void run() {
+            initUIThreadInside();
+         }
+      });
    }
 
    /**
@@ -109,7 +150,7 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
     * <li> Loads {@link IPrefs}
     */
    public final void initUIThreadOutside() {
-      
+
       //#debug
       toStringSetupLogger(uc);
 
@@ -131,18 +172,18 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
          System.out.println("Preferences created for class " + namePreferenceKey);
          prefs = new SwingPrefs(sc, preferences);
       }
-      
-      if(isSpyLoggerEnabled) {
+
+      if (isSpyLoggerEnabled) {
          prefs = new PreferencesSpyLogger(uc, prefs);
       }
-      
+
       sc.setPrefs(prefs);
       initOutsideUIForPrefs(prefs);
 
       ArrayList<String> list = new ArrayList<String>();
       sc.addI18NKey(list);
       addI18n(list);
-      
+
       sc.setBundleList(list);
 
       String language = "en";
@@ -151,7 +192,7 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
       sc.setLocale(currentLocale);
 
       //#debug
-      toDLog().pFlow("language=" + language + "country=" + country, this, RunSwingAbstract.class, "initUIThreadOutside", LVL_05_FINE, true);
+      toDLog().pFlow("language=" + language + "country=" + country, this, RunSwingAbstract.class, "initUIThreadOutside@line176", LVL_05_FINE, true);
 
    }
 
@@ -165,7 +206,7 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
    }
 
    public void toString(Dctx dc) {
-      dc.root(this, "RunSwingAbstract");
+      dc.root(this, RunSwingAbstract.class, 199);
       toStringPrivate(dc);
 
       dc.nlLvl(uc);
@@ -181,7 +222,7 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
    }
 
    public void toString1Line(Dctx dc) {
-      dc.root1Line(this, "RunSwingAbstract");
+      dc.root1Line(this, RunSwingAbstract.class);
       toStringPrivate(dc);
    }
 
@@ -194,14 +235,24 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
    }
 
    /**
-    * setup the logger at. sub class may override.
+    * Returns the logging configurator for the logger
+    */
+   public ILogConfigurator toStringGetLoggingConfig() {
+      return new LogConfiguratorAllFinest();
+   }
+
+   /**
+    * setup the logger at. sub class may override to setup more loggers?
     * Default opens all at finest level
     */
    protected void toStringSetupLogger(UCtx uc) {
-      BaseDLogger loggerFirst = (BaseDLogger) uc.toDLog();
-      IDLogConfig config = loggerFirst.getDefault().getConfig();
-      config.setLevelGlobal(ITechLvl.LVL_03_FINEST);
-      config.setFlagPrint(ITechConfig.MASTER_FLAG_02_OPEN_ALL_PRINT, true);
+
+      ILogConfigurator logConfigurator = this.toStringGetLoggingConfig();
+      //what if several logs? the launcher implementation must deal with it specifically
+      ILogEntryAppender appender = uc.toDLog().getDefault();
+      IDLogConfig config = appender.getConfig();
+      logConfigurator.apply(config);
+
    }
 
    //#enddebug

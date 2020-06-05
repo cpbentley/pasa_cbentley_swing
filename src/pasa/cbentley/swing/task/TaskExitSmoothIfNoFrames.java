@@ -7,17 +7,26 @@ import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.swing.actions.IExitable;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
+/**
+ * Reads the number of visible frames from {@link SwingCtx}
+ * 
+ * When 0, run the {@link IExitable} or if null hard exit.
+ * 
+ * @author Charles Bentley
+ *
+ */
 public class TaskExitSmoothIfNoFrames implements Runnable, IStringable {
 
    protected final SwingCtx sc;
 
    public TaskExitSmoothIfNoFrames(SwingCtx sc) {
       this.sc = sc;
-      
+
    }
 
    public void run() {
       int numVisible = sc.getFrames().getNumVisible();
+
       //#debug
       sc.toDLog().pFlow("numVisible=" + numVisible, sc.getFrames(), TaskExitSmoothIfNoFrames.class, "run", LVL_05_FINE, true);
       if (numVisible == 0) {
@@ -27,10 +36,9 @@ public class TaskExitSmoothIfNoFrames implements Runnable, IStringable {
          } else {
             System.exit(0);
          }
-      }      
+      }
    }
-   
-   
+
    //#mdebug
    public IDLog toDLog() {
       return toStringGetUCtx().toDLog();
@@ -63,7 +71,5 @@ public class TaskExitSmoothIfNoFrames implements Runnable, IStringable {
    }
 
    //#enddebug
-   
 
-   
 }

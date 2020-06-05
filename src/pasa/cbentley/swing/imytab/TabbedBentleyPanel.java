@@ -1227,17 +1227,17 @@ public abstract class TabbedBentleyPanel extends AbstractMyTab implements IMyTab
       dc.nl();
       sc.toSD().d(jtabbePane, dc);
       dc.nl();
-      dc.nlLvlOneLine("myCurrentTab", myCurrentTab);
+      dc.nlLvl1Line(myCurrentTab, "myCurrentTab");
       dc.nl();
       dc.append("Managed Tabs");
       for (IMyTab tab : managedPanels) {
-         dc.nlLvlOneLine(tab);
+         dc.nlLvl1Line(tab);
       }
       dc.nl();
       dc.append("Framed Tabs #" + framedTabs.size());
       dc.tab();
       for (FrameIMyTab tab : framedTabs) {
-         dc.nlLvlOneLine(tab);
+         dc.nlLvl1Line(tab);
       }
       dc.tabRemove();
       dc.nl();
