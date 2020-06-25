@@ -61,6 +61,7 @@ import pasa.cbentley.core.src5.bundle.CombinedResourceBundle;
 import pasa.cbentley.core.src5.bundle.UTF8Control;
 import pasa.cbentley.core.src5.ctx.C5Ctx;
 import pasa.cbentley.core.src5.ctx.ITechPrefsC5;
+import pasa.cbentley.core.swing.ctx.SwingCoreCtx;
 import pasa.cbentley.swing.IconFamily;
 import pasa.cbentley.swing.SwingUtilsBentley;
 import pasa.cbentley.swing.actions.IBackForwardable;
@@ -94,7 +95,7 @@ import pasa.cbentley.swing.window.CBentleyFrame;
  * @author Charles Bentley
  *
  */
-public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing, IEventConsumer {
+public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEventsSwing, IEventConsumer {
    private static final int         CTX_ID                = 350;
 
    public static final char         DEF_CHECK             = '%';
@@ -147,6 +148,7 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
 
    private IPrefs                   prefs;
 
+   private SwingCoreCtx scc;
    /**
     * This resource bundle allows for a root data of US locale data.
     * 
@@ -190,6 +192,10 @@ public class SwingCtx extends J2seCtx implements IStringable, ICtx, IEventsSwing
       this(new ConfigSwingDefault(c5.getUCtx()), c5);
    }
 
+   public SwingCoreCtx getSwingCoreCtx() {
+      return scc;
+   }
+   
    /**
     * {@link SwingCtx} is JDK 1.5 compatible!
     * 
