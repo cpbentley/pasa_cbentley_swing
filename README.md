@@ -22,3 +22,4 @@ num | id | Right Click -> Copy Link Address
 1 | pasa_cbentley_core_src4 | [Import Link](https://github.com/cpbentley/pasa_cbentley_core_src4)
 2 | pasa_cbentley_core_src5 | [Import Link](https://github.com/cpbentley/pasa_cbentley_core_src5)
 3 | pasa_cbentley_core_j2se | [Import Link](https://github.com/cpbentley/pasa_cbentley_core_j2se)
+3 | pasa_cbentley_core_swing | [Import Link](https://github.com/cpbentley/pasa_cbentley_core_swing)
