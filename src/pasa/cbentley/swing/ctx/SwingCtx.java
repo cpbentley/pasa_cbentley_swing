@@ -41,7 +41,6 @@ import javax.swing.MenuElement;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
-import pasa.cbentley.core.j2se.ctx.J2seCtx;
 import pasa.cbentley.core.src4.ctx.ICtx;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.event.BusEvent;
@@ -110,6 +109,8 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
 
    private ColorUtilsSwing          colorUtilsSwing;
 
+   private IConfigSwing             config;
+
    private final int                defaultDismissTimeout = ToolTipManager.sharedInstance().getDismissDelay();
 
    private DrawUtils                du;
@@ -148,7 +149,6 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
 
    private IPrefs                   prefs;
 
-   private SwingCoreCtx scc;
    /**
     * This resource bundle allows for a root data of US locale data.
     * 
@@ -163,6 +163,8 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
    private IStringable              root;
 
    private StringBBuilder           sb;
+
+   private SwingCoreCtx             scc;
 
    private SwingDebug               sd;
 
@@ -186,16 +188,10 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
 
    private SwingUtilsBentley        utils;
 
-   private IConfigSwing             config;
-
    public SwingCtx(C5Ctx c5) {
       this(new ConfigSwingDefault(c5.getUCtx()), c5);
    }
 
-   public SwingCoreCtx getSwingCoreCtx() {
-      return scc;
-   }
-   
    /**
     * {@link SwingCtx} is JDK 1.5 compatible!
     * 
@@ -236,10 +232,6 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
       sd = new SwingDebug(this);
    }
 
-   public IConfigSwing getConfigSwing() {
-      return config;
-   }
-   
    public void addI18NKey(ArrayList<String> list) {
       list.add("i18nSwing");
    }
@@ -481,6 +473,10 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
          colorUtilsSwing = new ColorUtilsSwing(this);
       }
       return colorUtilsSwing;
+   }
+
+   public IConfigSwing getConfigSwing() {
+      return config;
    }
 
    public int getCtxID() {
@@ -874,6 +870,10 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
 
    public SwingColorStore getSwingColorStore() {
       return swingColorStore;
+   }
+
+   public SwingCoreCtx getSwingCoreCtx() {
+      return scc;
    }
 
    public SwingExecutor getSwingExecutor() {

@@ -10,6 +10,7 @@ import pasa.cbentley.swing.task.TaskExitHard;
 import pasa.cbentley.swing.task.TaskExitSmoothIfNoFrames;
 import pasa.cbentley.swing.window.CBentleyFrame;
 
+//#mdebug
 public class LogConfiguratorSwingFrames implements ILogConfigurator {
 
 
@@ -26,3 +27,4 @@ public class LogConfiguratorSwingFrames implements ILogConfigurator {
    }
 
 }
+//#enddebug

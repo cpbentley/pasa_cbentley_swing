@@ -9,15 +9,13 @@ import pasa.cbentley.core.src4.ctx.IConfigU;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.helpers.BasicPrefs;
 import pasa.cbentley.core.src4.interfaces.IPrefs;
-import pasa.cbentley.core.src4.logging.BaseDLogger;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IDLogConfig;
 import pasa.cbentley.core.src4.logging.ILogConfigurator;
 import pasa.cbentley.core.src4.logging.ILogEntryAppender;
 import pasa.cbentley.core.src4.logging.IStringable;
-import pasa.cbentley.core.src4.logging.ITechConfig;
-import pasa.cbentley.core.src4.logging.ITechLvl;
+//#debug
 import pasa.cbentley.core.src4.logging.LogConfiguratorAllFinest;
 import pasa.cbentley.core.src4.logging.PreferencesSpyLogger;
 import pasa.cbentley.core.src5.ctx.C5Ctx;
