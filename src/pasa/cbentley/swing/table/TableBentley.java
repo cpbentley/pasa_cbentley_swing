@@ -117,6 +117,9 @@ public class TableBentley<T> implements IStringable, IMyGui {
    }
 
    public void setColumnRenderer(int col, TableCellRenderer renderer) {
+      if(col == -1) {
+         return;
+      }
       table.getColumnModel().getColumn(col).setCellRenderer(renderer);
    }
 

@@ -76,6 +76,22 @@ public class BTextField extends JTextField implements IMyGui, FocusListener {
       }
    }
 
+   public void setTextStringNullVoid(String str) {
+      String text = "";
+      if (str != null) {
+         text = str;
+      }
+      this.setText(text);
+   }
+
+   public void setTextIntegerNullVoid(Integer integer) {
+      String text = "";
+      if (integer != null) {
+         text = integer.toString();
+      }
+      this.setText(text);
+   }
+
    public void focusLost(FocusEvent e) {
       if (this.getText().isEmpty()) {
          super.setText(sc.getResString(keyHint));
