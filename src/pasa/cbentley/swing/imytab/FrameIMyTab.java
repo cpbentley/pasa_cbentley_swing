@@ -6,6 +6,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.Icon;
+import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
 import pasa.cbentley.core.src4.interfaces.IPrefs;
@@ -15,11 +16,18 @@ import pasa.cbentley.swing.ctx.SwingCtx;
 import pasa.cbentley.swing.window.CBentleyFrame;
 
 /**
- * Shows a frame for an {@link IMyTab} at the same position as it was used before.. if possible.
+ * {@link FrameIMyTab} is a [ {@link CBentleyFrame} <- {@link JFrame} ] hosting a {@link IMyTab}
  * <br>
+ * <br>
+ * It allows {@link IMyTab} from {@link TabbedBentleyPanel} to be docked to their own windows.
  * <br>
  * 
- * Send the focus when user gives the focus
+ * {@link FrameIMyTab} provides the following services to the hosted {@link IMyTab}
+ * 
+ * <li> Forwards frame focus events to the {@link IMyTab} when user gives the focus to the {@link JFrame}
+ * <li> Manages the {@link FrameReference} object that is owned by the Ctx Frames
+ * <li> Clean up the tab when the frame is closed
+ * <li> Shows a frame for an {@link IMyTab} at the same position as it was used before.. if possible.
  * 
  * @author Charles Bentley
  *
@@ -31,12 +39,15 @@ public class FrameIMyTab extends CBentleyFrame implements ITabOwner {
     */
    private static final long serialVersionUID = -3157445885360459014L;
 
+   /**
+    * 
+    */
    private FrameReference    frameReference;
 
    private final SwingCtx    sc;
 
    /**
-    * No null
+    * Not null. Provided in parameter in the constructor.
     */
    private final IMyTab      tab;
 
@@ -64,11 +75,11 @@ public class FrameIMyTab extends CBentleyFrame implements ITabOwner {
     * @param tab
     */
    private void aInitConstructor(IMyTab tab) {
-      
+
       //TODO title of the frame
       //TODO multi tab of the same type but different title
       this.setTitle(tab.getTabTitle());
-      
+
       //TODO what if there is several of the same frames? Like showing several 
       this.setPrefID("frame_" + tab.getTabInternalID());
 
@@ -126,6 +137,10 @@ public class FrameIMyTab extends CBentleyFrame implements ITabOwner {
       super.closeCleanUp();
    }
 
+   /**
+    * Return the {@link JMenuBar} attached to the Frame.
+    * @return
+    */
    public JMenuBar getIMyTabMenuBar() {
       return this.getJMenuBar();
    }

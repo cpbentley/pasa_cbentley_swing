@@ -15,7 +15,8 @@ import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
 /**
- * Call back to the Panel displaying the results of the work.
+ * {@link SwingWorker} with call backs to the UI Panel ( {@link IWorkerPanel} ) displaying the results of the work.
+ * <br>
  * <br>
  * Usually there will be a progress bar with {@link IWorkerPanel#panelSwingWorkerProcessed(BentleySwingWorker, int)}
  * <br>
@@ -52,7 +53,7 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
    protected void done() {
       boolean isCancelled = isCancelled();
       //#debug
-      toDLog().pFlow("("+((isCancelled)?"canceled":"success")+") for ", this, PanelSwingWorker.class, "done", LVL_04_FINER, true);
+      toDLog().pFlow("(" + ((isCancelled) ? "canceled" : "success") + ") for ", this, PanelSwingWorker.class, "done", LVL_04_FINER, true);
 
       if (isCancelled) {
          //no need to get execution exceptions
@@ -74,6 +75,11 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
       }
    }
 
+   /**
+    * {@link WorkerStat} of this {@link PanelSwingWorker}
+    * 
+    * @return
+    */
    public WorkerStat getWorkerStat() {
       return workerStat;
    }
@@ -89,6 +95,7 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
    public void cancelNiceButInterrupt() {
       cancel(true);
    }
+
    /**
     * Try to pause the worker.
     */
@@ -104,7 +111,7 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
    }
 
    public abstract String getNameForUser();
-   
+
    public void propertyChange(PropertyChangeEvent e) {
       //this log shows, this method is called ins the AWT thread
       //#debug

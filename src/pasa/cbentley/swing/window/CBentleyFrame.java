@@ -22,6 +22,13 @@ import pasa.cbentley.swing.imytab.FrameReference;
 import pasa.cbentley.swing.imytab.IMyGui;
 import pasa.cbentley.swing.task.TaskExitHard;
 
+/**
+ * {@link JFrame} with support for
+ * <li> X,Y and W,H values
+ * 
+ * @author Charles Bentley
+ *
+ */
 public class CBentleyFrame extends JFrame implements IStringable, IMyGui, WindowListener, WindowFocusListener {
    public static final int          EVENT_ID_0_ANY       = 0;
 

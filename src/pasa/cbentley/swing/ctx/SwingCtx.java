@@ -192,6 +192,10 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
       this(new ConfigSwingDefault(c5.getUCtx()), c5);
    }
 
+   public SwingCtx(IConfigSwing config, C5Ctx c5) {
+      this(config, c5, new SwingCoreCtx(c5));
+   }
+
    /**
     * {@link SwingCtx} is JDK 1.5 compatible!
     * 
@@ -199,9 +203,10 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
     * 
     * @param c5 {@link SwingCtx} is a src 5 compatible library
     */
-   public SwingCtx(IConfigSwing config, C5Ctx c5) {
+   public SwingCtx(IConfigSwing config, C5Ctx c5, SwingCoreCtx scc) {
       super(c5);
       this.config = config;
+      this.scc = scc;
       this.swingCmds = new SwingCmds(this);
       this.locale = Locale.getDefault();
       this.tu = new TableUtils(this);

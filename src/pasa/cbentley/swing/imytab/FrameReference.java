@@ -10,7 +10,7 @@ import pasa.cbentley.swing.window.CBentleyFrame;
 /**
  * Encapsulates a possibly null reference to a {@link CBentleyFrame}
  * 
- * When null, frame is deemd inactive. 
+ * When null, frame is deemed inactive. 
  * 
  * {@link FrameReference#isInactive()}
  * 

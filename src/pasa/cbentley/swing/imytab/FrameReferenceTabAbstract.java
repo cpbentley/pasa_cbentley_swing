@@ -4,6 +4,8 @@ import pasa.cbentley.swing.ctx.SwingCtx;
 
 /**
  * A {@link FrameReference} that uses {@link FrameIMyTab}
+ * <br>
+ * Sub class creates the {@link IMyTab} that is hosted in the {@link FrameIMyTab}.
  * 
  * @author Charles Bentley
  *
