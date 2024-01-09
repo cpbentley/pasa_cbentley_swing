@@ -17,8 +17,8 @@ public class LogConfiguratorSwingFrames implements ILogConfigurator {
    public void apply(IDLogConfig log) {
       log.setLevelGlobal(ITechLvl.LVL_03_FINEST);
       
-      log.setFlagPrint(ITechConfig.MASTER_FLAG_03_ONLY_POSITIVES, true);
-      log.setFlagPrint(ITechConfig.MASTER_FLAG_02_OPEN_ALL_PRINT, true);
+      log.setFlagMaster(ITechConfig.MASTER_FLAG_03_ONLY_POSITIVES, true);
+      log.setFlagMaster(ITechConfig.MASTER_FLAG_02_OPEN_ALL_PRINT, true);
       
 
       log.setClassPositives(CBentleyFrame.class, true);
