@@ -957,8 +957,6 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
    public void guiUpdate() {
       //we log the whole pattern conditionally in its own buffer. collapsed into 1 line
       //
-      //#debug
-      toDLog().methodStart(SwingCtx.class, "guiUpdate", ITechLvl.LVL_05_FINE);
 
       //#debug
       //toDLog().pFlow(toStringGuiUpdate(), null, SwingCtx.class, "guiUpdate", ITechLvl.LVL_05_FINE, true);
@@ -969,8 +967,6 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
 
       frames.guiUpdate();
 
-      //#debug
-      toDLog().methodEnd(SwingCtx.class, "guiUpdate", ITechLvl.LVL_05_FINE);
       //end of log
    }
 

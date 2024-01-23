@@ -235,7 +235,7 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
     */
    public void savePrefs(IPrefs prefs) {
       //#debug
-      toDLog().pFlow("", prefs, CBentleyFrame.class, "savePrefs", LVL_04_FINER, false);
+      toDLog().pFlow("Before", prefs, CBentleyFrame.class, "savePrefs", LVL_04_FINER, false);
 
       if (this.isFullScreen()) {
          prefs.putBoolean(getKeyFullscreen(), true);
@@ -247,6 +247,9 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
          prefs.putInt(getKeyMainW(), this.getWidth());
          prefs.putInt(getKeyMainH(), this.getHeight());
       }
+      
+      //#debug
+      toDLog().pFlow("After", prefs, CBentleyFrame.class, "savePrefs", LVL_04_FINER, false);
    }
 
    /**
