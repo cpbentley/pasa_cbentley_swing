@@ -1345,7 +1345,7 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
    }
 
    public void toString(Dctx dc) {
-      dc.root(this, "SwingCtx");
+      dc.root(this, SwingCtx.class, 1348);
       toStringPrivate(dc);
       super.toString(dc.sup());
    }
@@ -1355,7 +1355,7 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
    }
 
    public void toString1Line(Dctx dc) {
-      dc.root1Line(this, "SwingCtx");
+      dc.root1Line(this, SwingCtx.class);
       toStringPrivate(dc);
       super.toString1Line(dc.sup1Line());
    }
