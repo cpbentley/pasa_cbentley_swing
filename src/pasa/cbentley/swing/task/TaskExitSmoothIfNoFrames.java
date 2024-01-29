@@ -4,6 +4,7 @@ import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.logging.Dctx;
 import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
+import pasa.cbentley.core.src4.logging.ITechDev;
 import pasa.cbentley.swing.actions.IExitable;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
@@ -34,6 +35,8 @@ public class TaskExitSmoothIfNoFrames implements Runnable, IStringable {
          if (exitable != null) {
             exitable.cmdExit();
          } else {
+            //#debug
+            sc.toDLog().pFlow("Calling System.exit(0)", null, TaskExitSmoothIfNoFrames.class, "run", LVL_05_FINE, ITechDev.DEV_4_THREAD);
             System.exit(0);
          }
       }

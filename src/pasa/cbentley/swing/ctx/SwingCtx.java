@@ -519,6 +519,10 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
       return backgroundExec;
    }
 
+   /**
+    * {@link IExitable} that was set with {@link SwingCtx#setExitableMain(IExitable)}
+    * @return
+    */
    public IExitable getExitTask() {
       return exitTask;
    }
