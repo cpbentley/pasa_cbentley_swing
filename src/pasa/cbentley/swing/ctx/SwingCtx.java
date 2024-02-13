@@ -231,7 +231,7 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
       swingColorStore = new SwingColorStore(this);
 
       //we want memory events
-      uc.getEventBusRoot().addConsumer(this, PID_3_MEMORY, PID_3_MEMORY_0_ANY);
+      uc.getEventBusRoot().addConsumer(this, PID_03_MEMORY, PID_03_MEMORY_0_ANY);
 
       //#debug
       sd = new SwingDebug(this);
@@ -321,10 +321,10 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
    }
 
    public void consumeEvent(BusEvent e) {
-      if (e.getProducerID() == PID_3_MEMORY) {
+      if (e.getProducerID() == PID_03_MEMORY) {
          //#debug
          toDLog().pMemory("Memory Event", e, SwingCtx.class, "consumeEvent", LVL_05_FINE, true);
-         if (e.getEventID() == PID_3_MEMORY_2_USER_REQUESTED_GC) {
+         if (e.getEventID() == PID_03_MEMORY_2_USER_REQUESTED_GC) {
             swingColorStore.clear();
          }
       }
