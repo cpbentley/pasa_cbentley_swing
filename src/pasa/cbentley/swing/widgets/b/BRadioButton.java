@@ -57,7 +57,7 @@ public class BRadioButton extends JRadioButton implements IMyGui {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

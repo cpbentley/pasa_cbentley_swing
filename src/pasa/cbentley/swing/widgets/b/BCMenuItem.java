@@ -113,7 +113,7 @@ public class BCMenuItem<T extends ICommandable> extends JMenuItem implements IMy
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

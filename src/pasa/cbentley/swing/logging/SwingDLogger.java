@@ -23,7 +23,7 @@ public class SwingDLogger extends BaseDLogger {
    private SwingCtx sc;
 
    public SwingDLogger(SwingCtx sc) {
-      super(sc.getUCtx());
+      super(sc.getUC());
       this.sc = sc;
    }
 

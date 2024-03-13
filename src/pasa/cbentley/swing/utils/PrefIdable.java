@@ -56,7 +56,7 @@ public class PrefIdable implements IStringPrefIDable {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    //#enddebug

@@ -154,7 +154,7 @@ public class MyProgress extends JProgressBar implements IBProgessable, IStringab
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

@@ -44,7 +44,7 @@ public class CellRendererIntegerString extends DefaultTableCellRenderer implemen
    public Color getColor(int account) {
 
       //pad with zeros for at least 6 chars
-      StringUtils su = sc.getUCtx().getStrU();
+      StringUtils su = sc.getUC().getStrU();
       String str = su.prettyInt0Padd(account, 8);
       
       //#debug

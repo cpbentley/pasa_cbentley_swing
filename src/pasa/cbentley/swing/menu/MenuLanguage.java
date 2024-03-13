@@ -68,7 +68,7 @@ public class MenuLanguage extends BMenuLazy implements ActionListener {
          sc.localeUpdate(menu.language, menu.country);
 
          //generate event
-         IEventBus eventBusRoot = sc.getUCtx().getEventBusRoot();
+         IEventBus eventBusRoot = sc.getUC().getEventBusRoot();
          BusEvent event = eventBusRoot.createEvent(IEventsCore.PID_01_FRAMEWORK, IEventsCore.PID_01_FRAMEWORK_2_LANGUAGE_CHANGED, null);
          eventBusRoot.putOnBus(event);
       } else {

@@ -66,7 +66,7 @@ public class BMenuItemToggle extends JMenuItem implements IMyGui {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

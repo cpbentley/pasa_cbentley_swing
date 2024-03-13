@@ -227,7 +227,7 @@ public abstract class ModelTableBAbstract<T> extends AbstractTableModel implemen
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    //#enddebug

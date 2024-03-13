@@ -36,7 +36,7 @@ public class CellRendererIntegerStringHSB extends DefaultTableCellRenderer imple
    }
    
    public Color getColor(int number) {
-      StringUtils su = sc.getUCtx().getStrU();
+      StringUtils su = sc.getUC().getStrU();
       String str = su.prettyInt0Padd(number, 6);
       int len = str.length();
       int subStart = len - 6;

@@ -66,7 +66,7 @@ public abstract class CmdSwingAbstract<T> implements IStringable, IEventsSwing {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    private void toStringPrivate(Dctx dc) {

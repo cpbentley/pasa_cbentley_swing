@@ -153,7 +153,7 @@ public class BButton extends JButton implements MouseListener, IMyGui {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

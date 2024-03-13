@@ -58,7 +58,7 @@ public class SwingExecutor implements IExecutor {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    //#enddebug

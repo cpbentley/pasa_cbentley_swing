@@ -66,7 +66,7 @@ public class SwingDebug {
    }
 
    public String d(ActionEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d(e, dc);
       return dc.toString();
    }
@@ -144,7 +144,7 @@ public class SwingDebug {
    }
 
    public String d(Graphics2D g) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d(g, dc);
       return dc.toString();
    }
@@ -279,7 +279,7 @@ public class SwingDebug {
    }
 
    public String d(JTabbedPane t) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d(t, dc);
       return dc.toString();
    }
@@ -322,7 +322,7 @@ public class SwingDebug {
    }
 
    public String d(MouseEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d(e, dc);
       return dc.toString();
    }
@@ -332,7 +332,7 @@ public class SwingDebug {
    }
 
    public String d(PropertyChangeEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d(e, dc);
       return dc.toString();
    }
@@ -356,7 +356,7 @@ public class SwingDebug {
    }
 
    public String d(WindowEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d(e, dc);
       return dc.toString();
    }
@@ -369,7 +369,7 @@ public class SwingDebug {
    }
 
    public String d1(ActionEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d1(e, dc);
       return dc.toString();
    }
@@ -391,7 +391,7 @@ public class SwingDebug {
    }
 
    public String d1(ChangeEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d1(e, dc);
       return dc.toString();
    }
@@ -402,7 +402,7 @@ public class SwingDebug {
    }
 
    public String d1(Color color) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d1(color, dc);
       return dc.toString();
    }
@@ -421,7 +421,7 @@ public class SwingDebug {
    }
 
    public String d1(Component c) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d1(c, dc);
       return dc.toString();
    }
@@ -434,7 +434,7 @@ public class SwingDebug {
    }
 
    public String d1(DocumentEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d1(e, dc);
       return dc.toString();
    }
@@ -453,7 +453,7 @@ public class SwingDebug {
    }
 
    public String d1(ItemEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d1(e, dc);
       return dc.toString();
    }
@@ -492,7 +492,7 @@ public class SwingDebug {
    }
 
    public String d1(KeyEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d1(e, dc);
       return dc.toString();
    }
@@ -504,7 +504,7 @@ public class SwingDebug {
    }
 
    public String d1(ListSelectionEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d1(e, dc);
       return dc.toString();
    }
@@ -516,7 +516,7 @@ public class SwingDebug {
    }
 
    public String d1(MouseEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d1(e, dc);
       return dc.toString();
    }
@@ -539,7 +539,7 @@ public class SwingDebug {
    }
 
    public String d1(PropertyChangeEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d1(e, dc);
       return dc.toString();
    }
@@ -564,7 +564,7 @@ public class SwingDebug {
    }
 
    public String d1(Shape s) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d1(s, dc);
       return dc.toString();
    }
@@ -576,7 +576,7 @@ public class SwingDebug {
    }
 
    public String d1(WindowEvent e) {
-      Dctx dc = new Dctx(sc.getUCtx());
+      Dctx dc = new Dctx(sc.getUC());
       d1(e, dc);
       return dc.toString();
    }

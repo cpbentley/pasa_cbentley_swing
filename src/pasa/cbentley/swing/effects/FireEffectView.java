@@ -196,7 +196,7 @@ public class FireEffectView extends JFrame implements IStringable {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    //#enddebug

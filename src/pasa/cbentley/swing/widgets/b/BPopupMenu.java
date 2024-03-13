@@ -89,7 +89,7 @@ public class BPopupMenu extends JPopupMenu implements IMyGui, PopupMenuListener,
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    //#enddebug

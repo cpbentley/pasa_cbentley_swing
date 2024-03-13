@@ -42,7 +42,7 @@ public class SphereColors {
    
    
    public void random(boolean alpha) {
-      Random r = sc.getUCtx().getRandom();
+      Random r = sc.getUC().getRandom();
       
       solidCircle = new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256), (alpha) ? r.nextInt(256) : 255);
       gradientShadow1 = new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256), (alpha) ? r.nextInt(256) : 255);

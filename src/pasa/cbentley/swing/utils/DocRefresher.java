@@ -104,7 +104,7 @@ public class DocRefresher implements DocumentListener, IStringable {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    private void toStringPrivate(Dctx dc) {

@@ -143,7 +143,7 @@ public class ProgressWrapper implements IBProgessable {
          });
       } catch (Exception e) {
          e.printStackTrace();
-         return new DummyProgress(sc.getUCtx());
+         return new DummyProgress(sc.getUC());
       }
       return pw;
    }
@@ -192,7 +192,7 @@ public class ProgressWrapper implements IBProgessable {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

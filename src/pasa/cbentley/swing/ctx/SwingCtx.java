@@ -189,7 +189,7 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
    private SwingUtilsBentley        utils;
 
    public SwingCtx(C5Ctx c5) {
-      this(new ConfigSwingDefault(c5.getUCtx()), c5);
+      this(new ConfigSwingDefault(c5.getUC()), c5);
    }
 
    public SwingCtx(IConfigSwing config, C5Ctx c5) {
@@ -915,7 +915,7 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
       return tu;
    }
 
-   public UCtx getUCtx() {
+   public UCtx getUC() {
       return uc;
    }
 
@@ -1389,7 +1389,7 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
     * @return
     */
    public String toStringGuiUpdate() {
-      Dctx dc = new Dctx(getUCtx());
+      Dctx dc = new Dctx(getUC());
       toStringGu44iUpdate(dc);
       frames.toStringGuiUpdate(dc);
       return dc.toString();

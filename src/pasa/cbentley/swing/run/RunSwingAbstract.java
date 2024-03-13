@@ -53,7 +53,7 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
    public RunSwingAbstract(SwingCtx sc) {
       this.sc = sc;
       this.c5 = sc.getC5();
-      this.uc = sc.getUCtx();
+      this.uc = sc.getUC();
    }
 
    public RunSwingAbstract(IConfigU configU) {

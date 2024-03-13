@@ -68,7 +68,7 @@ public class SwingCmds implements IStringable {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
    

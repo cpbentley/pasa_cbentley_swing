@@ -218,7 +218,7 @@ public class UIData implements IStringable, PropertyChangeListener {
    //#enddebug
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
 }

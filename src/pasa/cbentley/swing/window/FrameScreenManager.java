@@ -222,7 +222,7 @@ public class FrameScreenManager implements IStringable {
    }
 
    public UCtx toStringGetUCtx() {
-      return f.getSc().getUCtx();
+      return f.getSc().getUC();
    }
 
    public String toString1Line() {

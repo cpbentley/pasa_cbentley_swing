@@ -69,7 +69,7 @@ public class SwingPrefs implements IPrefs {
    public IntToStrings getKeys() {
       try {
          String[] keys = prefs.keys();
-         return new IntToStrings(sc.getUCtx(), keys);
+         return new IntToStrings(sc.getUC(), keys);
       } catch (BackingStoreException e) {
          e.printStackTrace();
       }
@@ -157,7 +157,7 @@ public class SwingPrefs implements IPrefs {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    //#enddebug

@@ -106,8 +106,8 @@ public class TabPosition implements IStringable {
    public TabPosition(SwingCtx sc, IMyTab tab) {
       this.sc = sc;
       this.owner = tab;
-      historyPosition = new IntBuffer(sc.getUCtx());
-      historyForward = new IntBuffer(sc.getUCtx());
+      historyPosition = new IntBuffer(sc.getUC());
+      historyForward = new IntBuffer(sc.getUC());
 
    }
 
@@ -285,7 +285,7 @@ public class TabPosition implements IStringable {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    public String toStringTabPos(int pos) {

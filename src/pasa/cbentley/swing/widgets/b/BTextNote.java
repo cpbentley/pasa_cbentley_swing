@@ -55,7 +55,7 @@ public class BTextNote extends JTextArea implements IMyGui {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

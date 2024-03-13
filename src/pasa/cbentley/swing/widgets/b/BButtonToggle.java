@@ -147,7 +147,7 @@ public class BButtonToggle extends JButton implements MouseListener, IMyGui, ISt
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

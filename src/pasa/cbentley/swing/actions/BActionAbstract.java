@@ -57,7 +57,7 @@ public abstract class BActionAbstract extends AbstractAction implements IMyGui, 
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

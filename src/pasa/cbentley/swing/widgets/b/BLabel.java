@@ -235,7 +235,7 @@ public class BLabel extends JLabel implements IMyGui, MouseListener, MouseWheelL
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

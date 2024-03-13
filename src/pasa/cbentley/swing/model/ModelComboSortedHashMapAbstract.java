@@ -196,7 +196,7 @@ public abstract class ModelComboSortedHashMapAbstract<E extends INameable<V>, V>
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    //#enddebug

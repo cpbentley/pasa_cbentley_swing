@@ -154,7 +154,7 @@ public abstract class PanelSwingWorker<K, V> extends SwingWorker<K, V> implement
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

@@ -34,7 +34,7 @@ public class KeyedSentence implements IStringable {
 
    public KeyedSentence(SwingCtx sc, int units) {
       this.sc = sc;
-      data = new IntToStrings(sc.getUCtx(), units);
+      data = new IntToStrings(sc.getUC(), units);
    }
 
    public KeyedSentence c(char c) {
@@ -52,7 +52,7 @@ public class KeyedSentence implements IStringable {
    }
 
    public String getSentence() {
-      StringBBuilder sb = new StringBBuilder(sc.getUCtx());
+      StringBBuilder sb = new StringBBuilder(sc.getUC());
       for (int i = 0; i < data.getSize(); i++) {
          if (data.getInt(i) == KEY) {
             sb.append(sc.getResString(data.getString(i)));
@@ -117,7 +117,7 @@ public class KeyedSentence implements IStringable {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    private void toStringPrivate(Dctx dc) {

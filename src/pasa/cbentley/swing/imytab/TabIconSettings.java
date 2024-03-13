@@ -57,7 +57,7 @@ public class TabIconSettings implements IStringable {
          modeSuffix = "sel";
       }
       String sizeSuffix = iconSizeMapping[size];
-      StringBBuilder sb = new StringBBuilder(sc.getUCtx(),64);
+      StringBBuilder sb = new StringBBuilder(sc.getUC(),64);
       sb.append(rootDir);
       sb.append(themeTitle);
       sb.append('/');
@@ -92,7 +92,7 @@ public class TabIconSettings implements IStringable {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
    

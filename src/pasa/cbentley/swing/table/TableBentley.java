@@ -176,7 +176,7 @@ public class TableBentley<T> implements IStringable, IMyGui {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

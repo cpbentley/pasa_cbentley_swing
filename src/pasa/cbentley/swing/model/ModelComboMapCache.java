@@ -208,7 +208,7 @@ public abstract class ModelComboMapCache<E extends INameable<V>, V extends IStri
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    //#enddebug

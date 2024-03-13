@@ -357,7 +357,7 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

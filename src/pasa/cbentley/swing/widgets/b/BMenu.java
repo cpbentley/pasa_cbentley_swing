@@ -64,7 +64,7 @@ public class BMenu extends JMenu implements IMyGui, ITechMenu, IMenuSwing {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

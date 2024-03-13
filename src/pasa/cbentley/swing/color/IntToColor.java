@@ -82,7 +82,7 @@ public class IntToColor implements IColors {
       if (str.length() < 3) {
          str = str + "aaaa";
       }
-      CharUtils cu = sc.getUCtx().getCU();
+      CharUtils cu = sc.getUC().getCU();
       int unit = str.length() / 3;
       int countC = 0;
       int v = 0;
@@ -162,7 +162,7 @@ public class IntToColor implements IColors {
       if (str.length() < 3) {
          str = str + "aaaa";
       }
-      CharUtils cu = sc.getUCtx().getCU();
+      CharUtils cu = sc.getUC().getCU();
       int unit = str.length() / 3;
       int countC = 0;
       int v = 0;
@@ -353,7 +353,7 @@ public class IntToColor implements IColors {
    public Color getColorLightBgAccount2(int account) {
 
       //pad with zeros for at least 6 chars
-      StringUtils su = sc.getUCtx().getStrU();
+      StringUtils su = sc.getUC().getStrU();
       String str = su.prettyInt0Padd(account, 6);
       //
       int len = str.length();

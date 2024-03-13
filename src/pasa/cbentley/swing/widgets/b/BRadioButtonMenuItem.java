@@ -54,7 +54,7 @@ public class BRadioButtonMenuItem extends JRadioButtonMenuItem implements IMyGui
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

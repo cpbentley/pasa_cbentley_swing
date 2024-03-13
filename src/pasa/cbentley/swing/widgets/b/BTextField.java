@@ -143,7 +143,7 @@ public class BTextField extends JTextField implements IMyGui, FocusListener {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

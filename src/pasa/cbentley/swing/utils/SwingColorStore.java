@@ -33,7 +33,7 @@ public class SwingColorStore implements IStringable {
 
    public SwingColorStore(SwingCtx sc) {
       this.sc = sc;
-      sb = new StringBBuilder(sc.getUCtx(), 20);
+      sb = new StringBBuilder(sc.getUC(), 20);
       colors = new HashMap<String, Color>();
    }
 
@@ -152,7 +152,7 @@ public class SwingColorStore implements IStringable {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    //#enddebug

@@ -142,7 +142,7 @@ public class PaneMouseEventDispatcher implements MouseListener, IStringable {
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
 

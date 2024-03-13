@@ -82,7 +82,7 @@ public abstract class ModelTableBAbstractArray<T> extends ModelTableBAbstract<T>
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
 
    public IDLog toDLog() {

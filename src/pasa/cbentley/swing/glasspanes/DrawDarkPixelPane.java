@@ -248,7 +248,7 @@ public class DrawDarkPixelPane extends JComponent implements IStringable, Compon
    }
 
    public UCtx toStringGetUCtx() {
-      return sc.getUCtx();
+      return sc.getUC();
    }
    //#enddebug
 

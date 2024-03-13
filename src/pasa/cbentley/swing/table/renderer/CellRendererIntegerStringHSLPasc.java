@@ -55,7 +55,7 @@ public class CellRendererIntegerStringHSLPasc extends DefaultTableCellRenderer i
 
    public CellRendererIntegerStringHSLPasc(SwingCtx sc) {
       this.sc = sc;
-      sb = new StringBBuilder(sc.getUCtx(),500);
+      sb = new StringBBuilder(sc.getUC(),500);
       df2 = new DecimalFormat("0.00");
       df1 = new DecimalFormat("0.0");
       font = new java.awt.Font("Lucida Console", 0, 12);
@@ -86,7 +86,7 @@ public class CellRendererIntegerStringHSLPasc extends DefaultTableCellRenderer i
       }
       int secondCharValue = Character.getNumericValue(charSecond);
 
-      StringUtils su = sc.getUCtx().getStrU();
+      StringUtils su = sc.getUC().getStrU();
       String strNumberNormalized = su.prettyIntPaddStr(number, 9, "-"); //assume 999 999 999 1 billion
       int numChars = strNumber.length();
       float hue = 0;
