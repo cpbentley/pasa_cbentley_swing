@@ -56,6 +56,7 @@ import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.logging.ITechLvl;
 import pasa.cbentley.core.src4.logging.IUserLog;
+import pasa.cbentley.core.src4.logging.StringableWrapper;
 import pasa.cbentley.core.src5.bundle.CombinedResourceBundle;
 import pasa.cbentley.core.src5.bundle.UTF8Control;
 import pasa.cbentley.core.src5.ctx.C5Ctx;
@@ -410,6 +411,8 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
    }
 
    public void executeLaterInUIThread(Runnable r) {
+      //#debug
+      toDLog().pFlow("", r, SwingCtx.class, "executeLaterInUIThread@414", LVL_05_FINE, true);
       SwingUtilities.invokeLater(r);
    }
 

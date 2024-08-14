@@ -1,25 +1,14 @@
 package pasa.cbentley.swing.ctx;
 
-import pasa.cbentley.core.src4.ctx.UCtx;
+import javax.swing.SwingUtilities;
+
 import pasa.cbentley.core.src4.interfaces.IExecutor;
 import pasa.cbentley.core.src4.logging.Dctx;
-import pasa.cbentley.core.src4.logging.IDLog;
 
-public class SwingExecutor implements IExecutor {
-
-   protected final SwingCtx sc;
+public class SwingExecutor extends ObjectSC implements IExecutor {
 
    public SwingExecutor(SwingCtx sc) {
-      this.sc = sc;
-
-   }
-
-   public void executeWorker(Runnable run) {
-      sc.getExecutorService().execute(run);
-   }
-
-   public void executeMainNow(Runnable run) {
-      sc.execute(run);
+      super(sc);
    }
 
    public void executeMainLater(Runnable run) {
@@ -30,37 +19,34 @@ public class SwingExecutor implements IExecutor {
       sc.executeLaterInUIThread(run, millis);
    }
 
+   public void executeMainNow(Runnable run) {
+      sc.execute(run);
+   }
+
+   public void executeWorker(Runnable run) {
+      sc.getExecutorService().execute(run);
+   }
+
+   public boolean isMainThread() {
+      return SwingUtilities.isEventDispatchThread();
+   }
+
    //#mdebug
-   public IDLog toDLog() {
-      return toStringGetUCtx().toDLog();
-   }
-
-   public String toString() {
-      return Dctx.toString(this);
-   }
-
    public void toString(Dctx dc) {
-      dc.root(this, "SwingExecutor");
+      dc.root(this, SwingExecutor.class, 35);
       toStringPrivate(dc);
+      super.toString(dc.sup());
    }
 
-   public String toString1Line() {
-      return Dctx.toString1Line(this);
+   public void toString1Line(Dctx dc) {
+      dc.root1Line(this, SwingExecutor.class, 35);
+      toStringPrivate(dc);
+      super.toString1Line(dc.sup1Line());
    }
 
    private void toStringPrivate(Dctx dc) {
 
    }
-
-   public void toString1Line(Dctx dc) {
-      dc.root1Line(this, "SwingExecutor");
-      toStringPrivate(dc);
-   }
-
-   public UCtx toStringGetUCtx() {
-      return sc.getUC();
-   }
-
    //#enddebug
 
 }

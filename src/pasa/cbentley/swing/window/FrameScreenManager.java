@@ -24,6 +24,8 @@ public class FrameScreenManager implements IStringable {
 
    private boolean       isOnlyHeight;
 
+   private boolean       isOnlyWidth;
+
    private int           screenID;
 
    /**
@@ -40,6 +42,10 @@ public class FrameScreenManager implements IStringable {
     */
    public void setScreenID(int id) {
       screenID = id;
+   }
+
+   public void setOnlyWidth(boolean v) {
+      isOnlyWidth = v;
    }
 
    public void setOnlyHeight(boolean v) {
@@ -135,6 +141,9 @@ public class FrameScreenManager implements IStringable {
       }
       if (isOnlyHeight) {
          fsWidth = prevWidth;
+      }
+      if (isOnlyWidth) {
+         fsHeight = prevWidth;
       }
       f.setBounds(fsX, fsY, fsWidth, fsHeight);
       f.setVisible(true);

@@ -2,7 +2,6 @@ package pasa.cbentley.swing.window;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
@@ -55,6 +54,15 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
     */
    private static final long        serialVersionUID     = -5719466067073255318L;
 
+   private FrameReference frameToShowOnClose;
+
+   private boolean                  isHardExitOnClose;
+
+   /**
+    * When no more frames are visible, the application exits.
+    */
+   private boolean isHeadlessAllowed = false;
+
    private boolean                  isMainFrame;
 
    private String                   pid                  = "";
@@ -62,8 +70,6 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    private SwingCtx                 sc;
 
    private final FrameScreenManager screenManager;
-
-   private boolean                  isHardExitOnClose;
 
    public CBentleyFrame(SwingCtx sc) {
       this(sc, "");
@@ -90,6 +96,13 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
       this.addWindowListener(this);
    }
 
+   protected void closeCleanUp() {
+      this.savePrefs();
+      sc.guiRemove(this);
+      sc.getFrames().removeFrame(this);
+      sc.eventCloseThis(this);
+   }
+
    /**
     * Close this frame. If single last, exits the
     * The main window won't be called here.
@@ -100,13 +113,6 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
       //effectively close it
       WindowEvent we = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
       this.dispatchEvent(we);
-   }
-
-   protected void closeCleanUp() {
-      this.savePrefs();
-      sc.guiRemove(this);
-      sc.getFrames().removeFrame(this);
-      sc.eventCloseThis(this);
    }
 
    private void cmdToggleFullScreen(JButton butTogFullScreen) {
@@ -168,6 +174,10 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
 
    public boolean isFullScreen() {
       return screenManager.isFullScreen();
+   }
+
+   public boolean isHeadlessNotAllowed() {
+      return !isHeadlessAllowed;
    }
 
    public boolean isMainFrame() {
@@ -247,7 +257,7 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
          prefs.putInt(getKeyMainW(), this.getWidth());
          prefs.putInt(getKeyMainH(), this.getHeight());
       }
-      
+
       //#debug
       toDLog().pFlow("After", prefs, CBentleyFrame.class, "savePrefs", LVL_04_FINER, false);
    }
@@ -257,6 +267,14 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
     */
    public void setExitProcedureExit0() {
       isHardExitOnClose = true;
+   }
+
+   /**
+    * On exit, shows this frames
+    * @param frame
+    */
+   public void setFrameOnClose(final FrameReference frame) {
+      frameToShowOnClose = frame;
    }
 
    /**
@@ -271,34 +289,12 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
       this.setLocation(nx, ny);
    }
 
-   private FrameReference frameToShowOnClose;
-
-   /**
-    * On exit, shows this frames
-    * @param frame
-    */
-   public void setFrameOnClose(final FrameReference frame) {
-      frameToShowOnClose = frame;
-   }
-
-   /**
-    * When no more frames are visible, the application exits.
-    */
-   private boolean isHeadlessAllowed = false;
-
-   /**
-    * Dock this frame to the {@link SwingCtx} exitable framework
-    */
-   public void setHeadlessAllowed() {
-      isHeadlessAllowed = true;
+   public void setFullScreenFalse() {
+      screenManager.setFullScreen(false);
    }
 
    public void setFullScreenTrue() {
       screenManager.setFullScreen(true);
-   }
-
-   public void setFullScreenFalse() {
-      screenManager.setFullScreen(false);
    }
 
    /**
@@ -309,6 +305,13 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
    public void setFullScreenTrue(int screenid) {
       screenManager.setScreenID(screenid);
       screenManager.setFullScreen(true);
+   }
+
+   /**
+    * Dock this frame to the {@link SwingCtx} exitable framework
+    */
+   public void setHeadlessAllowed() {
+      isHeadlessAllowed = true;
    }
 
    /**
@@ -369,13 +372,9 @@ public class CBentleyFrame extends JFrame implements IStringable, IMyGui, Window
 
    }
 
-   public boolean isHeadlessNotAllowed() {
-      return !isHeadlessAllowed;
-   }
-
    public void windowClosing(WindowEvent e) {
       //#debug
-      toDLog().pFlow("isHardExitOnClose=" + isHardExitOnClose, this, CBentleyFrame.class, "windowClosing", LVL_05_FINE, true);
+      toDLog().pFlow("isHardExitOnClose=" + isHardExitOnClose, this, CBentleyFrame.class, "windowClosing@377", LVL_05_FINE, true);
       closeCleanUp();
 
       //hard exist on close will override all others checks
