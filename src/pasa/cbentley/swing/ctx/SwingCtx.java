@@ -110,8 +110,6 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
 
    private ColorUtilsSwing          colorUtilsSwing;
 
-   private IConfigSwing             config;
-
    private final int                defaultDismissTimeout = ToolTipManager.sharedInstance().getDismissDelay();
 
    private DrawUtils                du;
@@ -190,12 +188,9 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
    private SwingUtilsBentley        utils;
 
    public SwingCtx(C5Ctx c5) {
-      this(new ConfigSwingDefault(c5.getUC()), c5);
+      this(new ConfigSwingDefault(), c5);
    }
 
-   public SwingCtx(IConfigSwing config, C5Ctx c5) {
-      this(config, c5, new SwingCoreCtx(c5));
-   }
 
    /**
     * {@link SwingCtx} is JDK 1.5 compatible!
@@ -204,10 +199,8 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
     * 
     * @param c5 {@link SwingCtx} is a src 5 compatible library
     */
-   public SwingCtx(IConfigSwing config, C5Ctx c5, SwingCoreCtx scc) {
-      super(c5);
-      this.config = config;
-      this.scc = scc;
+   public SwingCtx(IConfigSwing config, C5Ctx c5) {
+      super(config, c5);
       this.swingCmds = new SwingCmds(this);
       this.locale = Locale.getDefault();
       this.tu = new TableUtils(this);
@@ -236,6 +229,10 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
 
       //#debug
       sd = new SwingDebug(this);
+      
+      //#debug
+      toDLog().pCreate("", this, SwingCtx.class, "Created@241", LVL_04_FINER, true);
+
    }
 
    public void addI18NKey(ArrayList<String> list) {
@@ -484,7 +481,7 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
    }
 
    public IConfigSwing getConfigSwing() {
-      return config;
+      return (IConfigSwing) config;
    }
 
    public int getCtxID() {
@@ -884,9 +881,6 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
       return swingColorStore;
    }
 
-   public SwingCoreCtx getSwingCoreCtx() {
-      return scc;
-   }
 
    public SwingExecutor getSwingExecutor() {
       return executor;
