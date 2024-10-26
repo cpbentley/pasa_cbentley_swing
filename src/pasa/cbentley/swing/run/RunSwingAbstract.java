@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.prefs.Preferences;
 
+import pasa.cbentley.core.src4.ctx.ConfigUDef;
+import pasa.cbentley.core.src4.ctx.IConfig;
 import pasa.cbentley.core.src4.ctx.IConfigU;
 import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.helpers.BasicPrefs;
@@ -19,6 +21,7 @@ import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.logging.LogConfiguratorAllFinest;
 import pasa.cbentley.core.src4.logging.PreferencesSpyLogger;
 import pasa.cbentley.core.src5.ctx.C5Ctx;
+import pasa.cbentley.core.swing.ctx.SwingCoreCtx;
 import pasa.cbentley.swing.SwingPrefs;
 import pasa.cbentley.swing.actions.IExitable;
 import pasa.cbentley.swing.ctx.SwingCtx;
@@ -46,32 +49,27 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
 
    protected boolean        isSpyLoggerEnabled;
 
-   /**
-    * Run it within an existing {@link SwingCtx}
-    * @param sc
-    */
-   public RunSwingAbstract(SwingCtx sc) {
-      this.sc = sc;
-      this.c5 = sc.getC5();
-      this.uc = sc.getUC();
-   }
-
    public RunSwingAbstract(IConfigU configU) {
+      if (configU == null) {
+         configU = new ConfigUDef();
+      }
       this.uc = new UCtx(configU);
       this.c5 = new C5Ctx(uc);
       this.sc = new SwingCtx(c5);
 
       //#debug
       this.sc.toStringSetRoot(this);
-   }
-
-   public RunSwingAbstract() {
-      this.uc = new UCtx();
-      this.c5 = new C5Ctx(uc);
-      this.sc = new SwingCtx(c5);
 
       //#debug
-      this.sc.toStringSetRoot(this);
+      toDLog().pCreate("", this, RunSwingAbstract.class, "Created@65", LVL_04_FINER, true);
+
+   }
+
+   /**
+    * Uses all default {@link IConfig} for {@link UCtx} and {@link SwingCtx}
+    */
+   public RunSwingAbstract() {
+      this(null);
    }
 
    public void prepareExit() {
@@ -149,9 +147,6 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
     */
    public final void initUIThreadOutside() {
 
-      //#debug
-      toStringSetupLogger(uc);
-
       //setup preferences
       String namePreferenceKey = this.getClass().getSimpleName();
       Preferences preferences = Preferences.userRoot().node(namePreferenceKey);
@@ -163,11 +158,12 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
 
       //we never know if implementation
       if (preferences == null) {
-         System.out.println("Failure to create Preferences.userRoot().node(" + namePreferenceKey + ")");
-         System.out.println("Creating dummy BasicPrefs");
+         //#debug
+         toDLog().pInit("Failure to create for class " + namePreferenceKey, null, RunSwingAbstract.class, "initUIThreadOutside@166", LVL_05_FINE, true);
          prefs = new BasicPrefs(uc);
       } else {
-         System.out.println("Preferences created for class " + namePreferenceKey);
+         //#debug
+         toDLog().pInit("Preferences created for class " + namePreferenceKey, null, RunSwingAbstract.class, "initUIThreadOutside@166", LVL_05_FINE, true);
          prefs = new SwingPrefs(sc, preferences);
       }
 
@@ -229,27 +225,6 @@ public abstract class RunSwingAbstract implements IExitable, IStringable {
    }
 
    private void toStringPrivate(Dctx dc) {
-
-   }
-
-   /**
-    * Returns the logging configurator for the logger
-    */
-   public ILogConfigurator toStringGetLoggingConfig() {
-      return new LogConfiguratorAllFinest();
-   }
-
-   /**
-    * setup the logger at. sub class may override to setup more loggers?
-    * Default opens all at finest level
-    */
-   protected void toStringSetupLogger(UCtx uc) {
-
-      ILogConfigurator logConfigurator = this.toStringGetLoggingConfig();
-      //what if several logs? the launcher implementation must deal with it specifically
-      ILogEntryAppender appender = uc.toDLog().getDefault();
-      IDLogConfig config = appender.getConfig();
-      logConfigurator.apply(config);
 
    }
 

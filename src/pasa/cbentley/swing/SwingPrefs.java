@@ -5,12 +5,11 @@ import java.io.OutputStream;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import pasa.cbentley.core.src4.ctx.UCtx;
 import pasa.cbentley.core.src4.interfaces.IPrefs;
 import pasa.cbentley.core.src4.io.BADataIS;
 import pasa.cbentley.core.src4.logging.Dctx;
-import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.structs.IntToStrings;
+import pasa.cbentley.swing.ctx.ObjectSC;
 import pasa.cbentley.swing.ctx.SwingCtx;
 
 /**
@@ -19,15 +18,17 @@ import pasa.cbentley.swing.ctx.SwingCtx;
  * @author Charles Bentley
  * @see IPrefs
  */
-public class SwingPrefs implements IPrefs {
+public class SwingPrefs extends ObjectSC implements IPrefs {
 
    private Preferences prefs;
 
-   private SwingCtx    sc;
-
    public SwingPrefs(SwingCtx sc, Preferences prefs) {
+      super(sc);
       this.prefs = prefs;
-      this.sc = sc;
+
+      //#debug
+      toDLog().pCreate("", this, SwingPrefs.class, "Created@" + toStringGetLine(30), LVL_04_FINER, true);
+
    }
 
    public void clear() {
@@ -127,16 +128,11 @@ public class SwingPrefs implements IPrefs {
    }
 
    //#mdebug
-   public IDLog toDLog() {
-      return sc.toDLog();
-   }
-
-   public String toString() {
-      return Dctx.toString(this);
-   }
-
    public void toString(Dctx dc) {
-      dc.root(this, "SwingPrefs");
+      dc.root(this, SwingPrefs.class, toStringGetLine(140));
+      toStringPrivate(dc);
+      super.toString(dc.sup());
+
       try {
          String[] keys = prefs.keys();
          for (String key : keys) {
@@ -148,18 +144,15 @@ public class SwingPrefs implements IPrefs {
       }
    }
 
-   public String toString1Line() {
-      return Dctx.toString1Line(this);
-   }
-
    public void toString1Line(Dctx dc) {
-      dc.root1Line(this, "SwingPrefs");
+      dc.root1Line(this, SwingPrefs.class, toStringGetLine(140));
+      toStringPrivate(dc);
+      super.toString1Line(dc.sup1Line());
    }
 
-   public UCtx toStringGetUCtx() {
-      return sc.getUC();
-   }
+   private void toStringPrivate(Dctx dc) {
 
+   }
    //#enddebug
 
 }

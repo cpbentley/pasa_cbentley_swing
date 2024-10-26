@@ -56,7 +56,7 @@ import pasa.cbentley.core.src4.logging.IDLog;
 import pasa.cbentley.core.src4.logging.IStringable;
 import pasa.cbentley.core.src4.logging.ITechLvl;
 import pasa.cbentley.core.src4.logging.IUserLog;
-import pasa.cbentley.core.src4.logging.StringableWrapper;
+import pasa.cbentley.core.src4.logging.LogParameters;
 import pasa.cbentley.core.src5.bundle.CombinedResourceBundle;
 import pasa.cbentley.core.src5.bundle.UTF8Control;
 import pasa.cbentley.core.src5.ctx.C5Ctx;
@@ -91,11 +91,13 @@ import pasa.cbentley.swing.utils.SwingColorStore;
 import pasa.cbentley.swing.window.CBentleyFrame;
 
 /**
- * Plug
+ * Extends the {@link SwingCoreCtx} to provide lots of Swing Utilities.
+ * 
  * @author Charles Bentley
  *
  */
 public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEventsSwing, IEventConsumer {
+   
    private static final int         CTX_ID                = 350;
 
    public static final char         DEF_CHECK             = '%';
@@ -191,7 +193,6 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
       this(new ConfigSwingDefault(), c5);
    }
 
-
    /**
     * {@link SwingCtx} is JDK 1.5 compatible!
     * 
@@ -229,9 +230,9 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
 
       //#debug
       sd = new SwingDebug(this);
-      
+
       //#debug
-      toDLog().pCreate("", this, SwingCtx.class, "Created@241", LVL_04_FINER, true);
+      toDLog().pCreate("", this, SwingCtx.class, "Created@" + toStringGetLine(240), LVL_04_FINER, true);
 
    }
 
@@ -881,7 +882,6 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
       return swingColorStore;
    }
 
-
    public SwingExecutor getSwingExecutor() {
       return executor;
    }
@@ -987,7 +987,7 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
    public void guiUpdateOnChildren(Container panel) {
       Component[] components = panel.getComponents();
       //#debug
-      toDLog().pFlow(components.length + "\t children for container " + panel.getClass().getSimpleName(), null, SwingCtx.class, "guiUpdateOnChildren", LVL_05_FINE, true);
+      toDLog().pFlow(components.length + "\t children for container " + panel.getClass().getSimpleName(), null, SwingCtx.class, "guiUpdateOnChildren@"+ toStringGetLine(990), LVL_05_FINE, true);
       for (int i = 0; i < components.length; i++) {
          Component c = components[i];
          if (c instanceof IMyGui) {
@@ -1346,7 +1346,7 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
    }
 
    public void toString(Dctx dc) {
-      dc.root(this, SwingCtx.class, 1348);
+      dc.root(this, SwingCtx.class, toStringGetLine(1341));
       toStringPrivate(dc);
       super.toString(dc.sup());
    }
@@ -1356,7 +1356,7 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
    }
 
    public void toString1Line(Dctx dc) {
-      dc.root1Line(this, SwingCtx.class);
+      dc.root1Line(this, SwingCtx.class, toStringGetLine(1300));
       toStringPrivate(dc);
       super.toString1Line(dc.sup1Line());
    }
@@ -1368,6 +1368,14 @@ public class SwingCtx extends SwingCoreCtx implements IStringable, ICtx, IEvents
     */
    public void toStringAll(Dctx dc) {
       toString(dc);
+   }
+
+   public LogParameters toStringGetLine(Class cl, String method, int value) {
+      return toStringGetUCtx().toStringGetLine(cl, method, value);
+   }
+
+   public String toStringGetLine(int value) {
+      return toStringGetUCtx().toStringGetLine(value);
    }
 
    /**
